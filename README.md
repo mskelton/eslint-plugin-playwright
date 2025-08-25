@@ -118,6 +118,7 @@ CLI option\
 
 | Rule                                                                                                                                                | Description                                                        | ✅  | 🔧  | 💡  |
 | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | :-: | :-: | :-: |
+| [consistent-spacing-between-blocks](https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/consistent-spacing-between-blocks.md) | Enforce consistent spacing between test blocks               | ✅  | 🔧  |     |
 | [expect-expect](https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/expect-expect.md)                             | Enforce assertion to be made in a test body                        | ✅  |     |     |
 | [max-expects](https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/max-expects.md)                                 | Enforces a maximum number assertion calls in a test body           |     |     |     |
 | [max-nested-describe](https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/max-nested-describe.md)                 | Enforces a maximum depth to nested describe calls                  | ✅  |     |     |
