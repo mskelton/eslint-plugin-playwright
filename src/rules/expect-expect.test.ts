@@ -30,6 +30,16 @@ runRuleTester('expect-expect', rule, {
       options: [{ assertFunctionNames: ['wayComplexCustomCondition'] }],
     },
     {
+      code: javascript`
+        test('should fail', async ({ page }) => {
+          await assertCustomCondition(page)
+        })
+      `,
+      errors: [{ messageId: 'noAssertions', type: 'Identifier' }],
+      name: 'Custom assert function pattern mismatch',
+      options: [{ assertFunctionPatterns: ['^verify.*', '^check.*'] }],
+    },
+    {
       code: 'it("should pass", () => hi(true).toBeDefined())',
       errors: [{ messageId: 'noAssertions', type: 'Identifier' }],
       name: 'Global aliases',
@@ -109,6 +119,38 @@ runRuleTester('expect-expect', rule, {
       `,
       name: 'Custom assert class method',
       options: [{ assertFunctionNames: ['assertCustomCondition'] }],
+    },
+    {
+      code: javascript`
+        test('should pass', async ({ page }) => {
+          await verifyElementVisible(page.locator('button'))
+        })
+      `,
+      name: 'Custom assert function matching regex pattern',
+      options: [{ assertFunctionPatterns: ['^verify.*'] }],
+    },
+    {
+      code: javascript`
+        test('should pass', async ({ page }) => {
+          await page.checkTextContent('Hello')
+          await validateUserLoggedIn(page)
+        })
+      `,
+      name: 'Multiple custom assert functions matching different regex patterns',
+      options: [{ assertFunctionPatterns: ['^check.*', '^validate.*'] }],
+    },
+    {
+      code: javascript`
+        test('should pass', async ({ page }) => {
+          await myCustomAssert(page)
+          await anotherAssertion(true)
+        })
+      `,
+      name: 'Mixed string and regex pattern matching',
+      options: [{ 
+        assertFunctionNames: ['myCustomAssert'],
+        assertFunctionPatterns: ['.*Assertion$'] 
+      }],
     },
     {
       code: 'it("should pass", () => expect(true).toBeDefined())',
