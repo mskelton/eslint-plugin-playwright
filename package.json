@@ -13,7 +13,7 @@
     "examples"
   ],
   "engines": {
-    "node": ">=16.6.0"
+    "node": ">=16.9.0"
   },
   "type": "module",
   "types": "./index.d.ts",
