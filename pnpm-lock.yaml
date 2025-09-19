@@ -5800,7 +5800,7 @@ packages:
     resolution: {directory: '', type: directory}
     id: 'file:'
     name: eslint-plugin-playwright
-    engines: {node: '>=16.6.0'}
+    engines: {node: '>=16.9.0'}
     peerDependencies:
       eslint: '>=8.40.0'
     dependencies:
