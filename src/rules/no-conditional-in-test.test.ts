@@ -1,5 +1,5 @@
-import rule from '../../src/rules/no-conditional-in-test.js'
 import { javascript, runRuleTester } from '../utils/rule-tester.js'
+import rule from './no-conditional-in-test.js'
 
 const messageId = 'conditionalInTest'
 

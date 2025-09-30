@@ -1,10 +1,10 @@
-import rule from '../../src/rules/require-hook.js'
 import {
   javascript,
   runRuleTester,
   runTSRuleTester,
   typescript,
 } from '../utils/rule-tester.js'
+import rule from './require-hook.js'
 
 const messageId = 'useHook'
 

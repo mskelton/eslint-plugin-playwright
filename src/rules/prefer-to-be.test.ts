@@ -1,5 +1,5 @@
-import rule from '../../src/rules/prefer-to-be.js'
 import { runRuleTester } from '../utils/rule-tester.js'
+import rule from './prefer-to-be.js'
 
 runRuleTester('prefer-to-be', rule, {
   invalid: [

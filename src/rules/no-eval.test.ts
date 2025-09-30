@@ -1,5 +1,5 @@
-import rule from '../../src/rules/no-eval.js'
 import { javascript, runRuleTester, test } from '../utils/rule-tester.js'
+import rule from './no-eval.js'
 
 runRuleTester('no-eval', rule, {
   invalid: [

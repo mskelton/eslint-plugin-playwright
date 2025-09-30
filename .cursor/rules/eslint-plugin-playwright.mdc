@@ -70,7 +70,7 @@ export default createRule({
 #### Testing Pattern
 
 ```typescript
-import rule from '../../src/rules/{rule-name}.js'
+import rule from './{rule-name}.js'
 import { javascript, runRuleTester } from '../utils/rule-tester.js'
 
 runRuleTester('{rule-name}', rule, {

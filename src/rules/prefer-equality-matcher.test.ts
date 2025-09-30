@@ -1,6 +1,6 @@
-import rule from '../../src/rules/prefer-equality-matcher.js'
 import { equalityMatchers } from '../../src/utils/ast.js'
 import { runRuleTester } from '../utils/rule-tester.js'
+import rule from './prefer-equality-matcher.js'
 
 const expectSuggestions = (output: (matcher: string) => string) => {
   return [...equalityMatchers.keys()].map((matcher) => ({

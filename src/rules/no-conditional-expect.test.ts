@@ -1,5 +1,5 @@
-import rule from '../../src/rules/no-conditional-expect.js'
 import { javascript, runRuleTester } from '../utils/rule-tester.js'
+import rule from './no-conditional-expect.js'
 
 const messageId = 'conditionalExpect'
 

@@ -1,5 +1,5 @@
-import rule from '../../src/rules/no-networkidle.js'
 import { runRuleTester } from '../utils/rule-tester.js'
+import rule from './no-networkidle.js'
 
 const messageId = 'noNetworkidle'
 

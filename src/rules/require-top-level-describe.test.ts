@@ -1,5 +1,5 @@
-import rule from '../../src/rules/require-top-level-describe.js'
 import { javascript, runRuleTester } from '../utils/rule-tester.js'
+import rule from './require-top-level-describe.js'
 
 runRuleTester('require-top-level-describe', rule, {
   invalid: [

@@ -1,5 +1,5 @@
-import rule from '../../src/rules/require-soft-assertions.js'
 import { runRuleTester } from '../utils/rule-tester.js'
+import rule from './require-soft-assertions.js'
 
 const messageId = 'requireSoft'
 

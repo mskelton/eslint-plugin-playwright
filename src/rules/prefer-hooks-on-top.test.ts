@@ -1,5 +1,5 @@
-import rule from '../../src/rules/prefer-hooks-on-top.js'
 import { javascript, runRuleTester } from '../utils/rule-tester.js'
+import rule from './prefer-hooks-on-top.js'
 
 runRuleTester('basic describe block', rule, {
   invalid: [

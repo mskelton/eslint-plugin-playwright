@@ -1,5 +1,5 @@
-import rule from '../../src/rules/prefer-strict-equal.js'
 import { runRuleTester } from '../utils/rule-tester.js'
+import rule from './prefer-strict-equal.js'
 
 runRuleTester('prefer-strict-equal', rule, {
   invalid: [

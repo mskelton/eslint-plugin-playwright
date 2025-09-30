@@ -1,5 +1,5 @@
-import rule from '../../src/rules/no-commented-out-tests.js'
 import { javascript, runRuleTester } from '../utils/rule-tester.js'
+import rule from './no-commented-out-tests.js'
 
 const messageId = 'commentedTests'
 

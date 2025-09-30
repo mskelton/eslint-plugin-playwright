@@ -10,7 +10,7 @@ RuleTester.itOnly = it.only
 
 /**
  * @example
- *   import rule from '../../src/rules/missing-playwright-await';
+ *   import rule from './missing-playwright-await';
  *
  *   runRuleTester('missing-playwright-await', rule, {
  *   invalid: ['expect(page.locator('checkbox')).toBeChecked()'],

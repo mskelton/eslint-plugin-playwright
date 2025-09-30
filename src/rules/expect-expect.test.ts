@@ -1,5 +1,5 @@
-import rule from '../../src/rules/expect-expect.js'
 import { javascript, runRuleTester } from '../utils/rule-tester.js'
+import rule from './expect-expect.js'
 
 runRuleTester('expect-expect', rule, {
   invalid: [
