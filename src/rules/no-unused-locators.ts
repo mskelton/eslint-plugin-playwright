@@ -21,6 +21,12 @@ export default createRule({
             }
           }
 
+          if (node.parent?.type === 'CallExpression' && node.parent?.callee.type === 'Identifier') {
+            if (node.parent?.callee.name === 'expect') {
+              return
+            }
+          }
+
           context.report({ messageId: 'noUnusedLocator', node })
         }
       },
