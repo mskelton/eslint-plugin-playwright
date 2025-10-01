@@ -20,12 +20,12 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
         test('Test 6', () => {});
       `,
       errors: [
-        { messageId: 'missingWhitespace' },
-        { messageId: 'missingWhitespace' },
-        { messageId: 'missingWhitespace' },
-        { messageId: 'missingWhitespace' },
-        { messageId: 'missingWhitespace' },
-        { messageId: 'missingWhitespace' },
+        { line: 2, messageId: 'missingWhitespace' },
+        { line: 4, messageId: 'missingWhitespace' },
+        { line: 6, messageId: 'missingWhitespace' },
+        { line: 7, messageId: 'missingWhitespace' },
+        { line: 8, messageId: 'missingWhitespace' },
+        { line: 10, messageId: 'missingWhitespace' },
       ],
       name: 'missing blank lines before test blocks',
       output: javascript`
