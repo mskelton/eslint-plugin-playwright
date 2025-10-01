@@ -1,91 +1,166 @@
-import type { AST } from 'eslint'
-import type { Comment, Expression, Node } from 'estree'
+import type { Rule } from 'eslint'
+import type { CallExpression } from 'estree'
+import { getParent } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
-import { isTestExpression, unwrapExpression } from '../utils/test-expression.js'
+import { parseFnCall } from '../utils/parseFnCall.js'
 
 export default createRule({
   create(context) {
-    function getPreviousToken(
-      node: AST.Token | Node,
-      start?: AST.Token | Comment | Node,
-    ): {
-      origin: AST.Token | Node
-      previous: AST.Token | null
-      start: AST.Token | Comment | Node
-    } {
-      const current = start ?? node
-      const previous = context.sourceCode.getTokenBefore(current, {
-        includeComments: true,
-      })
+    const { sourceCode } = context
 
-      if (
-        previous === null ||
-        previous === undefined ||
-        previous.value === '{'
-      ) {
-        return {
-          origin: node,
-          previous: null,
-          start: current,
-        }
-      }
-
-      if (
-        previous.type === 'Line' ||
-        previous.type === 'Block' ||
-        previous.value === '('
-      ) {
-        return getPreviousToken(node, previous)
-      }
-
-      return {
-        origin: node,
-        previous: previous as AST.Token,
-        start: current,
-      }
+    function isPrecededByTokens(node: Rule.Node, testTokens: string[]) {
+      const tokenBefore = sourceCode.getTokenBefore(node)
+      return tokenBefore && testTokens.includes(tokenBefore.value as string)
     }
 
-    function checkSpacing(node: Expression, offset?: AST.Token | Node) {
-      const { previous, start } = getPreviousToken(node, offset)
-      if (previous === null) return
-      if (previous.loc.end.line < start.loc!.start.line - 1) {
-        return
+    function isFirstNode(node: Rule.Node) {
+      const parent = getParent(node)
+      if (!parent) return true
+
+      const parentType = parent.type
+      if (
+        parentType === 'ExpressionStatement' ||
+        parentType === 'VariableDeclaration'
+      ) {
+        const realParent = getParent(parent)
+        if ('body' in realParent && realParent.body) {
+          const body = realParent.body as unknown
+          return Array.isArray(body) ? body[0] === node : body === parent
+        }
+        return false
       }
 
-      const source = context.sourceCode.getText(unwrapExpression(node))
+      if (parentType === 'IfStatement') {
+        return isPrecededByTokens(node as any, ['else', ')'])
+      }
+
+      if (parentType === 'DoWhileStatement') {
+        return isPrecededByTokens(node as any, ['do'])
+      }
+
+      if (parentType === 'SwitchCase') {
+        return isPrecededByTokens(node as any, [':'])
+      }
+
+      if ('body' in parent && parent.body) {
+        const body = parent.body as unknown
+        return Array.isArray(body) ? body[0] === node : body === node
+      }
+
+      return isPrecededByTokens(node as any, [')'])
+    }
+
+    function calcCommentLines(node: Rule.Node, lineNumTokenBefore: number) {
+      const comments = sourceCode.getCommentsBefore(node)
+      let numLinesComments = 0
+
+      if (!comments.length) {
+        return numLinesComments
+      }
+
+      comments.forEach((comment) => {
+        numLinesComments++
+
+        if (comment.type === 'Block') {
+          numLinesComments += comment.loc!.end.line - comment.loc!.start.line
+        }
+
+        // avoid counting lines with inline comments twice
+        if (comment.loc!.start.line === lineNumTokenBefore) {
+          numLinesComments--
+        }
+
+        if (comment.loc!.end.line === node.loc!.start.line) {
+          numLinesComments--
+        }
+      })
+
+      return numLinesComments
+    }
+
+    function hasNewlineBefore(node: Rule.Node) {
+      const tokenBefore = sourceCode.getTokenBefore(node)
+      const lineNumTokenBefore = !tokenBefore ? 0 : tokenBefore.loc.end.line
+      const lineNumNode = node.loc!.start.line
+      const commentLines = calcCommentLines(node, lineNumTokenBefore)
+
+      return lineNumNode - lineNumTokenBefore - commentLines > 1
+    }
+
+    function getRealNodeToCheck(
+      node: CallExpression & Rule.NodeParentExtension,
+    ) {
+      const parent = getParent(node)
+      if (!parent) return node
+
+      if (parent.type === 'ExpressionStatement') {
+        return parent
+      }
+      if (parent.type === 'AwaitExpression') {
+        const awaitParent = getParent(parent)
+        return awaitParent.type === 'ExpressionStatement'
+          ? awaitParent
+          : getParent(awaitParent)
+      }
+      if (
+        parent.type === 'VariableDeclarator' ||
+        parent.type === 'AssignmentExpression'
+      ) {
+        return getParent(parent)
+      }
+
+      return node
+    }
+
+    function checkSpacing(node: CallExpression & Rule.NodeParentExtension) {
+      const nodeToCheck = getRealNodeToCheck(node)
+
+      if (isFirstNode(nodeToCheck)) return
+      if (hasNewlineBefore(nodeToCheck)) return
+
+      const leadingComments = sourceCode.getCommentsBefore(nodeToCheck)
+      const firstComment = leadingComments[0]
+      const reportLoc = firstComment?.loc ?? nodeToCheck.loc
+
       context.report({
-        data: { source },
+        data: {
+          source: sourceCode.getText(nodeToCheck).split('\n')[0],
+        },
         fix(fixer) {
-          return fixer.insertTextAfter(previous, '\n')
+          const tokenBefore = sourceCode.getTokenBefore(nodeToCheck)
+          if (!tokenBefore) return null
+
+          const newlines =
+            nodeToCheck.loc?.start.line === tokenBefore.loc.end.line
+              ? '\n\n'
+              : '\n'
+          const targetNode = firstComment ?? nodeToCheck
+          const nodeStart = targetNode.range?.[0] ?? 0
+          const textBeforeNode = sourceCode.text.substring(0, nodeStart)
+          const lastNewlineIndex = textBeforeNode.lastIndexOf('\n')
+          const insertPosition = lastNewlineIndex + 1
+
+          return fixer.insertTextBeforeRange(
+            [insertPosition, nodeStart],
+            newlines,
+          )
         },
-        loc: {
-          end: {
-            column: start.loc!.start.column,
-            line: start.loc!.start.line,
-          },
-          start: {
-            column: 0,
-            line: previous.loc.end.line + 1,
-          },
-        },
+        loc: reportLoc!,
         messageId: 'missingWhitespace',
-        node,
+        node: nodeToCheck,
       })
     }
 
     return {
-      ExpressionStatement(node) {
-        if (isTestExpression(context, node.expression)) {
-          checkSpacing(node.expression)
+      CallExpression(node) {
+        const call = parseFnCall(context, node)
+        if (
+          call?.type === 'test' ||
+          call?.type === 'hook' ||
+          call?.type === 'step'
+        ) {
+          checkSpacing(node)
         }
-      },
-      VariableDeclaration(node) {
-        node.declarations.forEach((declaration) => {
-          if (declaration.init && isTestExpression(context, declaration.init)) {
-            const offset = context.sourceCode.getTokenBefore(declaration)
-            checkSpacing(declaration.init, offset ?? undefined)
-          }
-        })
       },
     }
   },
