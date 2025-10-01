@@ -16,19 +16,18 @@ runRuleTester('no-unused-locators', rule, {
         }
       ],
     },
-    // {
-    //   code: "page.getByTestId('my-test-id)",
-    //   errors:  [
-    //     {
-    //       column: 14,
-    //       endColumn: 59,
-    //       endLine: 1,
-    //       line: 1,
-    //       message: 'A locator is created but never used.',
-    //       messageId: 'noUnusedLocator'
-    //     }
-    //   ],
-    // },
+    {
+      code: "page.getByTestId('my-test-id')",
+      errors:  [
+        {
+          column: 1,
+          endColumn: 46,
+          endLine: 1,
+          line: 1,
+          messageId: 'noUnusedLocator'
+        }
+      ],
+    },
   ],
   valid: [
     "const btn = page.getByRole('button', { name: 'Sign in' })",

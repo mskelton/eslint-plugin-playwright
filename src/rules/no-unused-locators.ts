@@ -5,8 +5,8 @@ export default createRule({
   create(context) {
     return {
       CallExpression(node) {
-        // variable assignment to be used later
         if (isPageMethod(node, 'getByRole')) { // todo can't just be getByRole
+          // variable assignment to be used later
           if (node.parent?.type === 'VariableDeclarator') {
             return
           }
@@ -21,6 +21,7 @@ export default createRule({
             }
           }
 
+          // passing the result of the locator into an assertion
           if (node.parent?.type === 'CallExpression' && node.parent?.callee.type === 'Identifier') {
             if (node.parent?.callee.name === 'expect') {
               return
