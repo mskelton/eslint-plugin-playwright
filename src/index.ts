@@ -23,6 +23,7 @@ import noSkippedTest from './rules/no-skipped-test.js'
 import noSlowedTest from './rules/no-slowed-test.js'
 import noStandaloneExpect from './rules/no-standalone-expect.js'
 import noUnsafeReferences from './rules/no-unsafe-references.js'
+import noUnusedLocators from './rules/no-unused-locators.js'
 import noUselessAwait from './rules/no-useless-await.js'
 import noUselessNot from './rules/no-useless-not.js'
 import noWaitForNavigation from './rules/no-wait-for-navigation.js'
@@ -78,6 +79,7 @@ const index = {
     'no-slowed-test': noSlowedTest,
     'no-standalone-expect': noStandaloneExpect,
     'no-unsafe-references': noUnsafeReferences,
+    'no-unused-locators': noUnusedLocators,
     'no-useless-await': noUselessAwait,
     'no-useless-not': noUselessNot,
     'no-wait-for-navigation': noWaitForNavigation,
