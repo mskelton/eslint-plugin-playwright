@@ -21,7 +21,7 @@ runRuleTester('no-unused-locators', rule, {
       errors:  [
         {
           column: 1,
-          endColumn: 46,
+          endColumn: 31,
           endLine: 1,
           line: 1,
           messageId: 'noUnusedLocator'

@@ -5,7 +5,12 @@ export default createRule({
   create(context) {
     return {
       CallExpression(node) {
-        if (isPageMethod(node, 'getByRole')) { // todo can't just be getByRole
+        const isPageLocator = isPageMethod(node, 'getByRole') ||
+          isPageMethod(node, 'getByText') || isPageMethod(node, 'getByLabel') ||
+          isPageMethod(node, 'getByPlaceholder') || isPageMethod(node, 'getByAltText') ||
+          isPageMethod(node, 'getByTitle') || isPageMethod(node, 'getByTestId')
+
+        if (isPageLocator) {
           // variable assignment to be used later
           if (node.parent?.type === 'VariableDeclarator') {
             return
