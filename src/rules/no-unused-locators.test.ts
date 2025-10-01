@@ -32,7 +32,7 @@ runRuleTester('no-unused-locators', rule, {
   ],
   valid: [
     "const btn = page.getByRole('button', { name: 'Sign in' })",
-    // "await page.getByRole('button', { name: 'Sign in' }).click()",
+    "await page.getByRole('button', { name: 'Sign in' }).click()",
     // "await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible()",
   ],
 })

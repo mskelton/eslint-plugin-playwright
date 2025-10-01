@@ -5,10 +5,22 @@ export default createRule({
   create(context) {
     return {
       CallExpression(node) {
+        // variable assignment to be used later
         if (isPageMethod(node, 'getByRole')) { // todo can't just be getByRole
           if (node.parent?.type === 'VariableDeclarator') {
-            return false
+            return
           }
+
+          // a user action that is awaited
+          if (node.parent?.type === 'MemberExpression') {
+            const isIdentifier = node.parent?.property.type === 'Identifier'
+            const isAwaited = node.parent?.parent?.parent?.type === 'AwaitExpression'
+
+            if (isIdentifier && isAwaited) {
+              return
+            }
+          }
+
           context.report({ messageId: 'noUnusedLocator', node })
         }
       },
