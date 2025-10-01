@@ -116,6 +116,7 @@ const index = {
 
 const sharedConfig = {
   rules: {
+    'consistent-spacing-between-blocks': 'off',
     'no-empty-pattern': 'off',
     'playwright/expect-expect': 'warn',
     'playwright/max-nested-describe': 'warn',
