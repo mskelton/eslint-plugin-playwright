@@ -10,7 +10,7 @@ export default createRule({
 
     function isPrecededByTokens(node: Rule.Node, testTokens: string[]) {
       const tokenBefore = sourceCode.getTokenBefore(node)
-      return tokenBefore && testTokens.includes(tokenBefore.value as string)
+      return tokenBefore && testTokens.includes(tokenBefore.value)
     }
 
     function isFirstNode(node: Rule.Node) {
@@ -24,30 +24,30 @@ export default createRule({
       ) {
         const realParent = getParent(parent)
         if ('body' in realParent && realParent.body) {
-          const body = realParent.body as unknown
+          const { body } = realParent
           return Array.isArray(body) ? body[0] === node : body === parent
         }
         return false
       }
 
       if (parentType === 'IfStatement') {
-        return isPrecededByTokens(node as any, ['else', ')'])
+        return isPrecededByTokens(node, ['else', ')'])
       }
 
       if (parentType === 'DoWhileStatement') {
-        return isPrecededByTokens(node as any, ['do'])
+        return isPrecededByTokens(node, ['do'])
       }
 
       if (parentType === 'SwitchCase') {
-        return isPrecededByTokens(node as any, [':'])
+        return isPrecededByTokens(node, [':'])
       }
 
       if ('body' in parent && parent.body) {
-        const body = parent.body as unknown
+        const { body } = parent
         return Array.isArray(body) ? body[0] === node : body === node
       }
 
-      return isPrecededByTokens(node as any, [')'])
+      return isPrecededByTokens(node, [')'])
     }
 
     function calcCommentLines(node: Rule.Node, lineNumTokenBefore: number) {
