@@ -128,6 +128,7 @@ const sharedConfig = {
     'playwright/no-skipped-test': 'warn',
     'playwright/no-standalone-expect': 'error',
     'playwright/no-unsafe-references': 'error',
+    'playwright/no-unused-locators': 'error',
     'playwright/no-useless-await': 'warn',
     'playwright/no-useless-not': 'warn',
     'playwright/no-wait-for-navigation': 'error',
