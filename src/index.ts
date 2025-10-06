@@ -48,6 +48,7 @@ import requireTopLevelDescribe from './rules/require-top-level-describe.js'
 import validDescribeCallback from './rules/valid-describe-callback.js'
 import validExpect from './rules/valid-expect.js'
 import validExpectInPromise from './rules/valid-expect-in-promise.js'
+import validTestAnnotations from './rules/valid-test-annotations.js'
 import validTestTags from './rules/valid-test-tags.js'
 import validTitle from './rules/valid-title.js'
 
@@ -103,6 +104,7 @@ const index = {
     'valid-describe-callback': validDescribeCallback,
     'valid-expect': validExpect,
     'valid-expect-in-promise': validExpectInPromise,
+    'valid-test-annotations': validTestAnnotations,
     'valid-test-tags': validTestTags,
     'valid-title': validTitle,
   },
@@ -135,6 +137,7 @@ const sharedConfig = {
     'playwright/valid-describe-callback': 'error',
     'playwright/valid-expect': 'error',
     'playwright/valid-expect-in-promise': 'error',
+    'playwright/valid-test-annotations': 'error',
     'playwright/valid-test-tags': 'error',
     'playwright/valid-title': 'error',
   },
