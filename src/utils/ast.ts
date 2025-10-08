@@ -116,7 +116,10 @@ export function dig(node: ESTree.Node, identifier: string | RegExp): boolean {
     : false
 }
 
-export function isPageMethod(node: ESTree.CallExpression, name: string) {
+export function isPageMethod(
+  node: ESTree.CallExpression,
+  name: string | RegExp,
+) {
   return (
     node.callee.type === 'MemberExpression' &&
     dig(node.callee.object, /(^(page|frame)|(Page|Frame)$)/) &&
