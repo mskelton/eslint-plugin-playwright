@@ -10,6 +10,22 @@ runRuleTester('no-standalone-expect', rule, {
       errors: [{ column: 33, endColumn: 50, messageId }],
     },
     {
+      code: javascript`
+        import { expect as check } from '@playwright/test';
+        check(1).toBe(1);
+      `,
+      errors: [{ messageId }],
+      name: 'Imported expect alias outside of test',
+    },
+    {
+      code: javascript`
+        import { test as stuff, expect as check } from '@playwright/test';
+        stuff.describe('a test', () => { check(1).toBe(1); });
+      `,
+      errors: [{ messageId }],
+      name: 'Aliased expect inside aliased describe should be flagged',
+    },
+    {
       code: 'test.describe("a test", () => { expect.soft(1).toBe(1); });',
       errors: [{ column: 33, endColumn: 55, messageId }],
     },

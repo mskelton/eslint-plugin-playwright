@@ -8,8 +8,24 @@ runRuleTester('expect-expect', rule, {
       errors: [{ messageId: 'noAssertions', type: 'Identifier' }],
     },
     {
+      code: javascript`
+        import { test as stuff } from '@playwright/test';
+        stuff("should fail", () => {});
+      `,
+      errors: [{ messageId: 'noAssertions', type: 'Identifier' }],
+      name: 'Imported alias for test without assertions',
+    },
+    {
       code: 'test.skip("should fail", () => {});',
       errors: [{ messageId: 'noAssertions', type: 'MemberExpression' }],
+    },
+    {
+      code: javascript`
+        import { test as stuff } from '@playwright/test';
+        stuff.skip("should fail", () => {});
+      `,
+      errors: [{ messageId: 'noAssertions', type: 'MemberExpression' }],
+      name: 'Imported alias for test without assertions',
     },
     {
       code: javascript`
@@ -109,6 +125,34 @@ runRuleTester('expect-expect', rule, {
       `,
       name: 'Custom assert class method',
       options: [{ assertFunctionNames: ['assertCustomCondition'] }],
+    },
+    {
+      code: javascript`
+        import { test as stuff, expect as check } from '@playwright/test';
+        stuff('works', () => { check(1).toBe(1); });
+      `,
+      name: 'Imported aliases for test and expect',
+    },
+    {
+      code: javascript`
+        import { test as stuff } from '@playwright/test';
+        stuff('works', () => { stuff.expect(1).toBe(1); });
+      `,
+      name: 'Aliased test with property expect',
+    },
+    {
+      code: javascript`
+        import { test as stuff, expect } from '@playwright/test';
+        stuff('works', () => { expect(1).toBe(1); });
+      `,
+      name: 'Aliased test with direct expect',
+    },
+    {
+      code: javascript`
+        import { test, expect as check } from '@playwright/test';
+        test('works', () => { check(1).toBe(1); });
+      `,
+      name: 'Direct test with aliased expect',
     },
     {
       code: 'it("should pass", () => expect(true).toBeDefined())',
