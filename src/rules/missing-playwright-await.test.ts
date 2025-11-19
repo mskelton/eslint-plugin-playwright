@@ -368,5 +368,17 @@ runRuleTester('missing-playwright-await', rule, {
         },
       },
     },
+    // Regression: variable passed to getByText (should not crash or false positive)
+    {
+      code: dedent(
+        test(`
+          const thisIsCausingTheBug = 'some text';
+          const pageCover = page.getByText(thisIsCausingTheBug);
+          const expectation = expect(pageCover, "message").toBeVisible();
+          await page.clock.runFor(60_000);
+          await expectation;
+        `)
+      ),
+    },
   ],
 })

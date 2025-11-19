@@ -95,48 +95,54 @@ export default createRule({
     ])
 
     function checkValidity(node: ESTree.Node) {
-      const parent = getParent(node)
-      if (!parent) return false
+      // Add visited set to prevent infinite recursion
+      function _checkValidity(node: ESTree.Node, visited: Set<ESTree.Node>): boolean {
+        const parent = getParent(node)
+        if (!parent) return false
+        if (visited.has(parent)) return false
+        visited.add(parent)
 
-      // If the parent is a valid type (e.g. return or await), we don't need to
-      // check any further.
-      if (validTypes.has(parent.type)) return true
+        // If the parent is a valid type (e.g. return or await), we don't need to
+        // check any further.
+        if (validTypes.has(parent.type)) return true
 
-      // If the parent is an array, we need to check the grandparent to see if
-      // it's a Promise.all, or a variable.
-      if (parent.type === 'ArrayExpression') {
-        return checkValidity(parent)
-      }
-
-      // If the parent is a call expression, we need to check the grandparent
-      // to see if it's a Promise.all.
-      if (
-        parent.type === 'CallExpression' &&
-        parent.callee.type === 'MemberExpression' &&
-        isIdentifier(parent.callee.object, 'Promise') &&
-        isIdentifier(parent.callee.property, 'all')
-      ) {
-        return true
-      }
-
-      // If the parent is a variable declarator, we need to check the scope to
-      // find where it is referenced. When we find the reference, we can
-      // re-check validity.
-      if (parent.type === 'VariableDeclarator') {
-        const scope = context.sourceCode.getScope(parent.parent)
-
-        for (const ref of scope.references) {
-          const refParent = (ref.identifier as Rule.Node).parent
-
-          // If the parent of the reference is valid, we can immediately return
-          // true. Otherwise, we'll check the validity of the parent to continue
-          // the loop.
-          if (validTypes.has(refParent.type)) return true
-          if (checkValidity(refParent)) return true
+        // If the parent is an array, we need to check the grandparent to see if
+        // it's a Promise.all, or a variable.
+        if (parent.type === 'ArrayExpression') {
+          return _checkValidity(parent, visited)
         }
-      }
 
-      return false
+        // If the parent is a call expression, we need to check the grandparent
+        // to see if it's a Promise.all.
+        if (
+          parent.type === 'CallExpression' &&
+          parent.callee.type === 'MemberExpression' &&
+          isIdentifier(parent.callee.object, 'Promise') &&
+          isIdentifier(parent.callee.property, 'all')
+        ) {
+          return true
+        }
+
+        // If the parent is a variable declarator, we need to check the scope to
+        // find where it is referenced. When we find the reference, we can
+        // re-check validity.
+        if (parent.type === 'VariableDeclarator') {
+          const scope = context.sourceCode.getScope(parent.parent)
+
+          for (const ref of scope.references) {
+            const refParent = (ref.identifier as Rule.Node).parent
+            if (visited.has(refParent)) continue
+            // If the parent of the reference is valid, we can immediately return
+            // true. Otherwise, we'll check the validity of the parent to continue
+            // the loop.
+            if (validTypes.has(refParent.type)) return true
+            if (_checkValidity(refParent, visited)) return true
+          }
+        }
+
+        return false
+      }
+      return _checkValidity(node, new Set())
     }
 
     return {
