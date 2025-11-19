@@ -38,19 +38,19 @@ file patterns.
 (**eslint.config.js**)
 
 ```javascript
+import { defineConfig } from '@eslint/config'
 import playwright from 'eslint-plugin-playwright'
 
-export default [
+export default defineConfig([
   {
-    ...playwright.configs['flat/recommended'],
     files: ['tests/**'],
+    extends: [playwright.configs['flat/recommended']],
     rules: {
-      ...playwright.configs['flat/recommended'].rules,
       // Customize Playwright rules
       // ...
     },
   },
-]
+])
 ```
 
 [Legacy config](https://eslint.org/docs/latest/use/configure/configuration-files)
