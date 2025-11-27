@@ -87,6 +87,20 @@ runRuleTester('no-commented-out-tests', rule, {
         },
       },
     },
+    // Duplicate alias coming from both settings and import aliases should not
+    // create redundant entries in the regex and should still be detected.
+    {
+      code: javascript`
+        import { test as it } from '@playwright/test';
+        // it("foo", () => {});
+      `,
+      errors: [{ column: 1, line: 2, messageId }],
+      settings: {
+        playwright: {
+          globalAliases: { test: ['it'] },
+        },
+      },
+    },
   ],
   valid: [
     '// foo("bar", function () {})',
@@ -143,5 +157,10 @@ runRuleTester('no-commented-out-tests', rule, {
         },
       },
     },
+    // Imported alias for test used properly and not commented
+    javascript`
+      import { test as stuff, expect as check } from '@playwright/test';
+      stuff('foo', () => { check(1).toBe(1); });
+    `,
   ],
 })

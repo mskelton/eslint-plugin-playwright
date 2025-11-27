@@ -250,3 +250,50 @@ export function dereference(
 
   return expr?.right ?? decl?.init
 }
+
+/**
+ * Returns local alias names imported from `@playwright/test` for a given named
+ * import.
+ *
+ * For example, for `import { test as foo } from '@playwright/test'`,
+ * `getImportedAliases(context, 'test')` will return `['foo']`.
+ */
+export function getImportedAliases(
+  context: Rule.RuleContext,
+  importedName: string,
+): string[] {
+  const program = context.sourceCode.ast
+  const aliases = new Set<string>()
+
+  if (program.type !== 'Program') return []
+
+  for (const stmt of program.body) {
+    if (stmt.type !== 'ImportDeclaration') continue
+    if (
+      !isStringLiteral(stmt.source) ||
+      stmt.source.value !== '@playwright/test'
+    )
+      continue
+    if ((stmt as any).importKind === 'type') continue
+
+    for (const spec of stmt.specifiers) {
+      if (spec.type !== 'ImportSpecifier') continue
+      if ((spec as any).importKind === 'type') continue
+      const importedNode = spec.imported as ESTree.Identifier | ESTree.Literal
+      const imported =
+        importedNode.type === 'Identifier'
+          ? importedNode.name
+          : typeof importedNode.value === 'string'
+          ? importedNode.value
+          : undefined
+      if (imported !== importedName) continue
+
+      const localName = spec.local.name
+      if (localName !== imported) {
+        aliases.add(localName)
+      }
+    }
+  }
+
+  return [...aliases]
+}

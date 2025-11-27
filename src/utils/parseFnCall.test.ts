@@ -131,6 +131,111 @@ runRuleTester('nonexistent methods', rule, {
 runRuleTester('expect', rule, {
   invalid: [
     {
+      code: javascript`
+        import { expect as verify, expect as assertThat } from '@playwright/test';
+
+        verify(x).toBe(y);
+        assertThat(x).toBe(y);
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            args: ['x'],
+            group: 'expect',
+            head: {
+              local: 'verify',
+              node: 'verify',
+              original: 'expect',
+            },
+            matcher: 'toBe',
+            matcherArgs: ['y'],
+            matcherName: 'toBe',
+            members: ['toBe'],
+            modifiers: [],
+            name: 'expect',
+            type: 'expect',
+          }),
+          line: 3,
+          messageId: 'details',
+        },
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            args: ['x'],
+            group: 'expect',
+            head: {
+              local: 'assertThat',
+              node: 'assertThat',
+              original: 'expect',
+            },
+            matcher: 'toBe',
+            matcherArgs: ['y'],
+            matcherName: 'toBe',
+            members: ['toBe'],
+            modifiers: [],
+            name: 'expect',
+            type: 'expect',
+          }),
+          line: 4,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: javascript`
+        import { expect as verify } from '@playwright/test';
+        import { expect as assertThat } from '@playwright/test';
+
+        verify(x).toBe(y);
+        assertThat(x).toBe(y);
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            args: ['x'],
+            group: 'expect',
+            head: {
+              local: 'verify',
+              node: 'verify',
+              original: 'expect',
+            },
+            matcher: 'toBe',
+            matcherArgs: ['y'],
+            matcherName: 'toBe',
+            members: ['toBe'],
+            modifiers: [],
+            name: 'expect',
+            type: 'expect',
+          }),
+          line: 4,
+          messageId: 'details',
+        },
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            args: ['x'],
+            group: 'expect',
+            head: {
+              local: 'assertThat',
+              node: 'assertThat',
+              original: 'expect',
+            },
+            matcher: 'toBe',
+            matcherArgs: ['y'],
+            matcherName: 'toBe',
+            members: ['toBe'],
+            modifiers: [],
+            name: 'expect',
+            type: 'expect',
+          }),
+          line: 5,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
       code: 'expect(x).toBe(y);',
       errors: [
         {
@@ -321,6 +426,66 @@ runRuleTester('expect', rule, {
       ],
     },
     {
+      code: javascript`
+        import { expect as verify } from '@playwright/test';
+
+        verify(x).toBe(y);
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            args: ['x'],
+            group: 'expect',
+            head: {
+              local: 'verify',
+              node: 'verify',
+              original: 'expect',
+            },
+            matcher: 'toBe',
+            matcherArgs: ['y'],
+            matcherName: 'toBe',
+            members: ['toBe'],
+            modifiers: [],
+            name: 'expect',
+            type: 'expect',
+          }),
+          line: 3,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: javascript`
+        import { expect as verify } from '@playwright/test';
+
+        verify(x).not.toBe(y);
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            args: ['x'],
+            group: 'expect',
+            head: {
+              local: 'verify',
+              node: 'verify',
+              original: 'expect',
+            },
+            matcher: 'toBe',
+            matcherArgs: ['y'],
+            matcherName: 'toBe',
+            members: ['not', 'toBe'],
+            modifiers: ['not'],
+            name: 'expect',
+            type: 'expect',
+          }),
+          line: 3,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
       code: 'something(expect(x).not.toBe(y))',
       errors: [
         {
@@ -418,6 +583,91 @@ runRuleTester('expect', rule, {
 
 runRuleTester('test', rule, {
   invalid: [
+    {
+      code: javascript`
+        import { test as it, test as spec } from '@playwright/test';
+
+        it('a test', () => {});
+        spec('another test', () => {});
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'test',
+            head: {
+              local: 'it',
+              node: 'it',
+              original: 'test',
+            },
+            members: [],
+            name: 'test',
+            type: 'test',
+          }),
+          line: 3,
+          messageId: 'details',
+        },
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'test',
+            head: {
+              local: 'spec',
+              node: 'spec',
+              original: 'test',
+            },
+            members: [],
+            name: 'test',
+            type: 'test',
+          }),
+          line: 4,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: javascript`
+        import { test as it } from '@playwright/test';
+        import { test as check } from '@playwright/test';
+
+        it('a test', () => {});
+        check('another test', () => {});
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'test',
+            head: {
+              local: 'it',
+              node: 'it',
+              original: 'test',
+            },
+            members: [],
+            name: 'test',
+            type: 'test',
+          }),
+          line: 4,
+          messageId: 'details',
+        },
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'test',
+            head: {
+              local: 'check',
+              node: 'check',
+              original: 'test',
+            },
+            members: [],
+            name: 'test',
+            type: 'test',
+          }),
+          line: 5,
+          messageId: 'details',
+        },
+      ],
+    },
     {
       code: 'test("a test", () => {});',
       errors: [
@@ -805,6 +1055,31 @@ runRuleTester('test', rule, {
         },
       ],
     },
+    {
+      code: javascript`
+        import { test as it } from '@playwright/test';
+
+        it('a test', () => {});
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'test',
+            head: {
+              local: 'it',
+              node: 'it',
+              original: 'test',
+            },
+            members: [],
+            name: 'test',
+            type: 'test',
+          }),
+          line: 3,
+          messageId: 'details',
+        },
+      ],
+    },
   ],
   valid: [
     // Other functions
@@ -1162,6 +1437,35 @@ runTSRuleTester('typescript', rule, {
 
         expect.assertions();
         expect.anything();
+      `,
+    },
+    // Type-only imports/specifiers should NOT create runtime aliases
+    {
+      code: typescript`
+        import type { test as it } from '@playwright/test';
+
+        it('is not detected as Playwright test', () => {});
+      `,
+    },
+    {
+      code: typescript`
+        import { type test as it } from '@playwright/test';
+
+        it('is not detected as Playwright test', () => {});
+      `,
+    },
+    {
+      code: typescript`
+        import type { expect as verify } from '@playwright/test';
+
+        verify(x).toBe(y);
+      `,
+    },
+    {
+      code: typescript`
+        import { type expect as verify } from '@playwright/test';
+
+        verify(x).toBe(y);
       `,
     },
   ],

@@ -2,6 +2,7 @@ import { Rule } from 'eslint'
 import * as ESTree from 'estree'
 import {
   findParent,
+  getImportedAliases,
   getParent,
   getStringValue,
   isFunction,
@@ -162,6 +163,28 @@ interface ResolvedFn {
   original: string | null
 }
 
+/**
+ * Resolves the head identifier of a call chain to a Playwright function.
+ *
+ * Input:
+ *
+ * - `accessor`: an identifier or string literal at the head of a call chain
+ *   (e.g., `expect`, `test`, or a local alias).
+ *
+ * Resolution order:
+ *
+ * 1. Imported aliases from `@playwright/test` for `expect` and `test` (highest
+ *    priority).
+ * 2. Direct `expect` usage, normalizing `Expect` to `expect`.
+ * 3. Configured global aliases from `settings.playwright.globalAliases`.
+ *
+ * Returns `{ original, local }` where:
+ *
+ * - `original` is the canonical Playwright name (`'expect'`, `'test'`, or `null`
+ *   if unknown).
+ * - `local` is the identifier as written in source (or `'expect'` when
+ *   normalizing `Expect`).
+ */
 const resolveToPlaywrightFn = (
   context: Rule.RuleContext,
   accessor: AccessorNode,
@@ -169,10 +192,25 @@ const resolveToPlaywrightFn = (
   const ident = getStringValue(accessor)
   const resolved = /(^expect|Expect)$/.test(ident) ? 'expect' : ident
 
+  const expectAliases = getImportedAliases(context, 'expect')
+  const testAliases = getImportedAliases(context, 'test')
+
+  let original: string | null = null
+  let local = resolved
+
+  if (expectAliases.includes(ident)) {
+    original = 'expect'
+    local = ident
+  } else if (testAliases.includes(ident)) {
+    original = 'test'
+    local = ident
+  } else {
+    original = resolvePossibleAliasedGlobal(context, resolved)
+  }
+
   return {
-    // eslint-disable-next-line sort/object-properties
-    original: resolvePossibleAliasedGlobal(context, resolved),
-    local: resolved,
+    local,
+    original,
   }
 }
 
