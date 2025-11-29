@@ -11,15 +11,9 @@ export default createRule({
       ...((context.options?.[0] as Record<string, unknown>) ?? {}),
     }
 
-    const patterns = options.assertFunctionPatterns
-      .map((pattern) => {
-        try {
-          return new RegExp(pattern)
-        } catch {
-          return null
-        }
-      })
-      .filter((pattern) => pattern !== null)
+    const patterns = options.assertFunctionPatterns.map(
+      (pattern) => new RegExp(pattern),
+    )
 
     const unchecked: ESTree.CallExpression[] = []
 
