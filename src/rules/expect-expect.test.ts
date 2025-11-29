@@ -147,10 +147,12 @@ runRuleTester('expect-expect', rule, {
         })
       `,
       name: 'Mixed string and regex pattern matching',
-      options: [{ 
-        assertFunctionNames: ['myCustomAssert'],
-        assertFunctionPatterns: ['.*Assertion$'] 
-      }],
+      options: [
+        {
+          assertFunctionNames: ['myCustomAssert'],
+          assertFunctionPatterns: ['.*Assertion$'],
+        },
+      ],
     },
     {
       code: 'it("should pass", () => expect(true).toBeDefined())',
