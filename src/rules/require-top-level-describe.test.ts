@@ -1,4 +1,5 @@
-import { javascript, runRuleTester } from '../utils/rule-tester.js'
+import dedent from 'dedent'
+import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './require-top-level-describe.js'
 
 runRuleTester('require-top-level-describe', rule, {
@@ -41,7 +42,7 @@ runRuleTester('require-top-level-describe', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe("suite", () => {});
         test.afterAll(() => {})
       `,
@@ -99,7 +100,7 @@ runRuleTester('require-top-level-describe', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test("foo", () => {})
         test.describe("suite", () => {});
       `,
@@ -108,7 +109,7 @@ runRuleTester('require-top-level-describe', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test("foo", () => {})
         test.describe("suite", () => {
           test("bar", () => {})
@@ -120,7 +121,7 @@ runRuleTester('require-top-level-describe', rule, {
     },
     // Too many describes
     {
-      code: javascript`
+      code: dedent`
         test.describe('one', () => {});
         test.describe.only('two', () => {});
         test.describe.parallel('three', () => {});
@@ -137,7 +138,7 @@ runRuleTester('require-top-level-describe', rule, {
       options: [{ maxTopLevelDescribes: 2 }],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('one', () => {
           test.describe('one (nested)', () => {});
           test.describe('two (nested)', () => {});
@@ -167,7 +168,7 @@ runRuleTester('require-top-level-describe', rule, {
       options: [{ maxTopLevelDescribes: 2 }],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('one', () => {});
         test.describe.fixme.only('two', () => {});
         test.describe.fixme('three', () => {});
@@ -220,26 +221,26 @@ runRuleTester('require-top-level-describe', rule, {
     'test.describe.parallel("suite", () => { test.beforeEach("my beforeAll") });',
     'test.describe.serial("suite", () => { test.afterAll("my afterAll") });',
     'test.describe.parallel.fixme("suite", () => { test.afterEach("my afterEach") });',
-    javascript`
+    dedent`
       test.describe("suite", () => {
         test.beforeEach("a", () => {});
         test.describe("b", () => {});
         test("c", () => {})
       });
     `,
-    javascript`
+    dedent`
       test.describe("suite", () => {
         test("foo", () => {})
         test.describe("another suite", () => {});
         test("my other test", () => {})
       });
     `,
-    javascript`
+    dedent`
       test.describe('one', () => {});
       test.describe('two', () => {});
       test.describe('three', () => {});
     `,
-    javascript`
+    dedent`
       test.describe("suite", () => {
         test("foo", { tag: ["@slow"] }, () => {})
         test.describe("another suite", { tag: ["@slow"] }, () => {});
@@ -247,7 +248,7 @@ runRuleTester('require-top-level-describe', rule, {
       });
     `,
     {
-      code: javascript`
+      code: dedent`
         test.describe('one', () => {
           test.describe('two', () => {});
           test.describe('three', () => {});

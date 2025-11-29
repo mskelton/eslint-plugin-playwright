@@ -1,4 +1,5 @@
-import { javascript, runRuleTester } from '../utils/rule-tester.js'
+import dedent from 'dedent'
+import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './max-nested-describe.js'
 
 const messageId = 'exceededMaxDepth'
@@ -6,7 +7,7 @@ const messageId = 'exceededMaxDepth'
 runRuleTester('max-nested-describe', rule, {
   invalid: [
     {
-      code: javascript`
+      code: dedent`
         test.describe('foo', function() {
           test.describe('bar', function () {
             test.describe('baz', function () {
@@ -26,7 +27,7 @@ runRuleTester('max-nested-describe', rule, {
       errors: [{ column: 11, endColumn: 24, endLine: 6, line: 6, messageId }],
     },
     {
-      code: javascript`
+      code: dedent`
         describe('foo', function() {
           describe('bar', function () {
             describe('baz', function () {
@@ -46,7 +47,7 @@ runRuleTester('max-nested-describe', rule, {
       errors: [{ column: 11, endColumn: 19, endLine: 6, line: 6, messageId }],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('foo', () => {
           test.describe('bar', () => {
             test["describe"]('baz', () => {
@@ -82,7 +83,7 @@ runRuleTester('max-nested-describe', rule, {
       options: [{ max: 5 }],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe.only('foo', function() {
           test.describe('bar', function() {
             test.describe('baz', function() {
@@ -98,7 +99,7 @@ runRuleTester('max-nested-describe', rule, {
       errors: [{ column: 11, endColumn: 29, endLine: 6, line: 6, messageId }],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe.serial.only('foo', function() {
           test.describe('bar', function() {
             test.describe('baz', function() {
@@ -114,7 +115,7 @@ runRuleTester('max-nested-describe', rule, {
       errors: [{ column: 11, endColumn: 24, endLine: 6, line: 6, messageId }],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('qux', () => {
           test('should get something', () => {
             expect(getSomething()).toBe('Something');
@@ -125,7 +126,7 @@ runRuleTester('max-nested-describe', rule, {
       options: [{ max: 0 }],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('foo', () => {
           test.describe('bar', () => {
             test.describe('baz', () => {
@@ -143,7 +144,7 @@ runRuleTester('max-nested-describe', rule, {
       options: [{ max: 2 }],
     },
     {
-      code: javascript`
+      code: dedent`
         it.describe('foo', function() {
           it.describe('bar', function () {
             it.describe('baz', function () {
@@ -175,7 +176,7 @@ runRuleTester('max-nested-describe', rule, {
     'test.describe.serial.skip("describe serial focus tests", () => {});',
     'test.describe.parallel.fixme("describe serial focus tests", () => {});',
     {
-      code: javascript`
+      code: dedent`
         test('foo', function () {
           expect(true).toBe(true);
         });
@@ -186,7 +187,7 @@ runRuleTester('max-nested-describe', rule, {
       options: [{ max: 0 }],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('foo', function() {
           test.describe('bar', function () {
             test.describe('baz', function () {
@@ -203,7 +204,7 @@ runRuleTester('max-nested-describe', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('foo', () => {
           test.describe('bar', () => {
             test.describe('baz', () => {
@@ -227,7 +228,7 @@ runRuleTester('max-nested-describe', rule, {
       options: [{ max: 4 }],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('foo', () => {
           test.describe.only('bar', () => {
             test.describe.skip('baz', () => {
@@ -241,7 +242,7 @@ runRuleTester('max-nested-describe', rule, {
       options: [{ max: 3 }],
     },
     {
-      code: javascript`
+      code: dedent`
         describe('foo', () => {
           describe.only('bar', () => {
             describe.skip('baz', () => {
@@ -255,7 +256,7 @@ runRuleTester('max-nested-describe', rule, {
       options: [{ max: 3 }],
     },
     {
-      code: javascript`
+      code: dedent`
         it.describe('foo', () => {
           it.describe.only('bar', () => {
             it.describe.skip('baz', () => {

@@ -1,10 +1,11 @@
-import { javascript, runRuleTester } from '../utils/rule-tester.js'
+import dedent from 'dedent'
+import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './no-duplicate-hooks.js'
 
 runRuleTester('basic describe block', rule, {
   invalid: [
     {
-      code: javascript`
+      code: dedent`
         test.describe("foo", () => {
           test.beforeEach(() => {}),
           test.beforeEach(() => {}),
@@ -23,7 +24,7 @@ runRuleTester('basic describe block', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         describe.skip("foo", () => {
           test.beforeEach(() => {}),
           test.beforeAll(() => {}),
@@ -43,7 +44,7 @@ runRuleTester('basic describe block', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         describe.skip("foo", () => {
           test.afterEach(() => {}),
           test.afterEach(() => {}),
@@ -62,7 +63,7 @@ runRuleTester('basic describe block', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         describe.skip("foo", () => {
           test.afterAll(() => {}),
           test.afterAll(() => {}),
@@ -81,7 +82,7 @@ runRuleTester('basic describe block', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.afterAll(() => {}),
         test.afterAll(() => {}),
         test("bar", () => {
@@ -98,7 +99,7 @@ runRuleTester('basic describe block', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe("foo", () => {
           test.beforeEach(() => {}),
           test.beforeEach(() => {}),
@@ -124,7 +125,7 @@ runRuleTester('basic describe block', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         describe.skip("foo", () => {
           test.afterAll(() => {}),
           test.afterAll(() => {}),
@@ -152,7 +153,7 @@ runRuleTester('basic describe block', rule, {
     },
     // Global aliases
     {
-      code: javascript`
+      code: dedent`
         it.describe("foo", () => {
           it.beforeEach(() => {}),
           it.beforeEach(() => {}),
@@ -177,7 +178,7 @@ runRuleTester('basic describe block', rule, {
     },
   ],
   valid: [
-    javascript`
+    dedent`
       test.describe("foo", () => {
         test.beforeEach(() => {})
         test("bar", () => {
@@ -185,13 +186,13 @@ runRuleTester('basic describe block', rule, {
         })
       })
     `,
-    javascript`
+    dedent`
       test.beforeEach(() => {})
       test("bar", () => {
         someFn();
       })
     `,
-    javascript`
+    dedent`
       test.describe("foo", () => {
         test.beforeAll(() => {}),
         test.beforeEach(() => {})
@@ -204,7 +205,7 @@ runRuleTester('basic describe block', rule, {
       })
     `,
     {
-      code: javascript`
+      code: dedent`
         it.describe("foo", () => {
           it.beforeEach(() => {})
           it("bar", () => {
@@ -224,7 +225,7 @@ runRuleTester('basic describe block', rule, {
 runRuleTester('multiple describe blocks', rule, {
   invalid: [
     {
-      code: javascript`
+      code: dedent`
         describe.skip("foo", () => {
           test.beforeEach(() => {}),
           test.beforeAll(() => {}),
@@ -252,7 +253,7 @@ runRuleTester('multiple describe blocks', rule, {
     },
   ],
   valid: [
-    javascript`
+    dedent`
       describe.skip("foo", () => {
         test.beforeEach(() => {}),
         test.beforeAll(() => {}),
@@ -274,7 +275,7 @@ runRuleTester('multiple describe blocks', rule, {
 runRuleTester('nested describe blocks', rule, {
   invalid: [
     {
-      code: javascript`
+      code: dedent`
         test.describe("foo", () => {
           test.beforeAll(() => {}),
           test("bar", () => {
@@ -300,7 +301,7 @@ runRuleTester('nested describe blocks', rule, {
     },
   ],
   valid: [
-    javascript`
+    dedent`
       test.describe("foo", () => {
         test.beforeEach(() => {}),
         test("bar", () => {

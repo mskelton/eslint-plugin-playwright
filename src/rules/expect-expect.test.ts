@@ -1,4 +1,5 @@
-import { javascript, runRuleTester } from '../utils/rule-tester.js'
+import dedent from 'dedent'
+import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './expect-expect.js'
 
 runRuleTester('expect-expect', rule, {
@@ -12,7 +13,7 @@ runRuleTester('expect-expect', rule, {
       errors: [{ messageId: 'noAssertions', type: 'MemberExpression' }],
     },
     {
-      code: javascript`
+      code: dedent`
         test('should fail', async ({ page }) => {
           await assertCustomCondition(page)
         })
@@ -20,7 +21,7 @@ runRuleTester('expect-expect', rule, {
       errors: [{ messageId: 'noAssertions', type: 'Identifier' }],
     },
     {
-      code: javascript`
+      code: dedent`
         test('should fail', async ({ page }) => {
           await assertCustomCondition(page)
         })
@@ -30,7 +31,7 @@ runRuleTester('expect-expect', rule, {
       options: [{ assertFunctionNames: ['wayComplexCustomCondition'] }],
     },
     {
-      code: javascript`
+      code: dedent`
         test('should fail', async ({ page }) => {
           await assertCustomCondition(page)
         })
@@ -76,7 +77,7 @@ runRuleTester('expect-expect', rule, {
     'test.slow("foo", () => { expect(true).toBeDefined(); })',
     // test.step
     {
-      code: javascript`
+      code: dedent`
         test('steps', async ({ page }) => {
           await test.step('first tab', async () => {
             await expect(page.getByText('Hello')).toBeVisible();
@@ -85,7 +86,7 @@ runRuleTester('expect-expect', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         test.only('steps', async ({ page }) => {
           await test.step('first tab', async () => {
             await expect(page.getByText('Hello')).toBeVisible();
@@ -94,7 +95,7 @@ runRuleTester('expect-expect', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         test.only('steps', async ({ page }) => {
           await test.step.skip('first tab', async () => {
             await expect(page.getByText('Hello')).toBeVisible();
@@ -103,7 +104,7 @@ runRuleTester('expect-expect', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         test('should fail', async ({ page }) => {
           await assertCustomCondition(page)
         })
@@ -112,7 +113,7 @@ runRuleTester('expect-expect', rule, {
       options: [{ assertFunctionNames: ['assertCustomCondition'] }],
     },
     {
-      code: javascript`
+      code: dedent`
         test('should fail', async ({ myPage, page }) => {
           await myPage.assertCustomCondition(page)
         })
@@ -121,7 +122,7 @@ runRuleTester('expect-expect', rule, {
       options: [{ assertFunctionNames: ['assertCustomCondition'] }],
     },
     {
-      code: javascript`
+      code: dedent`
         test('should pass', async ({ page }) => {
           await verifyElementVisible(page.locator('button'))
         })
@@ -130,7 +131,7 @@ runRuleTester('expect-expect', rule, {
       options: [{ assertFunctionPatterns: ['^verify.*'] }],
     },
     {
-      code: javascript`
+      code: dedent`
         test('should pass', async ({ page }) => {
           await page.checkTextContent('Hello')
           await validateUserLoggedIn(page)
@@ -140,7 +141,7 @@ runRuleTester('expect-expect', rule, {
       options: [{ assertFunctionPatterns: ['^check.*', '^validate.*'] }],
     },
     {
-      code: javascript`
+      code: dedent`
         test('should pass', async ({ page }) => {
           await myCustomAssert(page)
           await anotherAssertion(true)

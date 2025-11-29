@@ -1,10 +1,11 @@
-import { javascript, runRuleTester } from '../utils/rule-tester.js'
+import dedent from 'dedent'
+import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './prefer-hooks-in-order.js'
 
 runRuleTester('prefer-hooks-in-order', rule, {
   invalid: [
     {
-      code: javascript`
+      code: dedent`
         const withDatabase = () => {
           test.afterAll(() => {
             removeMyDatabase();
@@ -24,7 +25,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.afterAll(() => {
           removeMyDatabase();
         });
@@ -42,7 +43,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.afterAll(() => {});
         test.beforeAll(() => {});
       `,
@@ -56,7 +57,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.afterEach(() => {});
         test.beforeEach(() => {});
       `,
@@ -71,7 +72,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.afterEach(() => {});
         test.beforeAll(() => {});
       `,
@@ -86,7 +87,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.beforeEach(() => {});
         test.beforeAll(() => {});
       `,
@@ -100,7 +101,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.afterAll(() => {});
         test.afterEach(() => {});
       `,
@@ -114,7 +115,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.afterAll(() => {});
         // The afterEach should do this
         // This comment does not matter for the order
@@ -130,7 +131,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.afterAll(() => {});
         test.afterAll(() => {});
         test.afterEach(() => {});
@@ -145,7 +146,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('my test', () => {
           test.afterAll(() => {});
           test.afterEach(() => {});
@@ -161,7 +162,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('my test', () => {
           test.afterAll(() => {});
           test.afterEach(() => {});
@@ -188,7 +189,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('my test', () => {
           test.afterAll(() => {});
           test.afterEach(() => {});
@@ -215,7 +216,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('my test', () => {
           test.afterAll(() => {});
 
@@ -235,7 +236,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('my test', () => {
           test.beforeAll(() => {});
           test.afterAll(() => {});
@@ -265,7 +266,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('my test', () => {
           test.beforeAll(() => {});
           test.beforeAll(() => {});
@@ -308,7 +309,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('my test', () => {
           const setupDatabase = () => {
             test.beforeEach(() => {
@@ -350,7 +351,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('foo', () => {
           test.beforeEach(() => {
             seedMyDatabase();
@@ -418,7 +419,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
     },
     // Global aliases
     {
-      code: javascript`
+      code: dedent`
         const withDatabase = () => {
           it.afterAll(() => {
             removeMyDatabase();
@@ -446,7 +447,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
     // Note: This is one of the only test in the project to tests custom
     // messages since it's implementation is global in the `createRule` method.
     {
-      code: javascript`
+      code: dedent`
         const withDatabase = () => {
           test.afterAll(() => {
             removeMyDatabase();
@@ -475,13 +476,13 @@ runRuleTester('prefer-hooks-in-order', rule, {
     'test.afterEach(() => {})',
     'test.afterAll(() => {})',
     'test.describe(() => {})',
-    javascript`
+    dedent`
       test.beforeAll(() => {});
       test.beforeEach(() => {});
       test.afterEach(() => {});
       test.afterAll(() => {});
     `,
-    javascript`
+    dedent`
       test.describe('foo', () => {
         someSetupFn();
         test.beforeEach(() => {});
@@ -492,37 +493,37 @@ runRuleTester('prefer-hooks-in-order', rule, {
         });
       });
     `,
-    javascript`
+    dedent`
       test.beforeAll(() => {});
       test.afterAll(() => {});
     `,
-    javascript`
+    dedent`
       test.beforeEach(() => {});
       test.afterEach(() => {});
     `,
-    javascript`
+    dedent`
       test.beforeAll(() => {});
       test.afterEach(() => {});
     `,
-    javascript`
+    dedent`
       test.beforeAll(() => {});
       test.beforeEach(() => {});
     `,
-    javascript`
+    dedent`
       test.afterEach(() => {});
       test.afterAll(() => {});
     `,
-    javascript`
+    dedent`
       test.beforeAll(() => {});
       test.beforeAll(() => {});
     `,
-    javascript`
+    dedent`
       test.describe('my test', () => {
         test.afterEach(() => {});
         test.afterAll(() => {});
       });
     `,
-    javascript`
+    dedent`
       test.describe('my test', () => {
         test.afterEach(() => {});
         test.afterAll(() => {});
@@ -533,7 +534,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
         test.beforeEach(() => {});
       });
     `,
-    javascript`
+    dedent`
       test.describe('my test', () => {
         test.afterEach(() => {});
         test.afterAll(() => {});
@@ -544,7 +545,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
         test.beforeEach(() => {});
       });
     `,
-    javascript`
+    dedent`
       test.describe('my test', () => {
         test.afterAll(() => {});
 
@@ -554,7 +555,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
         });
       });
     `,
-    javascript`
+    dedent`
       test.describe('my test', () => {
         test.afterAll(() => {});
 
@@ -588,7 +589,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
         test.beforeEach(() => {});
       });
     `,
-    javascript`
+    dedent`
       const withDatabase = () => {
         test.beforeAll(() => {
           createMyDatabase();
@@ -635,7 +636,7 @@ runRuleTester('prefer-hooks-in-order', rule, {
         test.beforeEach(() => {});
       });
     `,
-    javascript`
+    dedent`
       test.describe('A file with a lot of test', () => {
         test.beforeAll(() => {
           setupTheDatabase();

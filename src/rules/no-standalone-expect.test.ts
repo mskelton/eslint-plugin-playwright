@@ -1,4 +1,5 @@
-import { javascript, runRuleTester } from '../utils/rule-tester.js'
+import dedent from 'dedent'
+import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './no-standalone-expect.js'
 
 const messageId = 'unexpectedExpect'
@@ -22,7 +23,7 @@ runRuleTester('no-standalone-expect', rule, {
       errors: [{ column: 29, endColumn: 53, messageId }],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('scenario', () => {
           const t = Math.random() ? test.only : test;
           t('testing', () => expect(true).toBe(false));
@@ -31,7 +32,7 @@ runRuleTester('no-standalone-expect', rule, {
       errors: [{ column: 22, endColumn: 46, messageId }],
     },
     {
-      code: javascript`
+      code: dedent`
         it.describe('scenario', () => {
           it('testing', () => expect(true).toBe(false));
         });
@@ -59,7 +60,7 @@ runRuleTester('no-standalone-expect', rule, {
       errors: [{ column: 2, endColumn: 19, messageId }],
     },
     {
-      code: javascript`
+      code: dedent`
         import { expect as pleaseExpect } from '@playwright/test';
         test.describe("a test", () => { pleaseExpect(1).toBe(1); });
       `,
@@ -67,7 +68,7 @@ runRuleTester('no-standalone-expect', rule, {
     },
     // Global aliases
     {
-      code: javascript`
+      code: dedent`
         test.describe('scenario', () => {
           const t = Math.random() ? test.only : test;
           t('testing', () => assert(true).toBe(false));
@@ -102,7 +103,7 @@ runRuleTester('no-standalone-expect', rule, {
     'class Helper { foo() { expect(1).toBe(1); } }',
     'class Helper { foo = () => { expect(1).toBe(1); } }',
     {
-      code: javascript`
+      code: dedent`
         test.describe('Test describe', () => {
           test.beforeAll(async ({ page }) => {
             await page.goto('https://google.com');
@@ -114,7 +115,7 @@ runRuleTester('no-standalone-expect', rule, {
     },
     // Global aliases
     {
-      code: javascript`
+      code: dedent`
         it.describe('scenario', () => {
           it('testing', () => assert(true));
         });
@@ -130,7 +131,7 @@ runRuleTester('no-standalone-expect', rule, {
     },
     // Fixtures
     {
-      code: javascript`
+      code: dedent`
         import { test as base, expect } from '@playwright/test';
 
         export const test = base.extend({
@@ -147,7 +148,7 @@ runRuleTester('no-standalone-expect', rule, {
       name: 'Allows expect in fixture definitions',
     },
     {
-      code: javascript`
+      code: dedent`
         import { test, expect } from '@playwright/test';
 
         const customTest = test.extend({
@@ -160,7 +161,7 @@ runRuleTester('no-standalone-expect', rule, {
       name: 'Allows expect in test.extend fixtures',
     },
     {
-      code: javascript`
+      code: dedent`
         import { test as base } from '@playwright/test';
 
         const test = base.extend({

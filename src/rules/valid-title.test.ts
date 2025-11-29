@@ -1,4 +1,5 @@
-import { javascript, runRuleTester } from '../utils/rule-tester.js'
+import dedent from 'dedent'
+import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './valid-title.js'
 
 runRuleTester('valid-title', rule, {
@@ -156,7 +157,7 @@ runRuleTester('valid-title', rule, {
 runRuleTester('mustMatch & mustNotMatch options', rule, {
   invalid: [
     {
-      code: javascript`
+      code: dedent`
         test.describe('things to test', () => {
           test.describe('unit tests #unit', () => {
             test('is true', () => {
@@ -208,7 +209,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('things to test', () => {
           test.describe('unit tests #unit', () => {
             test('is true', () => {
@@ -268,7 +269,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('things to test', () => {
           test.describe('unit tests #unit', () => {
             test('is true', () => {
@@ -302,7 +303,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('things to test', () => {
           test.describe('unit tests #unit', () => {
             test('is true', () => {
@@ -342,7 +343,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('things to test', () => {
           test.describe('unit tests #unit', () => {
             test('is true', () => {
@@ -376,7 +377,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('things to test', () => {
           test.describe('unit tests #unit', () => {
             test('is true #playwright4life', () => {
@@ -496,7 +497,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
     },
     // Global aliases
     {
-      code: javascript`
+      code: dedent`
         it.describe('things to test', () => {
           it.describe('unit tests #unit', () => {
             it('is true', () => {
@@ -578,7 +579,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('things to test', () => {
           test.describe('unit tests #unit', () => {
             test('is true #unit', () => {
@@ -733,7 +734,7 @@ runRuleTester('title-must-be-string', rule, {
     },
     // Basic semantic analysis
     {
-      code: javascript`
+      code: dedent`
         const title = 123;
         test(title, () => {
           expect(1).toBe(1);
@@ -800,7 +801,7 @@ runRuleTester('title-must-be-string', rule, {
       options: [{ ignoreTypeOfTestName: false }],
     },
     {
-      code: javascript`
+      code: dedent`
         const title = "is a string";
         test(title, () => {
           expect(1).toBe(1);
@@ -833,7 +834,7 @@ runRuleTester('no-empty-title', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('foo', () => {
           test('', () => {});
         });
@@ -1042,26 +1043,26 @@ runRuleTester('no-accidental-space', rule, {
       output: 'test.step("foo", function () {})',
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe(' foo', () => {
           test('bar', () => {})
         })
       `,
       errors: [{ column: 15, line: 1, messageId: 'accidentalSpace' }],
-      output: javascript`
+      output: dedent`
         test.describe('foo', () => {
           test('bar', () => {})
         })
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('foo', () => {
           test(' bar', () => {})
         })
       `,
       errors: [{ column: 8, line: 2, messageId: 'accidentalSpace' }],
-      output: javascript`
+      output: dedent`
         test.describe('foo', () => {
           test('bar', () => {})
         })
@@ -1089,7 +1090,7 @@ runRuleTester('no-accidental-space', rule, {
     'test.step("foo", function () {})',
     'test.only()',
     'test.only("foo", function () {})',
-    javascript`
+    dedent`
       test.describe('foo', () => {
         test('bar', () => {})
       })
@@ -1227,46 +1228,46 @@ runRuleTester('no-duplicate-prefix step', rule, {
 runRuleTester('no-duplicate-prefix nested', rule, {
   invalid: [
     {
-      code: javascript`
+      code: dedent`
         test.describe('describe foo', () => {
           test('bar', () => {})
         })
       `,
       errors: [{ column: 15, line: 1, messageId: 'duplicatePrefix' }],
-      output: javascript`
+      output: dedent`
         test.describe('foo', () => {
           test('bar', () => {})
         })
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('describe foo', () => {
           test('describes things correctly', () => {})
         })
       `,
       errors: [{ column: 15, line: 1, messageId: 'duplicatePrefix' }],
-      output: javascript`
+      output: dedent`
         test.describe('foo', () => {
           test('describes things correctly', () => {})
         })
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('foo', () => {
           test('test bar', () => {})
         })
       `,
       errors: [{ column: 8, line: 2, messageId: 'duplicatePrefix' }],
-      output: javascript`
+      output: dedent`
         test.describe('foo', () => {
           test('bar', () => {})
         })
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('foo', () => {
           test('bar', () => {
             test.step('step foobar', () => {})
@@ -1274,7 +1275,7 @@ runRuleTester('no-duplicate-prefix nested', rule, {
         })
       `,
       errors: [{ column: 15, line: 3, messageId: 'duplicatePrefix' }],
-      output: javascript`
+      output: dedent`
         test.describe('foo', () => {
           test('bar', () => {
             test.step('foobar', () => {})
@@ -1284,13 +1285,13 @@ runRuleTester('no-duplicate-prefix nested', rule, {
     },
     // Global aliases
     {
-      code: javascript`
+      code: dedent`
         it.describe('describe foo', () => {
           it('bar', () => {})
         })
       `,
       errors: [{ column: 13, line: 1, messageId: 'duplicatePrefix' }],
-      output: javascript`
+      output: dedent`
         it.describe('foo', () => {
           it('bar', () => {})
         })
@@ -1303,19 +1304,19 @@ runRuleTester('no-duplicate-prefix nested', rule, {
     },
   ],
   valid: [
-    javascript`
+    dedent`
       test.describe('foo', () => {
         test('bar', () => {})
       })
     `,
-    javascript`
+    dedent`
       test.describe('foo', () => {
         test('describes things correctly', () => {})
       })
     `,
     // Global aliases
     {
-      code: javascript`
+      code: dedent`
         it.describe('foo', () => {
           it('bar', () => {})
         })
