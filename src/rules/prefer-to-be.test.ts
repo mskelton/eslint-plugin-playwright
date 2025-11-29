@@ -1,4 +1,3 @@
-import dedent from 'dedent'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './prefer-to-be.js'
 

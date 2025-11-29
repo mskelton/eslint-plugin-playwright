@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { Rule } from 'eslint'
 import * as ESTree from 'estree'
 import { getStringValue } from './ast.js'
@@ -7,7 +8,6 @@ import {
   parseFnCallWithReason,
   type ResolvedFnWithNode,
 } from './parseFnCall.js'
-import dedent from 'dedent'
 import { runRuleTester, runTSRuleTester } from './rule-tester.js'
 
 const isNode = (obj: unknown): obj is ESTree.Node => {
