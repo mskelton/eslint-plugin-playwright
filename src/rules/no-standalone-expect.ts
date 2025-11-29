@@ -1,6 +1,6 @@
 import { Rule } from 'eslint'
 import * as ESTree from 'estree'
-import { getParent, isFunction } from '../utils/ast.js'
+import { getParent, isFunction, isPropertyAccessor } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall, parseFnCall } from '../utils/parseFnCall.js'
 
@@ -47,6 +47,7 @@ const getBlockType = (
 type BlockType =
   | 'arrow'
   | 'describe'
+  | 'fixture'
   | 'function'
   | 'hook'
   | 'template'
@@ -67,7 +68,6 @@ export default createRule({
           callStack.pop()
         }
       },
-
       BlockStatement(statement) {
         const blockType = getBlockType(context, statement)
 
@@ -80,7 +80,6 @@ export default createRule({
           callStack.pop()
         }
       },
-
       CallExpression(node) {
         const call = parseFnCall(context, node)
 
@@ -108,6 +107,13 @@ export default createRule({
           callStack.push('hook')
         }
 
+        if (
+          node.callee.type === 'MemberExpression' &&
+          isPropertyAccessor(node.callee, 'extend')
+        ) {
+          callStack.push('fixture')
+        }
+
         if (node.callee.type === 'TaggedTemplateExpression') {
           callStack.push('template')
         }
@@ -120,7 +126,10 @@ export default createRule({
             isTypeOfFnCall(context, node, ['test']) &&
             node.callee.type !== 'MemberExpression') ||
           (top === 'template' &&
-            node.callee.type === 'TaggedTemplateExpression')
+            node.callee.type === 'TaggedTemplateExpression') ||
+          (top === 'fixture' &&
+            node.callee.type === 'MemberExpression' &&
+            isPropertyAccessor(node.callee, 'extend'))
         ) {
           callStack.pop()
         }
