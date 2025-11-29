@@ -128,5 +128,50 @@ runRuleTester('no-standalone-expect', rule, {
         },
       },
     },
+    // Fixtures
+    {
+      code: javascript`
+        import { test as base, expect } from '@playwright/test';
+
+        export const test = base.extend({
+          clipboardContents: async ({ page }, use) => {
+            await expect(page).toHaveURL('example.com');
+            const text = await page.evaluate(() => navigator.clipboard.readText());
+            await expect(page).toHaveURL('example.com');
+            await use(text);
+          }
+        });
+
+        export { expect } from '@playwright/test';
+      `,
+      name: 'Allows expect in fixture definitions',
+    },
+    {
+      code: javascript`
+        import { test, expect } from '@playwright/test';
+
+        const customTest = test.extend({
+          myFixture: async ({ page }, use) => {
+            await expect(page).toBeDefined();
+            await use(page);
+          }
+        });
+      `,
+      name: 'Allows expect in test.extend fixtures',
+    },
+    {
+      code: javascript`
+        import { test as base } from '@playwright/test';
+
+        const test = base.extend({
+          fixture: async ({}, use) => {
+            const value = await Promise.resolve(42);
+            expect(value).toBe(42);
+            await use(value);
+          }
+        });
+      `,
+      name: 'Allows expect in fixture without await',
+    },
   ],
 })
