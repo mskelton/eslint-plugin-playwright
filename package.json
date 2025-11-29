@@ -33,8 +33,8 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs --out-dir dist",
     "lint": "eslint .",
-    "fmt": "prettier --write .",
-    "fmt:check": "prettier --check .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "vitest --run --hideSkippedTests",
     "test:watch": "vitest --reporter=dot --run",
     "ts": "tsc --noEmit"

@@ -377,7 +377,7 @@ runRuleTester('missing-playwright-await', rule, {
           const expectation = expect(pageCover, "message").toBeVisible();
           await page.clock.runFor(60_000);
           await expectation;
-        `)
+        `),
       ),
     },
   ],
