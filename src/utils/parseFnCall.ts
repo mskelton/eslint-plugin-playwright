@@ -338,7 +338,8 @@ interface ModifiersAndMatcher {
 }
 
 export interface ParsedExpectFnCall
-  extends BaseParsedFnCall, ModifiersAndMatcher {
+  extends BaseParsedFnCall,
+    ModifiersAndMatcher {
   args: ESTree.CallExpression['arguments']
   group: 'expect'
   type: 'expect'
