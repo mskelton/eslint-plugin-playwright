@@ -7,8 +7,13 @@ export default createRule({
   create(context) {
     const options = {
       assertFunctionNames: [] as string[],
+      assertFunctionPatterns: [] as string[],
       ...((context.options?.[0] as Record<string, unknown>) ?? {}),
     }
+
+    const patterns = options.assertFunctionPatterns.map(
+      (pattern) => new RegExp(pattern),
+    )
 
     const unchecked: ESTree.CallExpression[] = []
 
@@ -24,16 +29,25 @@ export default createRule({
       }
     }
 
+    function matches(node: ESTree.CallExpression) {
+      if (options.assertFunctionNames.some((name) => dig(node.callee, name))) {
+        return true
+      }
+
+      if (patterns.some((pattern) => dig(node.callee, pattern))) {
+        return true
+      }
+
+      return false
+    }
+
     return {
       CallExpression(node) {
         const call = parseFnCall(context, node)
 
         if (call?.type === 'test') {
           unchecked.push(node)
-        } else if (
-          call?.type === 'expect' ||
-          options.assertFunctionNames.find((name) => dig(node.callee, name))
-        ) {
+        } else if (call?.type === 'expect' || matches(node)) {
           const ancestors = context.sourceCode.getAncestors(node)
           checkExpressions(ancestors)
         }
@@ -60,6 +74,10 @@ export default createRule({
         additionalProperties: false,
         properties: {
           assertFunctionNames: {
+            items: [{ type: 'string' }],
+            type: 'array',
+          },
+          assertFunctionPatterns: {
             items: [{ type: 'string' }],
             type: 'array',
           },

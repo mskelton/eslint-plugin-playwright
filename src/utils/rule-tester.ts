@@ -1,5 +1,4 @@
 import parser from '@typescript-eslint/parser'
-import dedent from 'dedent'
 import { RuleTester } from 'eslint'
 import { describe, it } from 'vitest'
 
@@ -10,7 +9,7 @@ RuleTester.itOnly = it.only
 
 /**
  * @example
- *   import rule from '../../src/rules/missing-playwright-await';
+ *   import rule from './missing-playwright-await';
  *
  *   runRuleTester('missing-playwright-await', rule, {
  *   invalid: ['expect(page.locator('checkbox')).toBeChecked()'],
@@ -41,6 +40,3 @@ export function runTSRuleTester(...args: Parameters<RuleTester['run']>) {
 }
 
 export const test = (input: string) => `test('test', async () => { ${input} })`
-
-export const javascript = dedent
-export const typescript = dedent

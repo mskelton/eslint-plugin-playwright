@@ -35,7 +35,8 @@ test('should work with callbacks/async', async () => {
   "playwright/expect-expect": [
     "error",
     {
-      "assertFunctionNames": ["assertCustomCondition"]
+      "assertFunctionNames": ["assertCustomCondition"],
+      "assertFunctionPatterns": ["^assert.*", "^verify.*"]
     }
   ]
 }
@@ -57,3 +58,30 @@ test('should scroll', async ({ page }) => {
   await assertScrolledToBottom(page)
 })
 ```
+
+### `assertFunctionPatterns`
+
+This array option specifies regular expression patterns that should match
+function names to be considered as asserting functions. This is useful when you
+have multiple assertion functions following a naming convention.
+
+```ts
+/* eslint playwright/expect-expect: ["error", { "assertFunctionPatterns": ["^assert.*", "^verify.*"] }] */
+
+function assertScrolledToBottom(page) {
+  // ...
+}
+
+function verifyPageLoaded(page) {
+  // ...
+}
+
+test('should scroll', async ({ page }) => {
+  await assertScrolledToBottom(page)
+  await verifyPageLoaded(page)
+})
+```
+
+You can use both `assertFunctionNames` and `assertFunctionPatterns` together.
+The rule will consider a function as an assertion if it matches either an exact
+name or a pattern.

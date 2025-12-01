@@ -1,5 +1,5 @@
-import rule from '../../src/rules/prefer-to-be.js'
 import { runRuleTester } from '../utils/rule-tester.js'
+import rule from './prefer-to-be.js'
 
 runRuleTester('prefer-to-be', rule, {
   invalid: [
@@ -84,7 +84,7 @@ runRuleTester('prefer-to-be', rule, {
     'expect("something");',
     'expect(token).toStrictEqual(/[abc]+/g);',
     "expect(token).toStrictEqual(new RegExp('[abc]+', 'g'));",
-    'expect(value).toEqual(javascript`my string`);',
+    'expect(value).toEqual(dedent`my string`);',
     // Global aliases
     {
       code: 'assert(null).toBeNull();',

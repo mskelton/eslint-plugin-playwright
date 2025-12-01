@@ -1,4 +1,5 @@
-import { javascript, runRuleTester } from '../utils/rule-tester.js'
+import dedent from 'dedent'
+import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './require-to-throw-message.js'
 
 runRuleTester('require-to-throw-message', rule, {
@@ -30,7 +31,7 @@ runRuleTester('require-to-throw-message', rule, {
 
     // Empty rejects.toThrow / rejects.toThrowError
     {
-      code: javascript`
+      code: dedent`
         test('empty rejects.toThrow', async () => {
           const throwErrorAsync = async () => { throw new Error('a') };
           await expect(throwErrorAsync()).rejects.toThrow();
@@ -74,7 +75,7 @@ runRuleTester('require-to-throw-message', rule, {
     // String
     "expect(() => { throw new Error('a'); }).toThrow('a');",
     "expect(() => { throw new Error('a'); }).toThrowError('a');",
-    javascript`
+    dedent`
       test('string', async () => {
         const throwErrorAsync = async () => { throw new Error('a') };
         await expect(throwErrorAsync()).rejects.toThrow('a');
@@ -85,7 +86,7 @@ runRuleTester('require-to-throw-message', rule, {
     // Template literal
     "const a = 'a'; expect(() => { throw new Error('a'); }).toThrow(`${a}`);",
     "const a = 'a'; expect(() => { throw new Error('a'); }).toThrowError(`${a}`);",
-    javascript`
+    dedent`
       test('Template literal', async () => {
         const a = 'a';
         const throwErrorAsync = async () => { throw new Error('a') };
@@ -97,7 +98,7 @@ runRuleTester('require-to-throw-message', rule, {
     // Regex
     "expect(() => { throw new Error('a'); }).toThrow(/^a$/);",
     "expect(() => { throw new Error('a'); }).toThrowError(/^a$/);",
-    javascript`
+    dedent`
       test('Regex', async () => {
         const throwErrorAsync = async () => { throw new Error('a') };
         await expect(throwErrorAsync()).rejects.toThrow(/^a$/);
@@ -108,7 +109,7 @@ runRuleTester('require-to-throw-message', rule, {
     // Function
     "expect(() => { throw new Error('a'); }).toThrow((() => { return 'a'; })());",
     "expect(() => { throw new Error('a'); }).toThrowError((() => { return 'a'; })());",
-    javascript`
+    dedent`
       test('Function', async () => {
         const throwErrorAsync = async () => { throw new Error('a') };
         const fn = () => { return 'a'; };
@@ -120,7 +121,7 @@ runRuleTester('require-to-throw-message', rule, {
     // Allow no message for `not`.
     "expect(() => { throw new Error('a'); }).not.toThrow();",
     "expect(() => { throw new Error('a'); }).not.toThrowError();",
-    javascript`
+    dedent`
       test('Allow no message for "not"', async () => {
         const throwErrorAsync = async () => { throw new Error('a') };
         await expect(throwErrorAsync()).resolves.not.toThrow();

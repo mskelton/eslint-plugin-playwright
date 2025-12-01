@@ -94,9 +94,12 @@ export default createRule({
       ...(options.customMatchers || []),
     ])
 
-    function checkValidity(node: ESTree.Node) {
+    function checkValidity(node: ESTree.Node, visited: Set<ESTree.Node>) {
       const parent = getParent(node)
       if (!parent) return false
+
+      if (visited.has(parent)) return false
+      visited.add(parent)
 
       // If the parent is a valid type (e.g. return or await), we don't need to
       // check any further.
@@ -105,7 +108,7 @@ export default createRule({
       // If the parent is an array, we need to check the grandparent to see if
       // it's a Promise.all, or a variable.
       if (parent.type === 'ArrayExpression') {
-        return checkValidity(parent)
+        return checkValidity(parent, visited)
       }
 
       // If the parent is a call expression, we need to check the grandparent
@@ -127,12 +130,12 @@ export default createRule({
 
         for (const ref of scope.references) {
           const refParent = (ref.identifier as Rule.Node).parent
-
+          if (visited.has(refParent)) continue
           // If the parent of the reference is valid, we can immediately return
           // true. Otherwise, we'll check the validity of the parent to continue
           // the loop.
           if (validTypes.has(refParent.type)) return true
-          if (checkValidity(refParent)) return true
+          if (checkValidity(refParent, visited)) return true
         }
       }
 
@@ -145,7 +148,7 @@ export default createRule({
         if (call?.type !== 'step' && call?.type !== 'expect') return
 
         const result = getCallType(call, awaitableMatchers)
-        const isValid = result ? checkValidity(node) : false
+        const isValid = result ? checkValidity(node, new Set()) : false
 
         if (result && !isValid) {
           context.report({

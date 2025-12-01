@@ -1,25 +1,31 @@
 name: Release
 on: workflow_dispatch
+permissions:
+  id-token: write
+  contents: read
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: mskelton/setup-pnpm@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '22.x'
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install
       - run: pnpm test
   release:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Node
-        uses: mskelton/setup-pnpm@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
-      - name: Build
-        run: pnpm build
-      - name: Release
-        run: pnpm semantic-release
+          node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org'
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install
+      - run: pnpm build
+      - run: pnpm semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.npm_token }}

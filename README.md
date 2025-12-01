@@ -38,19 +38,19 @@ file patterns.
 (**eslint.config.js**)
 
 ```javascript
+import { defineConfig } from '@eslint/config'
 import playwright from 'eslint-plugin-playwright'
 
-export default [
+export default defineConfig([
   {
-    ...playwright.configs['flat/recommended'],
     files: ['tests/**'],
+    extends: [playwright.configs['flat/recommended']],
     rules: {
-      ...playwright.configs['flat/recommended'].rules,
       // Customize Playwright rules
       // ...
     },
   },
-]
+])
 ```
 
 [Legacy config](https://eslint.org/docs/latest/use/configure/configuration-files)
@@ -111,7 +111,8 @@ messages will use the default message defined by the plugin.
 ## Rules
 
 ✅ Set in the `recommended` configuration\
-🔧 Automatically fixable by the [`--fix`](https://eslint.org/docs/latest/user-guide/command-line-interface#--fix)
+🔧 Automatically fixable by the
+[`--fix`](https://eslint.org/docs/latest/user-guide/command-line-interface#--fix)
 CLI option\
 💡 Manually fixable by
 [editor suggestions](https://eslint.org/docs/latest/developer-guide/working-with-rules#providing-suggestions)
@@ -142,6 +143,7 @@ CLI option\
 | [no-slowed-test](https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-slowed-test.md)                           | Disallow usage of the `.slow` annotation                           |     |     | 💡  |
 | [no-standalone-expect](https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-standalone-expect.md)               | Disallow using expect outside of `test` blocks                     | ✅  |     |     |
 | [no-unsafe-references](https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-unsafe-references.md)               | Prevent unsafe variable references in `page.evaluate()`            | ✅  | 🔧  |     |
+| [no-unused-locators](https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-unused-locators.md)                   | Disallow usage of page locators that are not used                  | ✅  |     |     |
 | [no-useless-await](https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-useless-await.md)                       | Disallow unnecessary `await`s for Playwright methods               | ✅  | 🔧  |     |
 | [no-useless-not](https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-useless-not.md)                           | Disallow usage of `not` matchers when a specific matcher exists    | ✅  | 🔧  |     |
 | [no-wait-for-navigation](https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-wait-for-navigation.md)           | Disallow usage of `page.waitForNavigation()`                       | ✅  |     | 💡  |

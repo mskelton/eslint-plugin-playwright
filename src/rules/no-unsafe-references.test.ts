@@ -1,17 +1,13 @@
-import rule from '../../src/rules/no-unsafe-references.js'
-import {
-  javascript,
-  runRuleTester,
-  runTSRuleTester,
-  typescript,
-} from '../utils/rule-tester.js'
+import dedent from 'dedent'
+import { runRuleTester, runTSRuleTester } from '../utils/rule-tester.js'
+import rule from './no-unsafe-references.js'
 
 const messageId = 'noUnsafeReference'
 
 runRuleTester('no-unsafe-references', rule, {
   invalid: [
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.evaluate(() => {
           return Promise.resolve(x);
@@ -26,7 +22,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Single argument - missing arg list - arrow function - evaluate',
-      output: javascript`
+      output: dedent`
         const x = 10
         const result = await page.evaluate(([x]) => {
           return Promise.resolve(x);
@@ -34,7 +30,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.addInitScript(() => {
           return Promise.resolve(x);
@@ -49,7 +45,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Single argument - missing arg list - arrow function - addInitScript',
-      output: javascript`
+      output: dedent`
         const x = 10
         const result = await page.addInitScript(([x]) => {
           return Promise.resolve(x);
@@ -57,7 +53,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.evaluate(function () {
           return Promise.resolve(x);
@@ -72,7 +68,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Single argument - missing arg list - function - evaluate',
-      output: javascript`
+      output: dedent`
         const x = 10
         const result = await page.evaluate(function ([x]) {
           return Promise.resolve(x);
@@ -80,7 +76,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.addInitScript(function () {
           return Promise.resolve(x);
@@ -95,7 +91,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Single argument - missing arg list - function - addInitScript',
-      output: javascript`
+      output: dedent`
         const x = 10
         const result = await page.addInitScript(function ([x]) {
           return Promise.resolve(x);
@@ -103,7 +99,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.evaluate(() => {
           return Promise.resolve(x);
@@ -118,7 +114,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Single argument - empty arg list - arrow function - evaluate',
-      output: javascript`
+      output: dedent`
         const x = 10
         const result = await page.evaluate(([x]) => {
           return Promise.resolve(x);
@@ -126,7 +122,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.addInitScript(() => {
           return Promise.resolve(x);
@@ -141,7 +137,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Single argument - empty arg list - arrow function - addInitScript',
-      output: javascript`
+      output: dedent`
         const x = 10
         const result = await page.addInitScript(([x]) => {
           return Promise.resolve(x);
@@ -149,7 +145,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.evaluate(function() {
           return Promise.resolve(x);
@@ -164,7 +160,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Single argument - empty arg list - function - evaluate',
-      output: javascript`
+      output: dedent`
         const x = 10
         const result = await page.evaluate(function([x]) {
           return Promise.resolve(x);
@@ -172,7 +168,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.addInitScript(function() {
           return Promise.resolve(x);
@@ -187,7 +183,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Single argument - empty arg list - function - addInitScript',
-      output: javascript`
+      output: dedent`
         const x = 10
         const result = await page.addInitScript(function([x]) {
           return Promise.resolve(x);
@@ -195,7 +191,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const foo = 10
         const bar = 20
         const result = await page.evaluate(() => {
@@ -219,7 +215,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Multiple arguments - evaluate',
-      output: javascript`
+      output: dedent`
         const foo = 10
         const bar = 20
         const result = await page.evaluate(([foo, bar]) => {
@@ -228,7 +224,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const foo = 10
         const bar = 20
         const result = await page.addInitScript(() => {
@@ -252,7 +248,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Multiple arguments - addInitScript',
-      output: javascript`
+      output: dedent`
         const foo = 10
         const bar = 20
         const result = await page.addInitScript(([foo, bar]) => {
@@ -261,7 +257,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.evaluate(() => {
           const y = 20;
@@ -277,7 +273,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Inner and outer variables - evaluate',
-      output: javascript`
+      output: dedent`
         const x = 10
         const result = await page.evaluate(([x]) => {
           const y = 20;
@@ -286,7 +282,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.addInitScript(() => {
           const y = 20;
@@ -302,7 +298,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Inner and outer variables - addInitScript',
-      output: javascript`
+      output: dedent`
         const x = 10
         const result = await page.addInitScript(([x]) => {
           const y = 20;
@@ -311,7 +307,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         test('test', async () => {
           const y = 10
@@ -335,7 +331,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Multi-level scopes - evaluate',
-      output: javascript`
+      output: dedent`
         const x = 10
         test('test', async () => {
           const y = 10
@@ -346,7 +342,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         test('test', async () => {
           const y = 10
@@ -370,7 +366,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Multi-level scopes - addInitScript',
-      output: javascript`
+      output: dedent`
         const x = 10
         test('test', async () => {
           const y = 10
@@ -381,7 +377,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const y = 12
         const result = await page.evaluate(([x]) => {
@@ -397,7 +393,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Adding to existing arg list - evaluate',
-      output: javascript`
+      output: dedent`
         const x = 10
         const y = 12
         const result = await page.evaluate(([x, y]) => {
@@ -406,7 +402,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const y = 12
         const result = await page.addInitScript(([x]) => {
@@ -422,7 +418,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Adding to existing arg list - addInitScript',
-      output: javascript`
+      output: dedent`
         const x = 10
         const y = 12
         const result = await page.addInitScript(([x, y]) => {
@@ -431,7 +427,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const y = 12
         const result = await page.evaluate((x) => {
@@ -447,7 +443,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Converting a single argument to an array - evaluate',
-      output: javascript`
+      output: dedent`
         const x = 10
         const y = 12
         const result = await page.evaluate(([x, y]) => {
@@ -456,7 +452,7 @@ runRuleTester('no-unsafe-references', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const y = 12
         const result = await page.addInitScript((x) => {
@@ -472,7 +468,7 @@ runRuleTester('no-unsafe-references', rule, {
         },
       ],
       name: 'Converting a single argument to an array - addInitScript',
-      output: javascript`
+      output: dedent`
         const x = 10
         const y = 12
         const result = await page.addInitScript(([x, y]) => {
@@ -488,7 +484,7 @@ runRuleTester('no-unsafe-references', rule, {
     { code: 'page.addInitScript()' },
     { code: 'page.addInitScript("1 + 2")' },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.evaluate(() => {
           return Promise.resolve(12);
@@ -497,7 +493,7 @@ runRuleTester('no-unsafe-references', rule, {
       name: 'No variables - evaluate',
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.addInitScript(() => {
           return Promise.resolve(12);
@@ -506,7 +502,7 @@ runRuleTester('no-unsafe-references', rule, {
       name: 'No variables - addInitScript',
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.evaluate(function (x) {
           return Promise.resolve(x);
@@ -515,7 +511,7 @@ runRuleTester('no-unsafe-references', rule, {
       name: 'Single argument - evaluate',
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.addInitScript(function (x) {
           return Promise.resolve(x);
@@ -524,7 +520,7 @@ runRuleTester('no-unsafe-references', rule, {
       name: 'Single argument - addInitScript',
     },
     {
-      code: javascript`
+      code: dedent`
         const foo = 10
         const bar = 20
         const result = await page.evaluate(([foo, bar]) => {
@@ -534,7 +530,7 @@ runRuleTester('no-unsafe-references', rule, {
       name: 'Multiple arguments - same name - evaluate',
     },
     {
-      code: javascript`
+      code: dedent`
         const foo = 10
         const bar = 20
         const result = await page.addInitScript(([foo, bar]) => {
@@ -544,7 +540,7 @@ runRuleTester('no-unsafe-references', rule, {
       name: 'Multiple arguments - same name - addInitScript',
     },
     {
-      code: javascript`
+      code: dedent`
         const foo = 10
         const bar = 20
         const result = await page.evaluate(([a, b]) => {
@@ -554,7 +550,7 @@ runRuleTester('no-unsafe-references', rule, {
       name: 'Multiple arguments - different name - evaluate',
     },
     {
-      code: javascript`
+      code: dedent`
         const foo = 10
         const bar = 20
         const result = await page.addInitScript(([a, b]) => {
@@ -564,7 +560,7 @@ runRuleTester('no-unsafe-references', rule, {
       name: 'Multiple arguments - different name - addInitScript',
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.evaluate(() => {
           const x = 20;
@@ -574,7 +570,7 @@ runRuleTester('no-unsafe-references', rule, {
       name: 'Variable shadowing - evaluate',
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.addInitScript(() => {
           const x = 20;
@@ -584,7 +580,7 @@ runRuleTester('no-unsafe-references', rule, {
       name: 'Variable shadowing - addInitScript',
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.evaluate((x) => {
           const y = 20;
@@ -594,7 +590,7 @@ runRuleTester('no-unsafe-references', rule, {
       name: 'Inner and outer variables - evaluate',
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         const result = await page.addInitScript((x) => {
           const y = 20;
@@ -604,7 +600,7 @@ runRuleTester('no-unsafe-references', rule, {
       name: 'Inner and outer variables - addInitScript',
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         test('test', async () => {
           const y = 10
@@ -616,7 +612,7 @@ runRuleTester('no-unsafe-references', rule, {
       name: 'Multi-level scopes - evaluate',
     },
     {
-      code: javascript`
+      code: dedent`
         const x = 10
         test('test', async () => {
           const y = 10
@@ -634,7 +630,7 @@ runTSRuleTester('no-unsafe-references', rule, {
   invalid: [],
   valid: [
     {
-      code: typescript`
+      code: dedent`
         type X = number;
         const result = await page.evaluate(() => {
           const x = 10 as X;
@@ -644,7 +640,7 @@ runTSRuleTester('no-unsafe-references', rule, {
       name: 'TypeScript - variable assignment of type - evaluate',
     },
     {
-      code: typescript`
+      code: dedent`
         type X = number;
         const result = await page.addInitScript(() => {
           const x = 10 as X;
@@ -654,7 +650,7 @@ runTSRuleTester('no-unsafe-references', rule, {
       name: 'TypeScript - variable assignment of type - addInitScript',
     },
     {
-      code: typescript`
+      code: dedent`
         type X = number;
         const result = await page.evaluate(() => {
           const foo = (bar: X) => bar;
@@ -664,7 +660,7 @@ runTSRuleTester('no-unsafe-references', rule, {
       name: 'TypeScript - parameter type - evaluate',
     },
     {
-      code: typescript`
+      code: dedent`
         type X = number;
         const result = await page.addInitScript(() => {
           const foo = (bar: X) => bar;
@@ -674,7 +670,7 @@ runTSRuleTester('no-unsafe-references', rule, {
       name: 'TypeScript - parameter type - addInitScript',
     },
     {
-      code: typescript`
+      code: dedent`
         type X = number;
         const result = await page.evaluate(() => {
           const x: X = 10;
@@ -684,7 +680,7 @@ runTSRuleTester('no-unsafe-references', rule, {
       name: 'TypeScript - casting - evaluate',
     },
     {
-      code: typescript`
+      code: dedent`
         type X = number;
         const result = await page.addInitScript(() => {
           const x: X = 10;

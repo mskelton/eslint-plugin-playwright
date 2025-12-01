@@ -1,6 +1,6 @@
 import dedent from 'dedent'
-import rule from '../../src/rules/missing-playwright-await.js'
-import { javascript, runRuleTester, test } from '../utils/rule-tester.js'
+import { runRuleTester, test } from '../utils/rule-tester.js'
+import rule from './missing-playwright-await.js'
 
 runRuleTester('missing-playwright-await', rule, {
   invalid: [
@@ -162,7 +162,7 @@ runRuleTester('missing-playwright-await', rule, {
     },
     // expect.configure
     {
-      code: javascript`
+      code: dedent`
         test('test', async () => {
           const softExpect = expect.configure({ soft: true })
           softExpect(foo).toBeChecked()
@@ -177,7 +177,7 @@ runRuleTester('missing-playwright-await', rule, {
           messageId: 'expect',
         },
       ],
-      output: javascript`
+      output: dedent`
         test('test', async () => {
           const softExpect = expect.configure({ soft: true })
           await softExpect(foo).toBeChecked()
@@ -367,6 +367,18 @@ runRuleTester('missing-playwright-await', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    // Regression: variable passed to getByText (should not crash or false positive)
+    {
+      code: dedent(
+        test(`
+          const thisIsCausingTheBug = 'some text';
+          const pageCover = page.getByText(thisIsCausingTheBug);
+          const expectation = expect(pageCover, "message").toBeVisible();
+          await page.clock.runFor(60_000);
+          await expectation;
+        `),
+      ),
     },
   ],
 })

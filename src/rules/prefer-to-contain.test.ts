@@ -1,5 +1,5 @@
-import rule from '../../src/rules/prefer-to-contain.js'
 import { runRuleTester } from '../utils/rule-tester.js'
+import rule from './prefer-to-contain.js'
 
 const messageId = 'useToContain'
 

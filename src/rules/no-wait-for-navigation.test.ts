@@ -1,5 +1,5 @@
-import rule from '../../src/rules/no-wait-for-navigation.js'
 import { runRuleTester } from '../utils/rule-tester.js'
+import rule from './no-wait-for-navigation.js'
 
 const messageId = 'noWaitForNavigation'
 

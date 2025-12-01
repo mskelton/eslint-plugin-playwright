@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { Rule } from 'eslint'
 import * as ESTree from 'estree'
 import { getStringValue } from './ast.js'
@@ -7,12 +8,7 @@ import {
   parseFnCallWithReason,
   type ResolvedFnWithNode,
 } from './parseFnCall.js'
-import {
-  javascript,
-  runRuleTester,
-  runTSRuleTester,
-  typescript,
-} from './rule-tester.js'
+import { runRuleTester, runTSRuleTester } from './rule-tester.js'
 
 const isNode = (obj: unknown): obj is ESTree.Node => {
   if (typeof obj === 'object' && obj !== null) {
@@ -76,8 +72,10 @@ interface TestResolvedFnWithNode extends Omit<ResolvedFnWithNode, 'node'> {
   node: string
 }
 
-interface TestParsedFnCall
-  extends Omit<ParsedFnCall, 'head' | 'members' | 'modifiers'> {
+interface TestParsedFnCall extends Omit<
+  ParsedFnCall,
+  'head' | 'members' | 'modifiers'
+> {
   args?: (string | null)[]
   head: TestResolvedFnWithNode
   matcher?: string
@@ -131,7 +129,7 @@ runRuleTester('nonexistent methods', rule, {
 runRuleTester('expect', rule, {
   invalid: [
     {
-      code: javascript`
+      code: dedent`
         import { expect as verify, expect as assertThat } from '@playwright/test';
 
         verify(x).toBe(y);
@@ -183,7 +181,7 @@ runRuleTester('expect', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         import { expect as verify } from '@playwright/test';
         import { expect as assertThat } from '@playwright/test';
 
@@ -366,7 +364,7 @@ runRuleTester('expect', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         import { expect } from '@playwright/test';
 
         expect(x).toBe(y);
@@ -396,7 +394,7 @@ runRuleTester('expect', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         import { expect } from '@playwright/test';
 
         expect(x).not.toBe(y);
@@ -426,7 +424,7 @@ runRuleTester('expect', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         import { expect as verify } from '@playwright/test';
 
         verify(x).toBe(y);
@@ -456,7 +454,7 @@ runRuleTester('expect', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         import { expect as verify } from '@playwright/test';
 
         verify(x).not.toBe(y);
@@ -516,7 +514,7 @@ runRuleTester('expect', rule, {
       errors: [{ column: 11, line: 1, messageId: 'matcher-not-called' }],
     },
     {
-      code: javascript`
+      code: dedent`
         import { expect } from '@playwright/test';
 
         expect;
@@ -532,7 +530,7 @@ runRuleTester('expect', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         import { expect } from '@playwright/test';
 
         expect(x).is.toBe(x);
@@ -544,7 +542,7 @@ runRuleTester('expect', rule, {
       errors: [{ column: 1, line: 1, messageId: 'matcher-not-found' }],
     },
     {
-      code: javascript`
+      code: dedent`
         import { expect } from '@playwright/test';
 
         expect(x).not.resolves.toBe(x);
@@ -584,7 +582,7 @@ runRuleTester('expect', rule, {
 runRuleTester('test', rule, {
   invalid: [
     {
-      code: javascript`
+      code: dedent`
         import { test as it, test as spec } from '@playwright/test';
 
         it('a test', () => {});
@@ -626,7 +624,7 @@ runRuleTester('test', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         import { test as it } from '@playwright/test';
         import { test as check } from '@playwright/test';
 
@@ -711,7 +709,7 @@ runRuleTester('test', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test('test full report', {
           annotation: [
             { type: 'issue', description: 'https://github.com/microsoft/playwright/issues/23180' },
@@ -1056,7 +1054,7 @@ runRuleTester('test', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         import { test as it } from '@playwright/test';
 
         it('a test', () => {});
@@ -1175,7 +1173,7 @@ runRuleTester('describe', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('group', {
           tag: '@report',
         }, () => {
@@ -1286,7 +1284,7 @@ runRuleTester('describe', rule, {
       settings: { playwright: { globalAliases: { describe: ['context'] } } },
     },
     {
-      code: javascript`
+      code: dedent`
         context("when there is an error", () => {})
         describe("when there is an error", () => {})
       `,
@@ -1380,7 +1378,7 @@ runRuleTester('describe', rule, {
 runTSRuleTester('typescript', rule, {
   invalid: [
     {
-      code: typescript`
+      code: dedent`
         import { test } from '../it-utils';
         import { test } from '@playwright/test';
 
@@ -1408,7 +1406,7 @@ runTSRuleTester('typescript', rule, {
   ],
   valid: [
     {
-      code: typescript`
+      code: dedent`
         function it(message: string, fn: () => void): void;
         function it(cases: unknown[], message: string, fn: () => void): void;
         function it(...all: any[]): void {}
@@ -1417,7 +1415,7 @@ runTSRuleTester('typescript', rule, {
       `,
     },
     {
-      code: typescript`
+      code: dedent`
         interface it {}
         function it(...all: any[]): void {}
 
@@ -1432,7 +1430,7 @@ runTSRuleTester('typescript', rule, {
     'expect.objectContaining(expected)',
     'expect.not.objectContaining(expected)',
     {
-      code: typescript`
+      code: dedent`
         import { expect } from '@playwright/test';
 
         expect.assertions();
@@ -1441,28 +1439,28 @@ runTSRuleTester('typescript', rule, {
     },
     // Type-only imports/specifiers should NOT create runtime aliases
     {
-      code: typescript`
+      code: dedent`
         import type { test as it } from '@playwright/test';
 
         it('is not detected as Playwright test', () => {});
       `,
     },
     {
-      code: typescript`
+      code: dedent`
         import { type test as it } from '@playwright/test';
 
         it('is not detected as Playwright test', () => {});
       `,
     },
     {
-      code: typescript`
+      code: dedent`
         import type { expect as verify } from '@playwright/test';
 
         verify(x).toBe(y);
       `,
     },
     {
-      code: typescript`
+      code: dedent`
         import { type expect as verify } from '@playwright/test';
 
         verify(x).toBe(y);

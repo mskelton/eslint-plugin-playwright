@@ -9,10 +9,10 @@ export function getStringValue(node: ESTree.Node | undefined) {
   return node.type === 'Identifier'
     ? node.name
     : node.type === 'TemplateLiteral'
-    ? node.quasis[0].value.raw
-    : node.type === 'Literal' && typeof node.value === 'string'
-    ? node.value
-    : ''
+      ? node.quasis[0].value.raw
+      : node.type === 'Literal' && typeof node.value === 'string'
+        ? node.value
+        : ''
 }
 
 export function getRawValue(node: ESTree.Node) {
@@ -110,13 +110,16 @@ export function dig(node: ESTree.Node, identifier: string | RegExp): boolean {
   return node.type === 'MemberExpression'
     ? dig(node.property, identifier)
     : node.type === 'CallExpression'
-    ? dig(node.callee, identifier)
-    : node.type === 'Identifier'
-    ? isIdentifier(node, identifier)
-    : false
+      ? dig(node.callee, identifier)
+      : node.type === 'Identifier'
+        ? isIdentifier(node, identifier)
+        : false
 }
 
-export function isPageMethod(node: ESTree.CallExpression, name: string) {
+export function isPageMethod(
+  node: ESTree.CallExpression,
+  name: string | RegExp,
+) {
   return (
     node.callee.type === 'MemberExpression' &&
     dig(node.callee.object, /(^(page|frame)|(Page|Frame)$)/) &&
@@ -281,8 +284,8 @@ export function getImportedAliases(
         importedNode.type === 'Identifier'
           ? importedNode.name
           : typeof importedNode.value === 'string'
-          ? importedNode.value
-          : undefined
+            ? importedNode.value
+            : undefined
       if (imported !== importedName) continue
 
       const localName = spec.local.name
