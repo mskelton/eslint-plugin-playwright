@@ -111,8 +111,7 @@ messages will use the default message defined by the plugin.
 ## Rules
 
 ✅ Set in the `recommended` configuration\
-🔧 Automatically fixable by the
-[`--fix`](https://eslint.org/docs/latest/user-guide/command-line-interface#--fix)
+🔧 Automatically fixable by the [`--fix`](https://eslint.org/docs/latest/user-guide/command-line-interface#--fix)
 CLI option\
 💡 Manually fixable by
 [editor suggestions](https://eslint.org/docs/latest/developer-guide/working-with-rules#providing-suggestions)
