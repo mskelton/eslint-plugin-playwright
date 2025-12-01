@@ -11,16 +11,24 @@ import { parseFnCall } from '../utils/parseFnCall.js'
 type MethodConfig = {
   inverse?: string
   matcher: string
+  noFix?: boolean
+  options?: string
   prop?: string
   type: 'boolean' | 'string'
 }
 
 const methods: Record<string, MethodConfig> = {
+  allInnerTexts: { matcher: 'toHaveText', noFix: true, type: 'string' },
+  allTextContents: { matcher: 'toHaveText', noFix: true, type: 'string' },
   getAttribute: {
     matcher: 'toHaveAttribute',
     type: 'string',
   },
-  innerText: { matcher: 'toHaveText', type: 'string' },
+  innerText: {
+    matcher: 'toHaveText',
+    type: 'string',
+    options: '{ useInnerText: true }',
+  },
   inputValue: { matcher: 'toHaveValue', type: 'string' },
   isChecked: {
     matcher: 'toBeChecked',
@@ -109,6 +117,17 @@ export default createRule({
           (+!!notModifier ^ +isFalsy && methodConfig.inverse) ||
           methodConfig.matcher
 
+        // We don't want to provide fix suggestion for some methods.
+        // In this case, we just report the error and let the user handle it.
+        if (methodConfig.noFix) {
+          context.report({
+            data: { matcher: methodConfig.matcher, method },
+            messageId: 'useWebFirstAssertion',
+            node: call.callee.property,
+          })
+          return
+        }
+
         const { callee } = call
         context.report({
           data: {
@@ -181,6 +200,39 @@ export default createRule({
                   stringArgs,
                 ),
               )
+            }
+
+            // Add options if needed
+            if (methodConfig.options) {
+              const range = fnCall.matcher.range!
+
+              // Get the matcher argument (the text to match)
+              const [matcherArg] = fnCall.matcherArgs ?? []
+
+              if (matcherArg) {
+                // If there's a matcher argument, combine it with the options
+                const textValue = getRawValue(matcherArg)
+                const combinedArgs = `${textValue}, ${methodConfig.options}`
+
+                // Remove the original matcher argument
+                fixes.push(fixer.remove(matcherArg))
+
+                // Add the combined arguments
+                fixes.push(
+                  fixer.insertTextAfterRange(
+                    [range[0], range[1] + 1],
+                    combinedArgs,
+                  ),
+                )
+              } else {
+                // No matcher argument, just add the options
+                fixes.push(
+                  fixer.insertTextAfterRange(
+                    [range[0], range[1] + 1],
+                    methodConfig.options,
+                  ),
+                )
+              }
             }
 
             return fixes
