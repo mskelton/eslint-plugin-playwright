@@ -709,35 +709,35 @@ runRuleTester('prefer-web-first-assertions', rule, {
 
     // allTextContents
     {
-      code: javascript('expect(await foo.allTextContents()).toBe("bar")'),
+      code: test('expect(await foo.allTextContents()).toBe("bar")'),
       errors: [{ messageId: 'useWebFirstAssertion' }],
     },
     {
-      code: javascript(`
+      code: test(`
           const myText = page.locator('foo li').allTextContents();
           expect(myText).toEqual(['Alpha', 'Beta', 'Gamma'])`),
       errors: [{ messageId: 'useWebFirstAssertion' }],
     },
     {
-      code: javascript('expect(await foo.allTextContents()).not.toBe("bar")'),
+      code: test('expect(await foo.allTextContents()).not.toBe("bar")'),
       errors: [{ messageId: 'useWebFirstAssertion' }],
     },
     {
-      code: javascript('expect(await foo.allTextContents()).toEqual("bar")'),
+      code: test('expect(await foo.allTextContents()).toEqual("bar")'),
       errors: [{ messageId: 'useWebFirstAssertion' }],
     },
     {
-      code: javascript('expect.soft(await foo.allTextContents()).toBe("bar")'),
+      code: test('expect.soft(await foo.allTextContents()).toBe("bar")'),
       errors: [{ messageId: 'useWebFirstAssertion' }],
     },
     {
-      code: javascript(
+      code: test(
         'expect["soft"](await foo.allTextContents()).not.toEqual("bar")',
       ),
       errors: [{ messageId: 'useWebFirstAssertion' }],
     },
     {
-      code: javascript(`
+      code: test(`
         const fooLocator = page.locator('.fooClass');
         const fooLocatorText = await fooLocator.allTextContents();
         expect(fooLocatorText).toEqual('foo');
@@ -745,7 +745,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       errors: [{ messageId: 'useWebFirstAssertion' }],
     },
     {
-      code: javascript(`
+      code: test(`
         const fooLocator = page.locator('.fooClass');
         let fooLocatorText = await fooLocator.allTextContents();
         expect(fooLocatorText).toEqual('foo');

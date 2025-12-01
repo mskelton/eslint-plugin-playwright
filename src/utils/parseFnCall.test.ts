@@ -72,8 +72,10 @@ interface TestResolvedFnWithNode extends Omit<ResolvedFnWithNode, 'node'> {
   node: string
 }
 
-interface TestParsedFnCall
-  extends Omit<ParsedFnCall, 'head' | 'members' | 'modifiers'> {
+interface TestParsedFnCall extends Omit<
+  ParsedFnCall,
+  'head' | 'members' | 'modifiers'
+> {
   args?: (string | null)[]
   head: TestResolvedFnWithNode
   matcher?: string

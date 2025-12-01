@@ -101,8 +101,8 @@ export default createRule({
           messageId: notModifier
             ? 'noUselessNot'
             : isInverted
-            ? 'noUselessProperty'
-            : 'noUselessTruthy',
+              ? 'noUselessProperty'
+              : 'noUselessTruthy',
         })
       },
     }
