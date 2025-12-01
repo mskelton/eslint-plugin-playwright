@@ -1,5 +1,6 @@
-import rule from '../../src/rules/prefer-web-first-assertions.js'
-import { javascript, runRuleTester, test } from '../utils/rule-tester.js'
+import dedent from 'dedent'
+import { runRuleTester, test } from '../utils/rule-tester.js'
+import rule from './prefer-web-first-assertions.js'
 
 runRuleTester('prefer-web-first-assertions', rule, {
   invalid: [
@@ -1345,7 +1346,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
     { code: test('await expect(await locator.toString()).toBe("something")') },
     { code: test('const myText = page.locator("foo li").allTextContents()') },
     {
-      code: javascript`
+      code: dedent`
         import { expect } from '@playwright/test';
 
         test('my test', async ({ page }) => {

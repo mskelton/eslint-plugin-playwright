@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { Rule } from 'eslint'
 import * as ESTree from 'estree'
 import { getStringValue } from './ast.js'
@@ -7,12 +8,7 @@ import {
   parseFnCallWithReason,
   type ResolvedFnWithNode,
 } from './parseFnCall.js'
-import {
-  javascript,
-  runRuleTester,
-  runTSRuleTester,
-  typescript,
-} from './rule-tester.js'
+import { runRuleTester, runTSRuleTester } from './rule-tester.js'
 
 const isNode = (obj: unknown): obj is ESTree.Node => {
   if (typeof obj === 'object' && obj !== null) {
@@ -261,7 +257,7 @@ runRuleTester('expect', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         import { expect } from '@playwright/test';
 
         expect(x).toBe(y);
@@ -291,7 +287,7 @@ runRuleTester('expect', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         import { expect } from '@playwright/test';
 
         expect(x).not.toBe(y);
@@ -351,7 +347,7 @@ runRuleTester('expect', rule, {
       errors: [{ column: 11, line: 1, messageId: 'matcher-not-called' }],
     },
     {
-      code: javascript`
+      code: dedent`
         import { expect } from '@playwright/test';
 
         expect;
@@ -367,7 +363,7 @@ runRuleTester('expect', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         import { expect } from '@playwright/test';
 
         expect(x).is.toBe(x);
@@ -379,7 +375,7 @@ runRuleTester('expect', rule, {
       errors: [{ column: 1, line: 1, messageId: 'matcher-not-found' }],
     },
     {
-      code: javascript`
+      code: dedent`
         import { expect } from '@playwright/test';
 
         expect(x).not.resolves.toBe(x);
@@ -461,7 +457,7 @@ runRuleTester('test', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test('test full report', {
           annotation: [
             { type: 'issue', description: 'https://github.com/microsoft/playwright/issues/23180' },
@@ -900,7 +896,7 @@ runRuleTester('describe', rule, {
       ],
     },
     {
-      code: javascript`
+      code: dedent`
         test.describe('group', {
           tag: '@report',
         }, () => {
@@ -1011,7 +1007,7 @@ runRuleTester('describe', rule, {
       settings: { playwright: { globalAliases: { describe: ['context'] } } },
     },
     {
-      code: javascript`
+      code: dedent`
         context("when there is an error", () => {})
         describe("when there is an error", () => {})
       `,
@@ -1105,7 +1101,7 @@ runRuleTester('describe', rule, {
 runTSRuleTester('typescript', rule, {
   invalid: [
     {
-      code: typescript`
+      code: dedent`
         import { test } from '../it-utils';
         import { test } from '@playwright/test';
 
@@ -1133,7 +1129,7 @@ runTSRuleTester('typescript', rule, {
   ],
   valid: [
     {
-      code: typescript`
+      code: dedent`
         function it(message: string, fn: () => void): void;
         function it(cases: unknown[], message: string, fn: () => void): void;
         function it(...all: any[]): void {}
@@ -1142,7 +1138,7 @@ runTSRuleTester('typescript', rule, {
       `,
     },
     {
-      code: typescript`
+      code: dedent`
         interface it {}
         function it(...all: any[]): void {}
 
@@ -1157,7 +1153,7 @@ runTSRuleTester('typescript', rule, {
     'expect.objectContaining(expected)',
     'expect.not.objectContaining(expected)',
     {
-      code: typescript`
+      code: dedent`
         import { expect } from '@playwright/test';
 
         expect.assertions();

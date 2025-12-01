@@ -1,5 +1,5 @@
-import rule from '../../src/rules/no-force-option.js'
 import { runRuleTester, test } from '../utils/rule-tester.js'
+import rule from './no-force-option.js'
 
 const messageId = 'noForceOption'
 

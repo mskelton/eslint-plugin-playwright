@@ -1,5 +1,5 @@
-import rule from '../../src/rules/no-focused-test.js'
 import { runRuleTester } from '../utils/rule-tester.js'
+import rule from './no-focused-test.js'
 
 const messageId = 'noFocusedTest'
 

@@ -9,13 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [20.x, 22.x, 24.x]
     steps:
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: mskelton/setup-pnpm@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - run: pnpm fmt:check
+      - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm test
       - run: pnpm ts

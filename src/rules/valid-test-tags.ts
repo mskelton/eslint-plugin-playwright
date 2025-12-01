@@ -30,6 +30,11 @@ export default createRule({
       }
     }
 
+    const extractTagsFromTitle = (title: string): string[] => {
+      // Only extract tags that start with @ - these are the actual tags
+      return title.match(/@[\S]+/g) || []
+    }
+
     const validateTag = (tag: string, node: Rule.Node) => {
       if (!tag.startsWith('@')) {
         context.report({
@@ -74,6 +79,21 @@ export default createRule({
 
         const { type } = call
         if (type !== 'test' && type !== 'describe' && type !== 'step') return
+
+        // Check for tags in the title (first argument)
+        if (node.arguments.length > 0) {
+          const titleArg = node.arguments[0]
+          if (
+            titleArg &&
+            titleArg.type === 'Literal' &&
+            typeof titleArg.value === 'string'
+          ) {
+            const titleTags = extractTagsFromTitle(titleArg.value)
+            for (const tag of titleTags) {
+              validateTag(tag, node)
+            }
+          }
+        }
 
         // Check if there's an options object as the second argument
         if (node.arguments.length < 2) return
@@ -125,7 +145,8 @@ export default createRule({
   },
   meta: {
     docs: {
-      description: 'Enforce valid tag format in Playwright test blocks',
+      description:
+        'Enforce valid tag format in Playwright test blocks and titles',
       recommended: true,
     },
     messages: {

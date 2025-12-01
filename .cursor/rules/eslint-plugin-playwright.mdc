@@ -70,7 +70,7 @@ export default createRule({
 #### Testing Pattern
 
 ```typescript
-import rule from '../../src/rules/{rule-name}.js'
+import rule from './{rule-name}.js'
 import { javascript, runRuleTester } from '../utils/rule-tester.js'
 
 runRuleTester('{rule-name}', rule, {
@@ -235,7 +235,7 @@ runRuleTester('{rule-name}', rule, {
 - `pnpm test:watch` - Run tests in watch mode
 - `pnpm build` - Build the plugin
 - `pnpm lint` - Run ESLint
-- `pnpm fmt` - Format code with Prettier
+- `pnpm format` - Format code with Prettier
 
 ### Release Process
 

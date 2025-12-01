@@ -1,5 +1,6 @@
-import rule from '../../src/rules/expect-expect.js'
-import { javascript, runRuleTester } from '../utils/rule-tester.js'
+import dedent from 'dedent'
+import { runRuleTester } from '../utils/rule-tester.js'
+import rule from './expect-expect.js'
 
 runRuleTester('expect-expect', rule, {
   invalid: [
@@ -12,7 +13,7 @@ runRuleTester('expect-expect', rule, {
       errors: [{ messageId: 'noAssertions', type: 'MemberExpression' }],
     },
     {
-      code: javascript`
+      code: dedent`
         test('should fail', async ({ page }) => {
           await assertCustomCondition(page)
         })
@@ -20,7 +21,7 @@ runRuleTester('expect-expect', rule, {
       errors: [{ messageId: 'noAssertions', type: 'Identifier' }],
     },
     {
-      code: javascript`
+      code: dedent`
         test('should fail', async ({ page }) => {
           await assertCustomCondition(page)
         })
@@ -28,6 +29,16 @@ runRuleTester('expect-expect', rule, {
       errors: [{ messageId: 'noAssertions', type: 'Identifier' }],
       name: 'Custom assert function',
       options: [{ assertFunctionNames: ['wayComplexCustomCondition'] }],
+    },
+    {
+      code: dedent`
+        test('should fail', async ({ page }) => {
+          await assertCustomCondition(page)
+        })
+      `,
+      errors: [{ messageId: 'noAssertions', type: 'Identifier' }],
+      name: 'Custom assert function pattern mismatch',
+      options: [{ assertFunctionPatterns: ['^verify.*', '^check.*'] }],
     },
     {
       code: 'it("should pass", () => hi(true).toBeDefined())',
@@ -66,7 +77,7 @@ runRuleTester('expect-expect', rule, {
     'test.slow("foo", () => { expect(true).toBeDefined(); })',
     // test.step
     {
-      code: javascript`
+      code: dedent`
         test('steps', async ({ page }) => {
           await test.step('first tab', async () => {
             await expect(page.getByText('Hello')).toBeVisible();
@@ -75,7 +86,7 @@ runRuleTester('expect-expect', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         test.only('steps', async ({ page }) => {
           await test.step('first tab', async () => {
             await expect(page.getByText('Hello')).toBeVisible();
@@ -84,7 +95,7 @@ runRuleTester('expect-expect', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         test.only('steps', async ({ page }) => {
           await test.step.skip('first tab', async () => {
             await expect(page.getByText('Hello')).toBeVisible();
@@ -93,7 +104,7 @@ runRuleTester('expect-expect', rule, {
       `,
     },
     {
-      code: javascript`
+      code: dedent`
         test('should fail', async ({ page }) => {
           await assertCustomCondition(page)
         })
@@ -102,13 +113,47 @@ runRuleTester('expect-expect', rule, {
       options: [{ assertFunctionNames: ['assertCustomCondition'] }],
     },
     {
-      code: javascript`
+      code: dedent`
         test('should fail', async ({ myPage, page }) => {
           await myPage.assertCustomCondition(page)
         })
       `,
       name: 'Custom assert class method',
       options: [{ assertFunctionNames: ['assertCustomCondition'] }],
+    },
+    {
+      code: dedent`
+        test('should pass', async ({ page }) => {
+          await verifyElementVisible(page.locator('button'))
+        })
+      `,
+      name: 'Custom assert function matching regex pattern',
+      options: [{ assertFunctionPatterns: ['^verify.*'] }],
+    },
+    {
+      code: dedent`
+        test('should pass', async ({ page }) => {
+          await page.checkTextContent('Hello')
+          await validateUserLoggedIn(page)
+        })
+      `,
+      name: 'Multiple custom assert functions matching different regex patterns',
+      options: [{ assertFunctionPatterns: ['^check.*', '^validate.*'] }],
+    },
+    {
+      code: dedent`
+        test('should pass', async ({ page }) => {
+          await myCustomAssert(page)
+          await anotherAssertion(true)
+        })
+      `,
+      name: 'Mixed string and regex pattern matching',
+      options: [
+        {
+          assertFunctionNames: ['myCustomAssert'],
+          assertFunctionPatterns: ['.*Assertion$'],
+        },
+      ],
     },
     {
       code: 'it("should pass", () => expect(true).toBeDefined())',
