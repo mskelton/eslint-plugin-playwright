@@ -1,10 +1,11 @@
-import { javascript, runRuleTester } from '../utils/rule-tester.js'
+import dedent from 'dedent'
+import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './consistent-spacing-between-blocks.js'
 
 runRuleTester('consistent-spacing-between-blocks', rule, {
   invalid: [
     {
-      code: javascript`
+      code: dedent`
         test.beforeEach('should pass', () => {});
         test('should fail', async () => {
             await test.step('should pass', () => {});
@@ -28,7 +29,7 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
         { line: 10, messageId: 'missingWhitespace' },
       ],
       name: 'missing blank lines before test blocks',
-      output: javascript`
+      output: dedent`
         test.beforeEach('should pass', () => {});
 
         test('should fail', async () => {
@@ -53,7 +54,7 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
   ],
   valid: [
     {
-      code: javascript`
+      code: dedent`
         test('should pass', () => {});
 
         test('should pass', () => {});
@@ -61,7 +62,7 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
       name: 'blank line between simple test blocks',
     },
     {
-      code: javascript`
+      code: dedent`
         test.beforeEach(() => {});
 
         test.skip('should pass', () => {});
@@ -69,7 +70,7 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
       name: 'blank line between test modifiers',
     },
     {
-      code: javascript`
+      code: dedent`
         test('should pass', async () => {
             await test.step('should pass', () => {});
 
@@ -79,7 +80,7 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
       name: 'blank line between nested steps in async test',
     },
     {
-      code: javascript`
+      code: dedent`
         test('should pass', async () => {
             await test.step('should pass', () => {});
 
@@ -90,7 +91,7 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
       name: 'nested steps with a line comment in between',
     },
     {
-      code: javascript`
+      code: dedent`
         test('should pass', async () => {
             await test.step('should pass', () => {});
 
@@ -103,7 +104,7 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
       name: 'nested steps with a block comment in between',
     },
     {
-      code: javascript`
+      code: dedent`
         test('assign', async () => {
             let foo = await test.step('should pass', () => {});
 
@@ -113,7 +114,7 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
       name: 'assignments initialized by test.step',
     },
     {
-      code: javascript`
+      code: dedent`
         test('assign', async () => {
             let { foo } = await test.step('should pass', () => {});
 
