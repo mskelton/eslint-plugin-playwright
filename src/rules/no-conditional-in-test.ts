@@ -6,6 +6,11 @@ import { isTypeOfFnCall } from '../utils/parseFnCall.js'
 export default createRule({
   create(context) {
     function checkConditional(node: Rule.Node & Rule.NodeParentExtension) {
+      // Skip nullish coalescing operators - they're not conditionals
+      if (node.type === 'LogicalExpression' && node.operator === '??') {
+        return
+      }
+
       const call = findParent(node, 'CallExpression')
       if (!call) return
 

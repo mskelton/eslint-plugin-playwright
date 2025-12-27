@@ -316,5 +316,13 @@ runRuleTester('no-conditional-in-test', rule, {
     `test('My Test', { tag: productType === 'XYZ' ? '@regression' : '@smoke' }, () => {
       expect(1).toBe(1);
     })`,
+    // Nullish coalescing operator should be allowed
+    `test('test', async ({ page }) => {
+      const button = page.locator('button');
+      const {x = 0, y = 0, width = 0, height = 0} = (await button.boundingBox()) ?? {};
+    })`,
+    `test('test', async ({ page }) => {
+      const value = someFunction() ?? defaultValue;
+    })`,
   ],
 })
