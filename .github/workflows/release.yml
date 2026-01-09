@@ -1,8 +1,13 @@
 name: Release
-on: workflow_dispatch
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 0' # every Sunday at 6am
+
 permissions:
-  id-token: write
-  contents: read
+  contents: read # for checkout
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -17,15 +22,35 @@ jobs:
   release:
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for trusted publishing and npm provenance
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - uses: actions/setup-node@v4
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
-      - uses: pnpm/action-setup@v4
-      - run: pnpm install
-      - run: pnpm build
-      - run: pnpm semantic-release
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Verify provenance
+        run: npm audit signatures
+
+      - name: Build
+        run: pnpm build
+
+      - name: Publish
+        run: pnpm semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
