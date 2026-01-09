@@ -2,7 +2,7 @@
   "name": "eslint-plugin-playwright",
   "description": "ESLint plugin for Playwright testing.",
   "version": "0.0.0-semantically-released",
-  "repository": "https://github.com/playwright-community/eslint-plugin-playwright",
+  "repository": "https://github.com/mskelton/eslint-plugin-playwright",
   "author": "Mark Skelton <mark@mskelton.dev>",
   "packageManager": "pnpm@8.12.0",
   "contributors": [
