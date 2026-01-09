@@ -9,9 +9,6 @@
     "Max Schmitt <max@schmitt.mx>"
   ],
   "license": "MIT",
-  "workspaces": [
-    "examples"
-  ],
   "engines": {
     "node": ">=16.9.0"
   },
@@ -46,9 +43,7 @@
     "globals": "^16.4.0"
   },
   "devDependencies": {
-    "@anolilab/semantic-release-clean-package-json": "^3.0.2",
     "@mskelton/eslint-config": "^9.0.1",
-    "@mskelton/semantic-release-config": "^1.0.1",
     "@types/estree": "^1.0.6",
     "@types/node": "^20.11.17",
     "@typescript-eslint/parser": "^8.11.0",
