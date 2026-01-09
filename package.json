@@ -4,7 +4,7 @@
   "version": "0.0.0-semantically-released",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mskelton/eslint-plugin-playwright.git"
+    "url": "git+https://github.com/mskelton/eslint-plugin-playwright.git"
   },
   "author": "Mark Skelton <mark@mskelton.dev>",
   "packageManager": "pnpm@8.12.0",
