@@ -49,7 +49,9 @@ export default createRule({
 
     return {
       CallExpression(node) {
-        if (!isTypeOfFnCall(context, node, ['test', 'hook', 'step'])) {
+        if (
+          !isTypeOfFnCall(context, node, ['describe', 'test', 'hook', 'step'])
+        ) {
           return
         }
 
