@@ -1,55 +1,65 @@
 import type { Rule } from 'eslint'
-import type { BlockStatement, CallExpression, Program } from 'estree'
+import type * as ESTree from 'estree'
 import { getParent } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
-import { parseFnCall } from '../utils/parseFnCall.js'
+import { isTypeOfFnCall } from '../utils/parseFnCall.js'
 
 export default createRule({
   create(context) {
     const { sourceCode } = context
 
-    function isBlockOrProgram(
-      node: Rule.Node,
-    ): node is
-      | (BlockStatement & Rule.NodeParentExtension)
-      | (Program & Rule.NodeParentExtension) {
-      return node.type === 'BlockStatement' || node.type === 'Program'
-    }
-
-    function getStatementNode(node: Rule.Node): Rule.Node {
+    function getStatementNode(
+      node: ESTree.Node & Rule.NodeParentExtension,
+    ): ESTree.Node {
       const parent = getParent(node)
-      if (!parent) return node
-      if (isBlockOrProgram(parent)) return node
+      if (!parent) {
+        return node
+      }
+
+      if (node.type === 'BlockStatement' || node.type === 'Program') {
+        return node
+      }
+
       return getStatementNode(parent)
     }
 
-    function isFirstStatementInBlock(node: Rule.Node): boolean {
+    function isFirstStatementInBlock(node: ESTree.Node): boolean {
       const parent = getParent(node)
-      if (!parent) return true
-      if (isBlockOrProgram(parent)) return parent.body[0] === node
+      if (!parent) {
+        return true
+      }
+
+      if (parent.type === 'BlockStatement' || parent.type === 'Program') {
+        return parent.body[0] === node
+      }
+
       return false
     }
 
-    function checkSpacing(node: CallExpression & Rule.NodeParentExtension) {
+    function checkSpacing(
+      node: ESTree.CallExpression & Rule.NodeParentExtension,
+    ) {
       const statementNode = getStatementNode(node)
-
-      if (isFirstStatementInBlock(statementNode)) return
+      if (isFirstStatementInBlock(statementNode)) {
+        return
+      }
 
       const comments = sourceCode.getCommentsBefore(statementNode)
       const nodeToCheck = comments.length > 0 ? comments[0] : statementNode
       const lineNumber = nodeToCheck.loc!.start.line
 
-      if (lineNumber === 1) return
+      if (lineNumber === 1) {
+        return
+      }
 
       const lines = sourceCode.lines
       const previousLine = lines[lineNumber - 2]
 
-      if (previousLine.trim() === '') return
+      if (previousLine.trim() === '') {
+        return
+      }
 
       context.report({
-        data: {
-          source: sourceCode.getText(statementNode).split('\n')[0],
-        },
         fix(fixer) {
           const nodeStart = nodeToCheck.range![0]
           const textBefore = sourceCode.text.substring(0, nodeStart)
@@ -66,12 +76,7 @@ export default createRule({
 
     return {
       CallExpression(node) {
-        const call = parseFnCall(context, node)
-        if (
-          call?.type === 'test' ||
-          call?.type === 'hook' ||
-          call?.type === 'step'
-        ) {
+        if (isTypeOfFnCall(context, node, ['test', 'hook', 'step'])) {
           checkSpacing(node)
         }
       },
@@ -85,8 +90,7 @@ export default createRule({
     },
     fixable: 'whitespace',
     messages: {
-      missingWhitespace:
-        "A blank line is required before the test block '{{source}}'.",
+      missingWhitespace: 'Expected blank line before this statement.',
     },
     schema: [],
     type: 'layout',
