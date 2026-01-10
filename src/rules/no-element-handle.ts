@@ -59,7 +59,7 @@ export default createRule({
       description:
         'The use of ElementHandle is discouraged, use Locator instead',
       recommended: true,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-element-handle.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-element-handle.md',
     },
     hasSuggestions: true,
     messages: {

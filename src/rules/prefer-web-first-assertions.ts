@@ -196,7 +196,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Prefer web first assertions',
       recommended: true,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/prefer-web-first-assertions.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/prefer-web-first-assertions.md',
     },
     fixable: 'code',
     messages: {

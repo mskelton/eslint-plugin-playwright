@@ -54,7 +54,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Prefer having hooks in a consistent order',
       recommended: false,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/prefer-hooks-in-order.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/prefer-hooks-in-order.md',
     },
     messages: {
       reorderHooks:

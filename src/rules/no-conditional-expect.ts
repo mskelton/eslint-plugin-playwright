@@ -103,7 +103,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Disallow calling `expect` conditionally',
       recommended: true,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-conditional-expect.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-conditional-expect.md',
     },
     messages: {
       conditionalExpect: 'Avoid calling `expect` conditionally`',

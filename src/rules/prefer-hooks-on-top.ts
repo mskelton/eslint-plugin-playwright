@@ -27,7 +27,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Suggest having hooks before any test cases',
       recommended: false,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/prefer-hooks-on-top.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/prefer-hooks-on-top.md',
     },
     messages: {
       noHookOnTop: 'Hooks should come before test cases',

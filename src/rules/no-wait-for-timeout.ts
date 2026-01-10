@@ -30,7 +30,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Prevent usage of page.waitForTimeout()',
       recommended: true,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-wait-for-timeout.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-wait-for-timeout.md',
     },
     hasSuggestions: true,
     messages: {

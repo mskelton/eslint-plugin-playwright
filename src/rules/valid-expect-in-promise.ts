@@ -286,7 +286,7 @@ const findFirstBlockBodyUp = (
   }
 
   throw new Error(
-    `Could not find BlockStatement - please file a github issue at https://github.com/playwright-community/eslint-plugin-playwright`,
+    `Could not find BlockStatement - please file a github issue at https://github.com/mskelton/eslint-plugin-playwright`,
   )
 }
 
@@ -445,7 +445,7 @@ export default createRule({
       description:
         'Require promises that have expectations in their chain to be valid',
       recommended: true,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/valid-expect-in-promise.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/valid-expect-in-promise.md',
     },
     messages: {
       expectInFloatingPromise:

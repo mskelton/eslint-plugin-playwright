@@ -58,7 +58,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Disallows the usage of specific locator methods',
       recommended: false,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-restricted-locators.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-restricted-locators.md',
     },
     messages: {
       restricted: 'Usage of `{{method}}` is disallowed',

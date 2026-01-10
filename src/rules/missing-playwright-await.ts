@@ -166,7 +166,7 @@ export default createRule({
       category: 'Possible Errors',
       description: `Identify false positives when async Playwright APIs are not properly awaited.`,
       recommended: true,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/missing-playwright-await.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/missing-playwright-await.md',
     },
     fixable: 'code',
     messages: {

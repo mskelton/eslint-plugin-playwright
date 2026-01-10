@@ -95,7 +95,7 @@ export default createRule({
       category: 'Possible Errors',
       description: 'Enforce valid `describe()` callback',
       recommended: true,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/valid-describe-callback.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/valid-describe-callback.md',
     },
     messages: {
       invalidCallback: 'Callback argument must be a function',

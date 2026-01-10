@@ -80,7 +80,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Require setup and teardown code to be within a hook',
       recommended: false,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/require-hook.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/require-hook.md',
     },
     messages: {
       useHook: 'This should be done within a hook',

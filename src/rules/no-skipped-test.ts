@@ -62,7 +62,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Prevent usage of the `.skip()` skip test annotation.',
       recommended: true,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-skipped-test.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-skipped-test.md',
     },
     hasSuggestions: true,
     messages: {

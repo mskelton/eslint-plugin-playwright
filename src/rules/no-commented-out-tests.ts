@@ -39,7 +39,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Disallow commented out tests',
       recommended: true,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-commented-out-tests.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-commented-out-tests.md',
     },
     messages: {
       commentedTests: 'Some tests seem to be commented',

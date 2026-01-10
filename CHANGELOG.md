@@ -3,4 +3,4 @@
 The changelog is automatically updated using
 [semantic-release](https://github.com/semantic-release/semantic-release). You
 can see it on the
-[releases page](https://github.com/playwright-community/eslint-plugin-playwright/releases).
+[releases page](https://github.com/mskelton/eslint-plugin-playwright/releases).

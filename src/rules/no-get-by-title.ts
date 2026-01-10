@@ -16,7 +16,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Disallows the usage of getByTitle()',
       recommended: false,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-get-by-title.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-get-by-title.md',
     },
     messages: {
       noGetByTitle:

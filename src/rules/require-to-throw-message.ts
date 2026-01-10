@@ -29,7 +29,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Require a message for `toThrow()`',
       recommended: false,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/require-to-throw-message.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/require-to-throw-message.md',
     },
     messages: {
       addErrorMessage: 'Add an error message to {{ matcherName }}()',

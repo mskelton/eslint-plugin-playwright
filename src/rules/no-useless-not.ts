@@ -112,7 +112,7 @@ export default createRule({
       category: 'Best Practices',
       description: `Disallow usage of 'not' matchers when a more specific matcher exists`,
       recommended: true,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-useless-not.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-useless-not.md',
     },
     fixable: 'code',
     messages: {

@@ -98,7 +98,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Suggest using toContain()',
       recommended: false,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/prefer-to-contain.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/prefer-to-contain.md',
     },
     fixable: 'code',
     messages: {

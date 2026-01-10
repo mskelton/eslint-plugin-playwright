@@ -115,7 +115,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Suggest using the built-in comparison matchers',
       recommended: false,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/prefer-comparison-matcher.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/prefer-comparison-matcher.md',
     },
     fixable: 'code',
     messages: {

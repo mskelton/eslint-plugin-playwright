@@ -133,7 +133,7 @@ export default createRule({
       category: 'Possible Errors',
       description: 'Enforce valid `expect()` usage',
       recommended: true,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/valid-expect.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/valid-expect.md',
     },
     messages: {
       matcherNotCalled: 'Matchers must be called to assert.',

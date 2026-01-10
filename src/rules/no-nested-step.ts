@@ -47,7 +47,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Disallow nested `test.step()` methods',
       recommended: true,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-nested-step.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-nested-step.md',
     },
     messages: {
       noNestedStep: 'Do not nest `test.step()` methods.',

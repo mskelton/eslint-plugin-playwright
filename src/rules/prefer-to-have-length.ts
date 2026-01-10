@@ -46,7 +46,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Suggest using `toHaveLength()`',
       recommended: false,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/prefer-to-have-length.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/prefer-to-have-length.md',
     },
     fixable: 'code',
     messages: {

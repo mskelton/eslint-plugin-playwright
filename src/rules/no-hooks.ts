@@ -28,7 +28,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Disallow setup and teardown hooks',
       recommended: false,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-hooks.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-hooks.md',
     },
     messages: {
       unexpectedHook: "Unexpected '{{ hookName }}' hook",

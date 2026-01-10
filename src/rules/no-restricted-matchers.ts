@@ -60,7 +60,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Disallow specific matchers & modifiers',
       recommended: false,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-restricted-matchers.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-restricted-matchers.md',
     },
     messages: {
       restricted: 'Use of `{{restriction}}` is disallowed',

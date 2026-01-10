@@ -29,7 +29,7 @@ export default createRule({
     docs: {
       description: 'Require all assertions to use `expect.soft`',
       recommended: false,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/require-soft-assertions.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/require-soft-assertions.md',
     },
     fixable: 'code',
     messages: {

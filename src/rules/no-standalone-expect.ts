@@ -12,7 +12,7 @@ const getBlockType = (
 
   if (!func) {
     throw new Error(
-      `Unexpected BlockStatement. No parent defined. - please file a github issue at https://github.com/playwright-community/eslint-plugin-playwright`,
+      `Unexpected BlockStatement. No parent defined. - please file a github issue at https://github.com/mskelton/eslint-plugin-playwright`,
     )
   }
 
@@ -141,7 +141,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Disallow using `expect` outside of `test` blocks',
       recommended: false,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/no-standalone-expect.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-standalone-expect.md',
     },
     fixable: 'code',
     messages: {

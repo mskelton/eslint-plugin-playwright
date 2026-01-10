@@ -95,7 +95,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Prefer native locator functions',
       recommended: false,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/prefer-native-locators.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/prefer-native-locators.md',
     },
     fixable: 'code',
     messages: {

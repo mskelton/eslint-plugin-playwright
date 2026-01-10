@@ -254,7 +254,7 @@ export default createRule({
       category: 'Best Practices',
       description: 'Enforce valid titles',
       recommended: true,
-      url: 'https://github.com/playwright-community/eslint-plugin-playwright/tree/main/docs/rules/valid-title.md',
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/valid-title.md',
     },
     fixable: 'code',
     messages: {
