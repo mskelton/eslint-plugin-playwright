@@ -36,49 +36,45 @@ export default createRule({
       return false
     }
 
-    function checkSpacing(
-      node: ESTree.CallExpression & Rule.NodeParentExtension,
-    ) {
-      const statementNode = getStatementNode(node)
-      if (isFirstStatementInBlock(statementNode)) {
-        return
-      }
-
-      const comments = sourceCode.getCommentsBefore(statementNode)
-      const nodeToCheck = comments.length > 0 ? comments[0] : statementNode
-      const lineNumber = nodeToCheck.loc!.start.line
-
-      if (lineNumber === 1) {
-        return
-      }
-
-      const lines = sourceCode.lines
-      const previousLine = lines[lineNumber - 2]
-
-      if (previousLine.trim() === '') {
-        return
-      }
-
-      context.report({
-        fix(fixer) {
-          const nodeStart = nodeToCheck.range![0]
-          const textBefore = sourceCode.text.substring(0, nodeStart)
-          const lastNewlineIndex = textBefore.lastIndexOf('\n')
-          const lineStart = lastNewlineIndex + 1
-
-          return fixer.insertTextBeforeRange([lineStart, nodeStart], '\n')
-        },
-        loc: nodeToCheck.loc!,
-        messageId: 'missingWhitespace',
-        node: statementNode,
-      })
-    }
-
     return {
       CallExpression(node) {
-        if (isTypeOfFnCall(context, node, ['test', 'hook', 'step'])) {
-          checkSpacing(node)
+        if (!isTypeOfFnCall(context, node, ['test', 'hook', 'step'])) {
+          return
         }
+
+        const statementNode = getStatementNode(node)
+        if (isFirstStatementInBlock(statementNode)) {
+          return
+        }
+
+        const comments = sourceCode.getCommentsBefore(statementNode)
+        const nodeToCheck = comments.length > 0 ? comments[0] : statementNode
+        const lineNumber = nodeToCheck.loc!.start.line
+
+        if (lineNumber === 1) {
+          return
+        }
+
+        const lines = sourceCode.lines
+        const previousLine = lines[lineNumber - 2]
+
+        if (previousLine.trim() === '') {
+          return
+        }
+
+        context.report({
+          fix(fixer) {
+            const nodeStart = nodeToCheck.range![0]
+            const textBefore = sourceCode.text.substring(0, nodeStart)
+            const lastNewlineIndex = textBefore.lastIndexOf('\n')
+            const lineStart = lastNewlineIndex + 1
+
+            return fixer.insertTextBeforeRange([lineStart, nodeStart], '\n')
+          },
+          loc: nodeToCheck.loc!,
+          messageId: 'missingWhitespace',
+          node: statementNode,
+        })
       },
     }
   },
