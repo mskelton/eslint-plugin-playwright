@@ -1,4 +1,5 @@
 import globals from 'globals'
+import consistentSpacingBetweenBlocks from './rules/consistent-spacing-between-blocks.js'
 import expectExpect from './rules/expect-expect.js'
 import maxExpects from './rules/max-expects.js'
 import maxNestedDescribe from './rules/max-nested-describe.js'
@@ -56,6 +57,7 @@ import validTitle from './rules/valid-title.js'
 const index = {
   configs: {},
   rules: {
+    'consistent-spacing-between-blocks': consistentSpacingBetweenBlocks,
     'expect-expect': expectExpect,
     'max-expects': maxExpects,
     'max-nested-describe': maxNestedDescribe,
@@ -115,6 +117,7 @@ const index = {
 const sharedConfig = {
   rules: {
     'no-empty-pattern': 'off',
+    'playwright/consistent-spacing-between-blocks': 'warn',
     'playwright/expect-expect': 'warn',
     'playwright/max-nested-describe': 'warn',
     'playwright/missing-playwright-await': 'error',
