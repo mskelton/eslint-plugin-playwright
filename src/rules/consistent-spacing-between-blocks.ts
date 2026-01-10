@@ -1,6 +1,6 @@
 import type { Rule } from 'eslint'
 import type * as ESTree from 'estree'
-import { findParent, getParent } from '../utils/ast.js'
+import { getParent } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall } from '../utils/parseFnCall.js'
 
@@ -8,81 +8,92 @@ export default createRule({
   create(context) {
     const { sourceCode } = context
 
-    function getStatementNode(
+    /**
+     * Finds the statement node that contains the given node. Returns
+     * ExpressionStatement, VariableDeclaration, or null if not found.
+     */
+    function findContainingStatement(
       node: ESTree.Node & Rule.NodeParentExtension,
-    ): ESTree.Node | null {
-      // Find the statement that contains this node
-      // Check for ExpressionStatement and VariableDeclaration first (these are the actual statements)
-      // before checking BlockStatement (which is a container)
+    ): ESTree.ExpressionStatement | ESTree.VariableDeclaration | null {
       let current: (ESTree.Node & Rule.NodeParentExtension) | null = node
 
       while (current) {
         const parent = getParent(current)
         if (!parent) break
 
-        // If we find an ExpressionStatement or VariableDeclaration, that's our statement
-        if (
-          parent.type === 'ExpressionStatement' ||
-          parent.type === 'VariableDeclaration'
-        ) {
+        if (parent.type === 'ExpressionStatement') {
           return parent
         }
 
-        // If we hit a BlockStatement or Program, return the current node
-        // (which should be the statement inside the block)
+        if (parent.type === 'VariableDeclaration') {
+          return parent
+        }
+
+        // Stop if we hit a block - we should have found a statement by now
         if (parent.type === 'BlockStatement' || parent.type === 'Program') {
-          return current
+          break
         }
 
         current = parent
       }
 
-      return node
+      return null
     }
 
-    function isFirstStatementInBlock(
-      node: ESTree.Node & Rule.NodeParentExtension,
+    /** Checks if the statement is the first statement in its containing block. */
+    function isFirstInBlock(
+      statement: ESTree.ExpressionStatement | ESTree.VariableDeclaration,
     ): boolean {
-      const parent = getParent(node)
-      if (!parent) {
-        return true
-      }
+      const parent = getParent(statement)
+      if (!parent) return true
 
       if (parent.type === 'BlockStatement' || parent.type === 'Program') {
-        return parent.body[0] === node
+        return parent.body[0] === statement
       }
 
       return false
     }
 
+    /** Checks if there's a blank line before the given node. */
+    function hasBlankLineBefore(
+      node:
+        | ESTree.Comment
+        | ESTree.ExpressionStatement
+        | ESTree.VariableDeclaration,
+    ): boolean {
+      const lineNumber = node.loc!.start.line
+
+      // Can't have a blank line before the first line
+      if (lineNumber === 1) return true
+
+      const previousLine = sourceCode.lines[lineNumber - 2]
+      return previousLine.trim() === ''
+    }
+
     return {
       CallExpression(node) {
+        // Only check test, hook, step, and describe calls
         if (
           !isTypeOfFnCall(context, node, ['test', 'hook', 'step', 'describe'])
         ) {
           return
         }
 
-        const statementNode = getStatementNode(node)
-        if (!statementNode || isFirstStatementInBlock(statementNode)) {
-          return
-        }
+        // Find the statement that contains this call
+        const statement = findContainingStatement(node)
+        if (!statement) return
 
-        const comments = sourceCode.getCommentsBefore(statementNode)
-        const nodeToCheck = comments.length > 0 ? comments[0] : statementNode
-        const lineNumber = nodeToCheck.loc!.start.line
+        // Skip if it's the first statement in its block
+        if (isFirstInBlock(statement)) return
 
-        if (lineNumber === 1) {
-          return
-        }
+        // Check for comments before the statement
+        const comments = sourceCode.getCommentsBefore(statement)
+        const nodeToCheck = comments.length > 0 ? comments[0] : statement
 
-        const lines = sourceCode.lines
-        const previousLine = lines[lineNumber - 2]
+        // Skip if there's already a blank line
+        if (hasBlankLineBefore(nodeToCheck)) return
 
-        if (previousLine.trim() === '') {
-          return
-        }
-
+        // Report the error
         context.report({
           fix(fixer) {
             const nodeStart = nodeToCheck.range![0]
@@ -94,7 +105,7 @@ export default createRule({
           },
           loc: nodeToCheck.loc!,
           messageId: 'missingWhitespace',
-          node: statementNode,
+          node,
         })
       },
     }
