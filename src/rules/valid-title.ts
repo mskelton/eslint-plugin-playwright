@@ -25,7 +25,7 @@ const doesBinaryExpressionContainStringNode = (
 const quoteStringValue = (node: StringNode): string =>
   node.type === 'TemplateLiteral'
     ? `\`${node.quasis[0].value.raw}\``
-    : node.raw ?? ''
+    : (node.raw ?? '')
 
 const compileMatcherPattern = (
   matcherMaybeWithMessage: MatcherAndMessage | string,

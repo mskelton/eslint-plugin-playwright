@@ -316,6 +316,5 @@ This project uses semantic-release, so commit messages must follow the format:
 - Update documentation as needed
 - Follow the existing code style and patterns
 - Provide clear description of changes and rationale
-
   - `test: add tests`
   - `style: update styles`

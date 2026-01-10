@@ -2,8 +2,8 @@
 
 ## Installing Dependencies
 
-We use [yarn](https://yarnpkg.com) for managing dependencies. You can install the
-necessary dependencies using the following command:
+We use [yarn](https://yarnpkg.com) for managing dependencies. You can install
+the necessary dependencies using the following command:
 
 ```bash
 yarn install
