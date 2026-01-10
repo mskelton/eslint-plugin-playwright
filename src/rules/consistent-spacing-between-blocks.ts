@@ -1,6 +1,6 @@
 import type { Rule } from 'eslint'
 import type * as ESTree from 'estree'
-import { getParent } from '../utils/ast.js'
+import { findParent, getParent } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall } from '../utils/parseFnCall.js'
 
@@ -10,20 +10,39 @@ export default createRule({
 
     function getStatementNode(
       node: ESTree.Node & Rule.NodeParentExtension,
-    ): ESTree.Node {
-      const parent = getParent(node)
-      if (!parent) {
-        return node
+    ): ESTree.Node | null {
+      // Find the statement that contains this node
+      // Check for ExpressionStatement and VariableDeclaration first (these are the actual statements)
+      // before checking BlockStatement (which is a container)
+      let current: (ESTree.Node & Rule.NodeParentExtension) | null = node
+
+      while (current) {
+        const parent = getParent(current)
+        if (!parent) break
+
+        // If we find an ExpressionStatement or VariableDeclaration, that's our statement
+        if (
+          parent.type === 'ExpressionStatement' ||
+          parent.type === 'VariableDeclaration'
+        ) {
+          return parent
+        }
+
+        // If we hit a BlockStatement or Program, return the current node
+        // (which should be the statement inside the block)
+        if (parent.type === 'BlockStatement' || parent.type === 'Program') {
+          return current
+        }
+
+        current = parent
       }
 
-      if (node.type === 'BlockStatement' || node.type === 'Program') {
-        return node
-      }
-
-      return getStatementNode(parent)
+      return node
     }
 
-    function isFirstStatementInBlock(node: ESTree.Node): boolean {
+    function isFirstStatementInBlock(
+      node: ESTree.Node & Rule.NodeParentExtension,
+    ): boolean {
       const parent = getParent(node)
       if (!parent) {
         return true
@@ -38,12 +57,14 @@ export default createRule({
 
     return {
       CallExpression(node) {
-        if (!isTypeOfFnCall(context, node, ['test', 'hook', 'step'])) {
+        if (
+          !isTypeOfFnCall(context, node, ['test', 'hook', 'step', 'describe'])
+        ) {
           return
         }
 
         const statementNode = getStatementNode(node)
-        if (isFirstStatementInBlock(statementNode)) {
+        if (!statementNode || isFirstStatementInBlock(statementNode)) {
           return
         }
 
