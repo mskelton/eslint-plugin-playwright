@@ -1,21 +1,34 @@
 name: Test
+
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x, 22.x, 24.x]
     steps:
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: mskelton/setup-pnpm@v2
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-      - run: pnpm format:check
-      - run: pnpm lint
-      - run: pnpm test
-      - run: pnpm ts
+          node-version: 'lts/*'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Check formatting
+        run: yarn format:check
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Test
+        run: yarn test
+
+      - name: Type check
+        run: yarn ts

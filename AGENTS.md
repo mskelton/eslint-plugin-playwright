@@ -216,7 +216,7 @@ runRuleTester('{rule-name}', rule, {
 3. **Create a plan**: Step-by-step approach to solving the issue
 4. **Write tests first**: Implement failing tests that demonstrate the problem
 5. **Implement the solution**: Write the rule or fix the bug
-6. **Verify with tests**: Run `pnpm test` to ensure all tests pass
+6. **Verify with tests**: Run `yarn test` to ensure all tests pass
 7. **Create branch and PR**: Use semantic commit messages and add `ai` label
 
 ### Common Issue Types
@@ -230,12 +230,12 @@ runRuleTester('{rule-name}', rule, {
 
 ### Development Commands
 
-- `pnpm install` - Install dependencies
-- `pnpm test` - Run all tests
-- `pnpm test:watch` - Run tests in watch mode
-- `pnpm build` - Build the plugin
-- `pnpm lint` - Run ESLint
-- `pnpm format` - Format code with Prettier
+- `yarn install` - Install dependencies
+- `yarn test` - Run all tests
+- `yarn test:watch` - Run tests in watch mode
+- `yarn build` - Build the plugin
+- `yarn lint` - Run ESLint
+- `yarn format` - Format code with Prettier
 
 ### Release Process
 

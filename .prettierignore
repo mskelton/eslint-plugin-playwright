@@ -1,2 +1,3 @@
 dist/
-pnpm-lock.yaml
+.yarn/
+.yarnrc.yml

@@ -7,7 +7,7 @@
     "url": "git+https://github.com/mskelton/eslint-plugin-playwright.git"
   },
   "author": "Mark Skelton <mark@mskelton.dev>",
-  "packageManager": "pnpm@8.12.0",
+  "packageManager": "yarn@4.12.0",
   "contributors": [
     "Max Schmitt <max@schmitt.mx>"
   ],

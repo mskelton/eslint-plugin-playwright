@@ -3,7 +3,7 @@ import mskelton from '@mskelton/eslint-config'
 export default [
   ...mskelton.recommended,
   {
-    ignores: ['dist'],
+    ignores: ['dist/**', '.yarn/**'],
   },
   {
     files: ['**/*.test.ts'],

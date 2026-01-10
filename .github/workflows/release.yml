@@ -20,14 +20,11 @@ jobs:
         with:
           node-version: 'lts/*'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
       - name: Install dependencies
-        run: pnpm install
+        run: yarn install
 
       - name: Run tests
-        run: pnpm test
+        run: yarn test
 
   release:
     needs: test
@@ -48,19 +45,16 @@ jobs:
           node-version: 'lts/*'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
       - name: Install dependencies
-        run: pnpm install
+        run: yarn install
 
       - name: Verify provenance
         run: npm audit signatures
 
       - name: Build
-        run: pnpm build
+        run: yarn build
 
       - name: Publish
-        run: pnpm semantic-release
+        run: yarn semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

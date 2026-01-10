@@ -2,11 +2,11 @@
 
 ## Installing Dependencies
 
-We use [pnpm](https://pnpm.io) for managing dependencies. You can install the
+We use [yarn](https://yarnpkg.com) for managing dependencies. You can install the
 necessary dependencies using the following command:
 
 ```bash
-pnpm install
+yarn install
 ```
 
 ## Running Tests
@@ -15,13 +15,13 @@ When making changes to lint rules, you can re-run the tests with the following
 command:
 
 ```bash
-pnpm test
+yarn test
 ```
 
 Or run it in watch mode like so:
 
 ```bash
-pnpm test -- --watch
+yarn test --watch
 ```
 
 ## Adding new rules
