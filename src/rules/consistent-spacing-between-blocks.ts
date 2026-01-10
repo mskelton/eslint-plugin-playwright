@@ -8,92 +8,68 @@ export default createRule({
   create(context) {
     const { sourceCode } = context
 
-    /**
-     * Finds the statement node that contains the given node. Returns
-     * ExpressionStatement, VariableDeclaration, or null if not found.
-     */
-    function findContainingStatement(
+    function getStatementNode(
       node: ESTree.Node & Rule.NodeParentExtension,
-    ): ESTree.ExpressionStatement | ESTree.VariableDeclaration | null {
-      let current: (ESTree.Node & Rule.NodeParentExtension) | null = node
-
-      while (current) {
-        const parent = getParent(current)
-        if (!parent) break
-
-        if (parent.type === 'ExpressionStatement') {
-          return parent
-        }
-
-        if (parent.type === 'VariableDeclaration') {
-          return parent
-        }
-
-        // Stop if we hit a block - we should have found a statement by now
-        if (parent.type === 'BlockStatement' || parent.type === 'Program') {
-          break
-        }
-
-        current = parent
+    ): ESTree.Node {
+      const parent = getParent(node)
+      if (!parent) {
+        return node
       }
 
-      return null
+      if (
+        node.type === 'LabeledStatement' ||
+        node.type === 'ExpressionStatement' ||
+        node.type === 'VariableDeclaration'
+      ) {
+        return node
+      }
+
+      return getStatementNode(parent)
     }
 
-    /** Checks if the statement is the first statement in its containing block. */
-    function isFirstInBlock(
-      statement: ESTree.ExpressionStatement | ESTree.VariableDeclaration,
-    ): boolean {
-      const parent = getParent(statement)
-      if (!parent) return true
+    function isFirstStatementInBlock(node: ESTree.Node): boolean {
+      const parent = getParent(node)
+      if (!parent) {
+        return true
+      }
 
       if (parent.type === 'BlockStatement' || parent.type === 'Program') {
-        return parent.body[0] === statement
+        return parent.body[0] === node
+      }
+
+      if (parent.type === 'SwitchCase') {
+        return parent.consequent[0] === node
       }
 
       return false
     }
 
-    /** Checks if there's a blank line before the given node. */
-    function hasBlankLineBefore(
-      node:
-        | ESTree.Comment
-        | ESTree.ExpressionStatement
-        | ESTree.VariableDeclaration,
-    ): boolean {
-      const lineNumber = node.loc!.start.line
-
-      // Can't have a blank line before the first line
-      if (lineNumber === 1) return true
-
-      const previousLine = sourceCode.lines[lineNumber - 2]
-      return previousLine.trim() === ''
-    }
-
     return {
       CallExpression(node) {
-        // Only check test, hook, step, and describe calls
-        if (
-          !isTypeOfFnCall(context, node, ['test', 'hook', 'step', 'describe'])
-        ) {
+        if (!isTypeOfFnCall(context, node, ['test', 'hook', 'step'])) {
           return
         }
 
-        // Find the statement that contains this call
-        const statement = findContainingStatement(node)
-        if (!statement) return
+        const statement = getStatementNode(node)
+        if (isFirstStatementInBlock(statement)) {
+          return
+        }
 
-        // Skip if it's the first statement in its block
-        if (isFirstInBlock(statement)) return
-
-        // Check for comments before the statement
         const comments = sourceCode.getCommentsBefore(statement)
         const nodeToCheck = comments.length > 0 ? comments[0] : statement
+        const lineNumber = nodeToCheck.loc!.start.line
 
-        // Skip if there's already a blank line
-        if (hasBlankLineBefore(nodeToCheck)) return
+        if (lineNumber === 1) {
+          return
+        }
 
-        // Report the error on the statement (not the comment) for accurate line numbers
+        const lines = sourceCode.lines
+        const previousLine = lines[lineNumber - 2]
+
+        if (previousLine.trim() === '') {
+          return
+        }
+
         context.report({
           fix(fixer) {
             const nodeStart = nodeToCheck.range![0]
@@ -103,7 +79,7 @@ export default createRule({
 
             return fixer.insertTextBeforeRange([lineStart, nodeStart], '\n')
           },
-          loc: statement.loc!,
+          loc: nodeToCheck.loc!,
           messageId: 'missingWhitespace',
           node: statement,
         })
@@ -115,6 +91,7 @@ export default createRule({
       description:
         'Enforces a blank line between Playwright test blocks (e.g., test, test.step, test.beforeEach, etc.).',
       recommended: true,
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/consistent-spacing-between-blocks.md',
     },
     fixable: 'whitespace',
     messages: {

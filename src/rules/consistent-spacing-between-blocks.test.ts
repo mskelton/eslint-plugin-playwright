@@ -77,7 +77,7 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
       errors: [
         { line: 2, messageId: 'missingWhitespace' },
         { line: 4, messageId: 'missingWhitespace' },
-        { line: 7, messageId: 'missingWhitespace' },
+        { line: 6, messageId: 'missingWhitespace' },
         { line: 10, messageId: 'missingWhitespace' },
         { line: 17, messageId: 'missingWhitespace' },
       ],
@@ -230,6 +230,12 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
         describe('someText', () => {
           const something = 'abc';
 
+          test.afterAll(() => {
+            // stuff
+          });
+        });
+
+        describe('someText', () => {
           test.afterAll(() => {
             // stuff
           });
