@@ -18,6 +18,7 @@ import noNetworkidle from './rules/no-networkidle.js'
 import noNthMethods from './rules/no-nth-methods.js'
 import noPagePause from './rules/no-page-pause.js'
 import noRawLocators from './rules/no-raw-locators.js'
+import noRestrictedLocators from './rules/no-restricted-locators.js'
 import noRestrictedMatchers from './rules/no-restricted-matchers.js'
 import noSkippedTest from './rules/no-skipped-test.js'
 import noSlowedTest from './rules/no-slowed-test.js'
@@ -74,6 +75,7 @@ const index = {
     'no-nth-methods': noNthMethods,
     'no-page-pause': noPagePause,
     'no-raw-locators': noRawLocators,
+    'no-restricted-locators': noRestrictedLocators,
     'no-restricted-matchers': noRestrictedMatchers,
     'no-skipped-test': noSkippedTest,
     'no-slowed-test': noSlowedTest,
