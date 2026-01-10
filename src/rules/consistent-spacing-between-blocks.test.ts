@@ -51,8 +51,192 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
         test('should fail', () => {});
       `,
     },
+    {
+      code: dedent`
+        const someText = 'abc';
+        test.afterAll(() => {
+        });
+        describe('someText', () => {
+          const something = 'abc';
+          // A comment
+          test.afterAll(() => {
+            // stuff
+          });
+          test.afterAll(() => {
+            // other stuff
+          });
+        });
+
+        describe('someText', () => {
+          const something = 'abc';
+          test.afterAll(() => {
+            // stuff
+          });
+        });
+      `,
+      errors: [
+        { line: 2, messageId: 'missingWhitespace' },
+        { line: 4, messageId: 'missingWhitespace' },
+        { line: 7, messageId: 'missingWhitespace' },
+        { line: 10, messageId: 'missingWhitespace' },
+        { line: 17, messageId: 'missingWhitespace' },
+      ],
+      name: 'padding around test blocks with describe blocks',
+      output: dedent`
+        const someText = 'abc';
+
+        test.afterAll(() => {
+        });
+
+        describe('someText', () => {
+          const something = 'abc';
+
+          // A comment
+          test.afterAll(() => {
+            // stuff
+          });
+
+          test.afterAll(() => {
+            // other stuff
+          });
+        });
+
+        describe('someText', () => {
+          const something = 'abc';
+
+          test.afterAll(() => {
+            // stuff
+          });
+        });
+      `,
+    },
+    {
+      code: dedent`
+        const someText = 'abc'
+        ;test.afterEach(() => {})
+      `,
+      errors: [{ line: 2, messageId: 'missingWhitespace' }],
+      name: 'semicolon before test block',
+      output: dedent`
+        const someText = 'abc'
+
+        ;test.afterEach(() => {})
+      `,
+    },
+    {
+      code: dedent`
+        const someText = 'abc';
+        xyz:
+        test.afterEach(() => {});
+      `,
+      errors: [{ line: 3, messageId: 'missingWhitespace' }],
+      name: 'label before test block',
+      output: dedent`
+        const someText = 'abc';
+
+        xyz:
+        test.afterEach(() => {});
+      `,
+    },
+    {
+      code: dedent`
+        const expr = 'Papayas';
+        test.beforeEach(() => {});
+        test('does something?', async () => {
+          switch (expr) {
+            case 'Oranges':
+              await test.step('check oranges', () => {
+                expect(expr).toBe('Oranges');
+              });
+              break;
+            case 'Mangoes':
+            case 'Papayas':
+              const v = 1;
+              await test.step('check value', () => {
+                expect(v).toBe(1);
+              });
+              await test.step('log message', () => {
+                console.log('Mangoes and papayas are $2.79 a pound.');
+              });
+              // Expected output: "Mangoes and papayas are $2.79 a pound."
+              break;
+            default:
+              console.log(\`Sorry, we are out of $\{expr}.\`);
+          }
+        });
+      `,
+      errors: [
+        { line: 2, messageId: 'missingWhitespace' },
+        { line: 3, messageId: 'missingWhitespace' },
+        { line: 8, messageId: 'missingWhitespace' },
+        { line: 13, messageId: 'missingWhitespace' },
+        { line: 16, messageId: 'missingWhitespace' },
+      ],
+      name: 'complex test with switch statement and nested test.step blocks',
+      output: dedent`
+        const expr = 'Papayas';
+
+        test.beforeEach(() => {});
+
+        test('does something?', async () => {
+          switch (expr) {
+            case 'Oranges':
+              await test.step('check oranges', () => {
+                expect(expr).toBe('Oranges');
+              });
+
+              break;
+            case 'Mangoes':
+            case 'Papayas':
+              const v = 1;
+
+              await test.step('check value', () => {
+                expect(v).toBe(1);
+              });
+
+              await test.step('log message', () => {
+                console.log('Mangoes and papayas are $2.79 a pound.');
+              });
+              // Expected output: "Mangoes and papayas are $2.79 a pound."
+              break;
+            default:
+              console.log(\`Sorry, we are out of $\{expr}.\`);
+          }
+        });
+      `,
+    },
   ],
   valid: [
+    {
+      code: dedent`
+        const someText = 'abc';
+
+        test.afterAll(() => {
+        });
+
+        describe('someText', () => {
+          const something = 'abc';
+
+          // A comment
+          test.afterAll(() => {
+            // stuff
+          });
+
+          test.afterAll(() => {
+            // other stuff
+          });
+        });
+
+        describe('someText', () => {
+          const something = 'abc';
+
+          test.afterAll(() => {
+            // stuff
+          });
+        });
+      `,
+      name: 'padding around test blocks with describe blocks (valid)',
+    },
     {
       code: dedent`
         test('should pass', () => {});

@@ -93,7 +93,7 @@ export default createRule({
         // Skip if there's already a blank line
         if (hasBlankLineBefore(nodeToCheck)) return
 
-        // Report the error
+        // Report the error on the statement (not the comment) for accurate line numbers
         context.report({
           fix(fixer) {
             const nodeStart = nodeToCheck.range![0]
@@ -103,9 +103,9 @@ export default createRule({
 
             return fixer.insertTextBeforeRange([lineStart, nodeStart], '\n')
           },
-          loc: nodeToCheck.loc!,
+          loc: statement.loc!,
           messageId: 'missingWhitespace',
-          node,
+          node: statement,
         })
       },
     }
