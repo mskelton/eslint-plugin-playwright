@@ -129,7 +129,7 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
         xyz:
         test.afterEach(() => {});
       `,
-      errors: [{ line: 3, messageId: 'missingWhitespace' }],
+      errors: [{ line: 2, messageId: 'missingWhitespace' }],
       name: 'label before test block',
       output: dedent`
         const someText = 'abc';

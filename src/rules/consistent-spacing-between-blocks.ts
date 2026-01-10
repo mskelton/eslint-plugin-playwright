@@ -17,10 +17,13 @@ export default createRule({
       }
 
       if (
-        node.type === 'LabeledStatement' ||
         node.type === 'ExpressionStatement' ||
         node.type === 'VariableDeclaration'
       ) {
+        if (parent.type === 'LabeledStatement') {
+          return node.parent
+        }
+
         return node
       }
 
