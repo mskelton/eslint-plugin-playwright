@@ -2,7 +2,6 @@ import { Rule } from 'eslint'
 import * as ESTree from 'estree'
 import {
   getNodeName,
-  getParent,
   getStringValue,
   isFunction,
   isIdentifier,
@@ -14,7 +13,7 @@ import {
   isTypeOfFnCall,
   parseFnCall,
 } from '../utils/parseFnCall.js'
-import { KnownCallExpression } from '../utils/types.js'
+import { KnownCallExpression, NodeWithParent } from '../utils/types.js'
 
 const isPromiseChainCall = (node: ESTree.Node): node is KnownCallExpression => {
   if (
@@ -282,7 +281,7 @@ const findFirstBlockBodyUp = (
       return parent.body
     }
 
-    parent = getParent(parent)
+    parent = (parent as NodeWithParent).parent
   }
 
   throw new Error(
@@ -306,7 +305,7 @@ const isDirectlyWithinTestCaseCall = (
       )
     }
 
-    parent = getParent(parent)
+    parent = (parent as NodeWithParent).parent
   }
 
   return false

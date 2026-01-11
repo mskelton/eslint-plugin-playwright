@@ -7,9 +7,11 @@ export default createRule({
     const stack: number[] = []
 
     function pushStepCallback(node: Rule.Node) {
+      const { parent } = node
+
       if (
-        node.parent.type !== 'CallExpression' ||
-        !isTypeOfFnCall(context, node.parent, ['step'])
+        parent?.type !== 'CallExpression' ||
+        !isTypeOfFnCall(context, parent, ['step'])
       ) {
         return
       }
@@ -19,7 +21,7 @@ export default createRule({
       if (stack.length > 1) {
         context.report({
           messageId: 'noNestedStep',
-          node: node.parent.callee,
+          node: parent.callee,
         })
       }
     }
@@ -28,7 +30,7 @@ export default createRule({
       const { parent } = node
 
       if (
-        parent.type === 'CallExpression' &&
+        parent?.type === 'CallExpression' &&
         isTypeOfFnCall(context, parent, ['step'])
       ) {
         stack.pop()

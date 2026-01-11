@@ -1,7 +1,7 @@
 import * as ESTree from 'estree'
-import { getParent } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall, parseFnCall } from '../utils/parseFnCall.js'
+import { NodeWithParent } from '../utils/types.js'
 
 export default createRule({
   create(context) {
@@ -13,7 +13,7 @@ export default createRule({
     let count = 0
 
     const maybeResetCount = (node: ESTree.Node) => {
-      const parent = getParent(node)
+      const parent = (node as NodeWithParent).parent
       const isTestFn =
         parent?.type !== 'CallExpression' ||
         isTypeOfFnCall(context, parent, ['test'])
@@ -31,7 +31,7 @@ export default createRule({
 
         if (
           call?.type !== 'expect' ||
-          getParent(call.head.node)?.type === 'MemberExpression'
+          (call.head.node as NodeWithParent).parent?.type === 'MemberExpression'
         ) {
           return
         }

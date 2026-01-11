@@ -1,8 +1,8 @@
-import { Rule } from 'eslint'
 import ESTree from 'estree'
-import { getParent, getStringValue, isIdentifier } from '../utils/ast.js'
+import { getStringValue, isIdentifier } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { ParsedFnCall, parseFnCall } from '../utils/parseFnCall.js'
+import { NodeWithParent } from '../utils/types.js'
 
 const validTypes = new Set([
   'AwaitExpression',
@@ -60,7 +60,7 @@ const playwrightTestMatchers = [
 ]
 
 function getReportNode(node: ESTree.Node) {
-  const parent = getParent(node)
+  const parent = (node as NodeWithParent).parent
   return parent?.type === 'MemberExpression' ? parent : node
 }
 
@@ -95,7 +95,7 @@ export default createRule({
     ])
 
     function checkValidity(node: ESTree.Node, visited: Set<ESTree.Node>) {
-      const parent = getParent(node)
+      const parent = (node as NodeWithParent).parent
       if (!parent) return false
 
       if (visited.has(parent)) return false
@@ -129,7 +129,7 @@ export default createRule({
         const scope = context.sourceCode.getScope(parent.parent)
 
         for (const ref of scope.references) {
-          const refParent = (ref.identifier as Rule.Node).parent
+          const refParent = (ref.identifier as NodeWithParent).parent
           if (visited.has(refParent)) continue
           // If the parent of the reference is valid, we can immediately return
           // true. Otherwise, we'll check the validity of the parent to continue

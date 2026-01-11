@@ -1,6 +1,6 @@
 import { AST, Rule } from 'eslint'
 import ESTree from 'estree'
-import { getParent } from './ast.js'
+import { NodeWithParent } from './types.js'
 
 export const getRangeOffset = (node: ESTree.Node) =>
   node.type === 'Identifier' ? 0 : 1
@@ -32,7 +32,7 @@ export function removePropertyFixer(
   fixer: Rule.RuleFixer,
   property: ESTree.Property,
 ) {
-  const parent = getParent(property)
+  const parent = (property as NodeWithParent).parent
   if (parent?.type !== 'ObjectExpression') return
 
   // If the property is the only one in the object, remove the entire object.

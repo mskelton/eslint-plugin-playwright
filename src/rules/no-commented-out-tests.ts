@@ -1,9 +1,12 @@
 import { Rule } from 'eslint'
 import * as ESTree from 'estree'
 import { createRule } from '../utils/createRule.js'
+import { Settings } from '../utils/types.js'
 
 function getTestNames(context: Rule.RuleContext) {
-  const aliases = context.settings.playwright?.globalAliases?.test ?? []
+  const settings = context.settings as unknown as Settings | undefined
+  const aliases = settings?.playwright?.globalAliases?.test ?? []
+
   return ['test', ...aliases]
 }
 

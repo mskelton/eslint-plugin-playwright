@@ -2,13 +2,13 @@ import { Rule } from 'eslint'
 import * as ESTree from 'estree'
 import {
   findParent,
-  getParent,
   getStringValue,
   isFunction,
   isIdentifier,
   isStringNode,
   StringNode,
 } from './ast.js'
+import { NodeWithParent, Settings } from './types.js'
 
 const testHooks = new Set(['afterAll', 'afterEach', 'beforeAll', 'beforeEach'])
 
@@ -147,8 +147,8 @@ const resolvePossibleAliasedGlobal = (
   context: Rule.RuleContext,
   global: string,
 ) => {
-  const globalAliases: Record<string, string[]> =
-    context.settings.playwright?.globalAliases ?? {}
+  const settings = context.settings as unknown as Settings | undefined
+  const globalAliases = settings?.playwright?.globalAliases ?? {}
 
   const alias = Object.entries(globalAliases).find(([, aliases]) =>
     aliases.includes(global),
@@ -342,7 +342,7 @@ export const findTopMostCallExpression = (
   node: ESTree.CallExpression,
 ): ESTree.CallExpression & Rule.NodeParentExtension => {
   let top = node
-  let parent = getParent(node)
+  let parent = (node as NodeWithParent).parent
   let child: ESTree.Node = node
 
   while (parent) {
@@ -354,7 +354,7 @@ export const findTopMostCallExpression = (
     if (parent.type === 'CallExpression' && parent.callee === child) {
       top = parent
       node = parent
-      parent = getParent(parent)
+      parent = (parent as NodeWithParent).parent
       continue
     }
 
@@ -363,7 +363,7 @@ export const findTopMostCallExpression = (
     }
 
     child = parent
-    parent = getParent(parent)
+    parent = (parent as NodeWithParent).parent
   }
 
   return top as ESTree.CallExpression & Rule.NodeParentExtension
@@ -434,7 +434,7 @@ function parse(
     }
 
     if (result === 'matcher-not-found') {
-      if (getParent(node)?.type === 'MemberExpression') {
+      if ((node as NodeWithParent).parent?.type === 'MemberExpression') {
         return 'matcher-not-called'
       }
     }
@@ -446,7 +446,7 @@ function parse(
   if (
     chain.nodes
       .slice(0, chain.nodes.length - 1)
-      .some((n) => getParent(n)?.type !== 'MemberExpression')
+      .some((n) => (n as NodeWithParent).parent?.type !== 'MemberExpression')
   ) {
     return null
   }
@@ -454,7 +454,7 @@ function parse(
   // Ensure that we're at the "top" of the function call chain otherwise when
   // parsing e.g. x().y.z(), we'll incorrectly find & parse "x()" even though
   // the full chain is not a valid Playwright function call chain
-  const parent = getParent(node)
+  const parent = (node as NodeWithParent).parent
   if (
     parent?.type === 'CallExpression' ||
     parent?.type === 'MemberExpression'

@@ -27,7 +27,10 @@ export function createRule(rule: Rule.RuleModule): Rule.RuleModule {
           // in the options.
           return context.report(
             message
-              ? { ...rest, message: interpolate(message, data) }
+              ? {
+                  ...rest,
+                  message: interpolate(message, data as Record<string, string>),
+                }
               : options,
           )
         }

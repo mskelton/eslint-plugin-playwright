@@ -8,6 +8,7 @@ import {
 } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { truthy } from '../utils/misc.js'
+import { NodeWithParent } from '../utils/types.js'
 
 /** Collect all variable references in the parent scopes recursively. */
 function collectVariables(scope: Scope.Scope | null): string[] {
@@ -115,7 +116,7 @@ export default createRule({
         // then it's likely a global variable such as `Promise` or `console`.
         through
           .filter((ref) => {
-            const parent = getParent(ref.identifier)
+            const parent = (ref.identifier as NodeWithParent).parent
             return (parent?.type as string) !== 'TSTypeReference'
           })
           .filter((ref) => allRefs.has(ref.identifier.name))

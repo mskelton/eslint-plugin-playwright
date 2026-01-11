@@ -84,12 +84,6 @@ export function isPropertyAccessor(
   return typeof name === 'string' ? value === name : name.test(value)
 }
 
-export function getParent(
-  node: ESTree.Node,
-): ESTree.Node & Rule.NodeParentExtension {
-  return (node as NodeWithParent).parent
-}
-
 export function findParent<T extends ESTree.Node['type']>(
   node: ESTree.Node,
   type: T,
@@ -167,14 +161,14 @@ export function getNodeName(node: ESTree.Node): string | null {
 }
 
 const isVariableDeclarator = (
-  node: ESTree.Node,
+  node: ESTree.Node | null,
 ): node is TypedNodeWithParent<'VariableDeclarator'> =>
-  node.type === 'VariableDeclarator'
+  node?.type === 'VariableDeclarator'
 
 const isAssignmentExpression = (
-  node: ESTree.Node,
+  node: ESTree.Node | null,
 ): node is TypedNodeWithParent<'AssignmentExpression'> =>
-  node.type === 'AssignmentExpression'
+  node?.type === 'AssignmentExpression'
 
 /**
  * Given a Node and an assignment expression, finds out if the assignment

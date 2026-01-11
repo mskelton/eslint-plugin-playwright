@@ -1,9 +1,9 @@
 import { Rule, Scope } from 'eslint'
 import * as ESTree from 'estree'
-import { getParent, isPropertyAccessor } from '../utils/ast.js'
+import { isPropertyAccessor } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall, parseFnCall } from '../utils/parseFnCall.js'
-import { KnownCallExpression } from '../utils/types.js'
+import { KnownCallExpression, NodeWithParent } from '../utils/types.js'
 
 const isCatchCall = (
   node: ESTree.CallExpression,
@@ -19,7 +19,7 @@ const getTestCallExpressionsFromDeclaredVariables = (
     (acc, { references }) => [
       ...acc,
       ...references
-        .map(({ identifier }) => getParent(identifier))
+        .map(({ identifier }) => (identifier as NodeWithParent).parent)
         .filter(
           // ESLint types are infurating
           (node): node is any =>

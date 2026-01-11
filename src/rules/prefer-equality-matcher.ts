@@ -1,12 +1,12 @@
 import {
   equalityMatchers,
-  getParent,
   getRawValue,
   getStringValue,
   isBooleanLiteral,
 } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
+import { NodeWithParent } from '../utils/types.js'
 
 export default createRule({
   create(context) {
@@ -15,7 +15,7 @@ export default createRule({
         const call = parseFnCall(context, node)
         if (call?.type !== 'expect' || call.matcherArgs.length === 0) return
 
-        const expect = getParent(call.head.node)
+        const expect = (call.head.node as NodeWithParent).parent
         if (expect?.type !== 'CallExpression') return
 
         const [comparison] = expect.arguments
@@ -67,7 +67,10 @@ export default createRule({
                 ),
                 // replace the current matcher & modifier with the preferred matcher
                 fixer.replaceTextRange(
-                  [expectCallEnd, getParent(call.matcher)!.range![1]],
+                  [
+                    expectCallEnd,
+                    (call.matcher as NodeWithParent).parent!.range![1],
+                  ],
                   `${modifierText}.${equalityMatcher}`,
                 ),
                 // replace the matcher argument with the right-hand side of the comparison

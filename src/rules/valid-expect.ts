@@ -1,5 +1,5 @@
 import * as ESTree from 'estree'
-import { getParent, getStringValue } from '../utils/ast.js'
+import { getStringValue } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { getAmountData } from '../utils/misc.js'
 import {
@@ -7,12 +7,13 @@ import {
   modifiers,
   parseFnCallWithReason,
 } from '../utils/parseFnCall.js'
+import { NodeWithParent } from '../utils/types.js'
 
 const findTopMostMemberExpression = (
   node: ESTree.MemberExpression,
 ): ESTree.MemberExpression => {
   let topMostMemberExpression = node
-  let parent = getParent(node)
+  let parent = (node as NodeWithParent).parent
 
   while (parent) {
     if (parent.type !== 'MemberExpression') {
@@ -20,7 +21,7 @@ const findTopMostMemberExpression = (
     }
 
     topMostMemberExpression = parent
-    parent = parent.parent
+    parent = (parent as NodeWithParent).parent
   }
 
   return topMostMemberExpression
@@ -81,7 +82,7 @@ export default createRule({
           return
         }
 
-        const expect = getParent(call.head.node)
+        const { parent: expect } = call.head.node as NodeWithParent
         if (expect?.type !== 'CallExpression') return
 
         if (expect.arguments.length < minArgs) {

@@ -8,7 +8,7 @@ import {
 } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
-import { KnownCallExpression } from '../utils/types.js'
+import { KnownCallExpression, NodeWithParent } from '../utils/types.js'
 
 type FixableIncludesCallExpression = KnownCallExpression
 
@@ -28,7 +28,7 @@ export default createRule({
         const call = parseFnCall(context, node)
         if (call?.type !== 'expect' || call.matcherArgs.length === 0) return
 
-        const expect = getParent(call.head.node)
+        const expect = (call.head.node as NodeWithParent).parent
         if (expect?.type !== 'CallExpression') return
 
         const [includesCall] = expect.arguments

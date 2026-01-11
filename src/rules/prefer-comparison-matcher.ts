@@ -1,7 +1,6 @@
 import * as ESTree from 'estree'
 import {
   equalityMatchers,
-  getParent,
   getRawValue,
   getStringValue,
   isBooleanLiteral,
@@ -9,6 +8,7 @@ import {
 } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
+import { NodeWithParent } from '../utils/types.js'
 
 const isString = (node: ESTree.Node) => {
   return isStringLiteral(node) || node.type === 'TemplateLiteral'
@@ -47,7 +47,7 @@ export default createRule({
         const call = parseFnCall(context, node)
         if (call?.type !== 'expect' || call.matcherArgs.length === 0) return
 
-        const expect = getParent(call.head.node)
+        const expect = (call.head.node as NodeWithParent).parent
         if (expect?.type !== 'CallExpression') return
 
         const [comparison] = expect.arguments
@@ -94,7 +94,10 @@ export default createRule({
               ),
               // Replace the current matcher & modifier with the preferred matcher
               fixer.replaceTextRange(
-                [expectCallEnd, getParent(call.matcher)!.range![1]],
+                [
+                  expectCallEnd,
+                  (call.matcher as NodeWithParent).parent!.range![1],
+                ],
                 `${modifierText}.${preferredMatcher}`,
               ),
               // Replace the matcher argument with the right-hand side of the comparison

@@ -1,14 +1,15 @@
 import { Rule } from 'eslint'
 import * as ESTree from 'estree'
-import { getParent, isFunction, isPropertyAccessor } from '../utils/ast.js'
+import { isFunction, isPropertyAccessor } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall, parseFnCall } from '../utils/parseFnCall.js'
+import { NodeWithParent } from '../utils/types.js'
 
 const getBlockType = (
   context: Rule.RuleContext,
   statement: ESTree.BlockStatement,
 ): 'function' | 'describe' | null => {
-  const func = getParent(statement)
+  const func = (statement as NodeWithParent).parent
 
   if (!func) {
     throw new Error(
@@ -85,7 +86,8 @@ export default createRule({
 
         if (call?.type === 'expect') {
           if (
-            getParent(call.head.node)?.type === 'MemberExpression' &&
+            (call.head.node as NodeWithParent).parent?.type ===
+              'MemberExpression' &&
             call.members.length === 1
           ) {
             return
