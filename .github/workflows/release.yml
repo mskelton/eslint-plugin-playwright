@@ -3,7 +3,7 @@ name: Release
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 6 * * 0' # every Sunday at 6am
+    - cron: '0 3 * * 1' # every Sunday at 9pm (UTC Monday 3am)
 
 permissions:
   contents: read # for checkout
