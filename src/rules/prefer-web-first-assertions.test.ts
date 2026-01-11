@@ -601,6 +601,180 @@ runRuleTester('prefer-web-first-assertions', rule, {
       output: test('await expect(page.locator(".content")).toHaveText("Some content")'),
     },
 
+    // allTextContents
+    {
+      code: test('expect(await foo.allTextContents()).toBe("bar")'),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test(`
+        const myText = page.locator('foo li').allTextContents();
+        expect(myText).toEqual(['Alpha', 'Beta', 'Gamma'])
+      `),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test('expect(await foo.allTextContents()).not.toBe("bar")'),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test('expect(await foo.allTextContents()).toEqual("bar")'),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test('expect.soft(await foo.allTextContents()).toBe("bar")'),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test('expect["soft"](await foo.allTextContents()).not.toEqual("bar")'),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test(`
+        const fooLocator = page.locator('.fooClass');
+        const fooLocatorText = await fooLocator.allTextContents();
+        expect(fooLocatorText).toEqual('foo');
+      `),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test(`
+        const fooLocator = page.locator('.fooClass');
+        let fooLocatorText = await fooLocator.allTextContents();
+        expect(fooLocatorText).toEqual('foo');
+        fooLocatorText = 'foo';
+        expect(fooLocatorText).toEqual('foo');
+      `),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test(`
+        let fooLocatorText;
+        const fooLocator = page.locator('.fooClass');
+        fooLocatorText = 'Unrelated';
+        fooLocatorText = await fooLocator.allTextContents();
+        expect(fooLocatorText).toEqual('foo');
+      `),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test(`
+        let fooLocatorText;
+        let fooLocatorText2;
+        const fooLocator = page.locator('.fooClass');
+        fooLocatorText = await fooLocator.allTextContents();
+        fooLocatorText2 = await fooLocator.allTextContents();
+        expect(fooLocatorText).toEqual('foo');
+      `),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test(`
+        let fooLocatorText;
+        fooLocatorText = 'foo';
+        expect(fooLocatorText).toEqual('foo');
+        fooLocatorText = await page.locator('.fooClass').allTextContents();
+        expect(fooLocatorText).toEqual('foo');
+      `),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test(`
+        const unrelatedAssignment = "unrelated";
+        const fooLocatorText = await page.locator('.foo').allTextContents();
+        expect(fooLocatorText).toEqual('foo');
+      `),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test(`
+        const locatorFoo = page.locator(".foo")
+        const isBarText = await locatorFoo.locator(".bar").allTextContents()
+        expect(isBarText).toBe("bar")
+      `),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test(`
+        const content = await foo.allTextContents();
+        expect(content).toBe("bar")
+      `),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+
+    // allInnerTexts
+    {
+      code: test('expect(await foo.allInnerTexts()).toBe("bar")'),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test('expect(await foo.allInnerTexts()).not.toBe("bar")'),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test('expect(await foo.allInnerTexts()).toEqual("bar")'),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test('expect.soft(await foo.allInnerTexts()).toBe("bar")'),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test('expect["soft"](await foo.allInnerTexts()).not.toEqual("bar")'),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test(`
+        const fooLocator = page.locator('.fooClass');
+        const fooLocatorText = await fooLocator.allInnerTexts();
+        expect(fooLocatorText).toEqual('foo');
+      `),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test(`
+        let fooLocatorText;
+        const fooLocator = page.locator('.fooClass');
+        fooLocatorText = 'Unrelated';
+        fooLocatorText = await fooLocator.allInnerTexts();
+        expect(fooLocatorText).toEqual('foo');
+      `),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test(`
+        let fooLocatorText;
+        fooLocatorText = 'foo';
+        expect(fooLocatorText).toEqual('foo');
+        fooLocatorText = await page.locator('.fooClass').allInnerTexts();
+        expect(fooLocatorText).toEqual('foo');
+      `),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test(`
+        const unrelatedAssignment = "unrelated";
+        const fooLocatorText = await page.locator('.foo').allInnerTexts();
+        expect(fooLocatorText).toEqual('foo');
+      `),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test(`
+        const locatorFoo = page.locator(".foo")
+        const isBarText = await locatorFoo.locator(".bar").allInnerTexts()
+        expect(isBarText).toBe("bar")
+      `),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+    {
+      code: test(`
+        const content = await foo.allInnerTexts();
+        expect(content).toBe("bar")
+      `),
+      errors: [{ messageId: 'useWebFirstAssertion' }],
+    },
+
     // isChecked
     {
       code: test('expect(await page.locator("howdy").isChecked()).toBe(true)'),
@@ -1041,6 +1215,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
     { code: test('const value = await bar["inputValue"]()') },
     { code: test('const isEditable = await baz[`isEditable`]()') },
     { code: test('await expect(await locator.toString()).toBe("something")') },
+    { code: test('const myText = page.locator("foo li").allTextContents()') },
     {
       code: dedent`
         import { expect } from '@playwright/test';

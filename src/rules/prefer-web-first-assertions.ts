@@ -9,6 +9,7 @@ import { createRule } from '../utils/createRule.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
 
 type MethodConfig = {
+  fixable?: boolean
   inverse?: string
   matcher: string
   prop?: string
@@ -16,6 +17,16 @@ type MethodConfig = {
 }
 
 const methods: Record<string, MethodConfig> = {
+  allInnerTexts: {
+    fixable: false,
+    matcher: 'toHaveText',
+    type: 'string',
+  },
+  allTextContents: {
+    fixable: false,
+    matcher: 'toHaveText',
+    type: 'string',
+  },
   getAttribute: {
     matcher: 'toHaveAttribute',
     type: 'string',
@@ -94,6 +105,17 @@ export default createRule({
         // double negation.
         const newMatcher =
           (+!!notModifier ^ +isFalsy && methodConfig.inverse) || methodConfig.matcher
+
+        // Some methods are too complex to autofix, so we just report a warning
+        // with a recommendation.
+        if (methodConfig.fixable === false) {
+          context.report({
+            data: { matcher: methodConfig.matcher, method },
+            messageId: 'useWebFirstAssertion',
+            node: call.callee.property,
+          })
+          return
+        }
 
         const { callee } = call
         context.report({
