@@ -8,18 +8,12 @@ export default createRule({
     return {
       CallExpression(node) {
         const call = parseFnCall(context, node)
-        if (
-          call?.type !== 'expect' ||
-          !equalityMatchers.has(call.matcherName)
-        ) {
+        if (call?.type !== 'expect' || !equalityMatchers.has(call.matcherName)) {
           return
         }
 
         const [argument] = call.args
-        if (
-          argument?.type !== 'MemberExpression' ||
-          !isPropertyAccessor(argument, 'length')
-        ) {
+        if (argument?.type !== 'MemberExpression' || !isPropertyAccessor(argument, 'length')) {
           return
         }
 
@@ -27,10 +21,7 @@ export default createRule({
           fix(fixer) {
             return [
               // remove the "length" property accessor
-              fixer.removeRange([
-                argument.property.range![0] - 1,
-                argument.range![1],
-              ]),
+              fixer.removeRange([argument.property.range![0] - 1, argument.range![1]]),
               // replace the current matcher with "toHaveLength"
               replaceAccessorFixer(fixer, call.matcher, 'toHaveLength'),
             ]

@@ -10,11 +10,7 @@ export default createRule({
         const allowConditional = !!options.allowConditional
 
         const call = parseFnCall(context, node)
-        if (
-          call?.group !== 'test' &&
-          call?.group !== 'describe' &&
-          call?.group !== 'step'
-        ) {
+        if (call?.group !== 'test' && call?.group !== 'describe' && call?.group !== 'step') {
           return
         }
 
@@ -46,8 +42,7 @@ export default createRule({
                   ? fixer.remove(node.parent)
                   : fixer.removeRange([
                       skipNode.range![0] - 1,
-                      skipNode.range![1] +
-                        Number(skipNode.type !== 'Identifier'),
+                      skipNode.range![1] + Number(skipNode.type !== 'Identifier'),
                     ])
               },
               messageId: 'removeSkippedTestAnnotation',

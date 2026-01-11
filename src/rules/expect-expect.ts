@@ -11,16 +11,13 @@ export default createRule({
       ...((context.options?.[0] as Record<string, unknown>) ?? {}),
     }
 
-    const patterns = options.assertFunctionPatterns.map(
-      (pattern) => new RegExp(pattern),
-    )
+    const patterns = options.assertFunctionPatterns.map((pattern) => new RegExp(pattern))
 
     const unchecked: ESTree.CallExpression[] = []
 
     function checkExpressions(nodes: ESTree.Node[]) {
       for (const node of nodes) {
-        const index =
-          node.type === 'CallExpression' ? unchecked.indexOf(node) : -1
+        const index = node.type === 'CallExpression' ? unchecked.indexOf(node) : -1
 
         if (index !== -1) {
           unchecked.splice(index, 1)
@@ -42,7 +39,7 @@ export default createRule({
     }
 
     return {
-      CallExpression(node) {
+      'CallExpression'(node) {
         const call = parseFnCall(context, node)
 
         if (call?.type === 'test') {

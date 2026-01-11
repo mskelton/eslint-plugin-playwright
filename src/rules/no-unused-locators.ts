@@ -1,8 +1,7 @@
 import { isPageMethod } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 
-const LOCATOR_REGEX =
-  /locator|getBy(Role|Text|Label|Placeholder|AltText|Title|TestId)/
+const LOCATOR_REGEX = /locator|getBy(Role|Text|Label|Placeholder|AltText|Title|TestId)/
 
 export default createRule({
   create(context) {
@@ -12,10 +11,7 @@ export default createRule({
           return
         }
 
-        if (
-          node.parent.type === 'ExpressionStatement' ||
-          node.parent.type === 'AwaitExpression'
-        ) {
+        if (node.parent.type === 'ExpressionStatement' || node.parent.type === 'AwaitExpression') {
           context.report({ messageId: 'noUnusedLocator', node })
         }
       },

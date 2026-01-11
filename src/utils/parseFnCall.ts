@@ -70,10 +70,8 @@ const VALID_CHAINS = new Set([
 
 export type AccessorNode = StringNode | ESTree.Identifier
 
-const joinChains = (
-  a: AccessorNode[] | null,
-  b: AccessorNode[] | null,
-): AccessorNode[] | null => (a && b ? [...a, ...b] : null)
+const joinChains = (a: AccessorNode[] | null, b: AccessorNode[] | null): AccessorNode[] | null =>
+  a && b ? [...a, ...b] : null
 
 /**
  * Checks if the given `node` is a "supported accessor".
@@ -90,10 +88,7 @@ const joinChains = (
  * Note that `value` here refers to the normalised value. The property that
  * holds the value is not always called `name`.
  */
-export const isSupportedAccessor = (
-  node: ESTree.Node,
-  value?: string,
-): node is AccessorNode =>
+export const isSupportedAccessor = (node: ESTree.Node, value?: string): node is AccessorNode =>
   isIdentifier(node, value) || isStringNode(node, value)
 
 class Chain {
@@ -143,16 +138,11 @@ class Chain {
   }
 }
 
-const resolvePossibleAliasedGlobal = (
-  context: Rule.RuleContext,
-  global: string,
-) => {
+const resolvePossibleAliasedGlobal = (context: Rule.RuleContext, global: string) => {
   const settings = context.settings as unknown as Settings | undefined
   const globalAliases = settings?.playwright?.globalAliases ?? {}
 
-  const alias = Object.entries(globalAliases).find(([, aliases]) =>
-    aliases.includes(global),
-  )
+  const alias = Object.entries(globalAliases).find(([, aliases]) => aliases.includes(global))
 
   return alias?.[0] ?? null
 }
@@ -176,13 +166,7 @@ const resolveToPlaywrightFn = (
   }
 }
 
-export type FnGroup =
-  | 'describe'
-  | 'expect'
-  | 'hook'
-  | 'step'
-  | 'test'
-  | 'unknown'
+export type FnGroup = 'describe' | 'expect' | 'hook' | 'step' | 'test' | 'unknown'
 
 export type FnType = FnGroup | 'config'
 
@@ -299,8 +283,7 @@ interface ModifiersAndMatcher {
   modifiers: KnownMemberExpressionProperty[]
 }
 
-export interface ParsedExpectFnCall
-  extends BaseParsedFnCall, ModifiersAndMatcher {
+export interface ParsedExpectFnCall extends BaseParsedFnCall, ModifiersAndMatcher {
   args: ESTree.CallExpression['arguments']
   group: 'expect'
   type: 'expect'
@@ -315,11 +298,7 @@ const parseExpectCall = (
   call: Omit<ParsedFnCall, 'group' | 'type'>,
   stage: ExpectParseStage,
 ): ParsedExpectFnCall | string | null => {
-  const modifiersAndMatcher = findModifiersAndMatcher(
-    chain,
-    call.members,
-    stage,
-  )
+  const modifiersAndMatcher = findModifiersAndMatcher(chain, call.members, stage)
 
   if (!modifiersAndMatcher) {
     return null
@@ -409,9 +388,7 @@ function parse(
   const group = determinePlaywrightFnGroup(name)
 
   if (group === 'expect') {
-    let stage: ExpectParseStage = chain.isLeaf(parsedFnCall.head.node)
-      ? 'matchers'
-      : 'modifiers'
+    let stage: ExpectParseStage = chain.isLeaf(parsedFnCall.head.node) ? 'matchers' : 'modifiers'
 
     // If using `test.expect` style, the `rest` array will start with `expect`
     // and we need to remove it to ensure the chain accurately represents the
@@ -426,10 +403,7 @@ function parse(
 
     // If the `expect` call chain is not valid, only report on the topmost node
     // since all members in the chain are likely to get flagged for some reason
-    if (
-      typeof result === 'string' &&
-      findTopMostCallExpression(node) !== node
-    ) {
+    if (typeof result === 'string' && findTopMostCallExpression(node) !== node) {
       return null
     }
 
@@ -455,10 +429,7 @@ function parse(
   // parsing e.g. x().y.z(), we'll incorrectly find & parse "x()" even though
   // the full chain is not a valid Playwright function call chain
   const parent = (node as NodeWithParent).parent
-  if (
-    parent?.type === 'CallExpression' ||
-    parent?.type === 'MemberExpression'
-  ) {
+  if (parent?.type === 'CallExpression' || parent?.type === 'MemberExpression') {
     return null
   }
 

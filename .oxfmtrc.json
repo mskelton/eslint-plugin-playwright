@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 100,
+  "singleQuote": true,
+  "semi": false,
+  "objectWrap": "preserve",
+  "quoteProps": "consistent",
+  "experimentalSortImports": {
+    "newlinesBetween": false,
+    "enabled": true
+  },
+  "experimentalSortPackageJson": true,
+  "ignorePatterns": ["dist/", ".yarn/", ".yarnrc.yml"]
+}

@@ -13,10 +13,7 @@ function getTestNames(context: Rule.RuleContext) {
 function hasTests(context: Rule.RuleContext, node: ESTree.Comment) {
   const testNames = getTestNames(context)
   const names = testNames.join('|')
-  const regex = new RegExp(
-    `^\\s*(${names}|describe)(\\.\\w+|\\[['"]\\w+['"]\\])?\\s*\\(`,
-    'mu',
-  )
+  const regex = new RegExp(`^\\s*(${names}|describe)(\\.\\w+|\\[['"]\\w+['"]\\])?\\s*\\(`, 'mu')
   return regex.test(node.value)
 }
 

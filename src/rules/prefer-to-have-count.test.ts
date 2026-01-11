@@ -5,66 +5,48 @@ runRuleTester('prefer-to-have-count', rule, {
   invalid: [
     {
       code: 'expect(await files.count()).toBe(1)',
-      errors: [
-        { column: 29, endColumn: 33, line: 1, messageId: 'useToHaveCount' },
-      ],
+      errors: [{ column: 29, endColumn: 33, line: 1, messageId: 'useToHaveCount' }],
       output: 'await expect(files).toHaveCount(1)',
     },
     {
       code: 'expect(await files.count()).not.toBe(1)',
-      errors: [
-        { column: 33, endColumn: 37, line: 1, messageId: 'useToHaveCount' },
-      ],
+      errors: [{ column: 33, endColumn: 37, line: 1, messageId: 'useToHaveCount' }],
       output: 'await expect(files).not.toHaveCount(1)',
     },
     {
       code: 'expect.soft(await files["count"]()).not.toBe(1)',
-      errors: [
-        { column: 41, endColumn: 45, line: 1, messageId: 'useToHaveCount' },
-      ],
+      errors: [{ column: 41, endColumn: 45, line: 1, messageId: 'useToHaveCount' }],
       output: 'await expect.soft(files).not.toHaveCount(1)',
     },
     {
       code: 'expect(await files["count"]()).not["toBe"](1)',
-      errors: [
-        { column: 36, endColumn: 42, line: 1, messageId: 'useToHaveCount' },
-      ],
+      errors: [{ column: 36, endColumn: 42, line: 1, messageId: 'useToHaveCount' }],
       output: 'await expect(files).not["toHaveCount"](1)',
     },
     {
       code: 'expect(await files.count())[`toEqual`](1)',
-      errors: [
-        { column: 29, endColumn: 38, line: 1, messageId: 'useToHaveCount' },
-      ],
+      errors: [{ column: 29, endColumn: 38, line: 1, messageId: 'useToHaveCount' }],
       output: 'await expect(files)[`toHaveCount`](1)',
     },
     {
       code: 'expect(await files.count()).toStrictEqual(1)',
-      errors: [
-        { column: 29, endColumn: 42, line: 1, messageId: 'useToHaveCount' },
-      ],
+      errors: [{ column: 29, endColumn: 42, line: 1, messageId: 'useToHaveCount' }],
       output: 'await expect(files).toHaveCount(1)',
     },
     {
       code: 'expect(await files.count()).not.toStrictEqual(1)',
-      errors: [
-        { column: 33, endColumn: 46, line: 1, messageId: 'useToHaveCount' },
-      ],
+      errors: [{ column: 33, endColumn: 46, line: 1, messageId: 'useToHaveCount' }],
       output: 'await expect(files).not.toHaveCount(1)',
     },
     {
       code: 'expect(await files.count()).toBe(foo)',
-      errors: [
-        { column: 29, endColumn: 33, line: 1, messageId: 'useToHaveCount' },
-      ],
+      errors: [{ column: 29, endColumn: 33, line: 1, messageId: 'useToHaveCount' }],
       output: 'await expect(files).toHaveCount(foo)',
     },
     // Global aliases
     {
       code: 'assert(await files.count()).toBe(1)',
-      errors: [
-        { column: 29, endColumn: 33, line: 1, messageId: 'useToHaveCount' },
-      ],
+      errors: [{ column: 29, endColumn: 33, line: 1, messageId: 'useToHaveCount' }],
       output: 'await assert(files).toHaveCount(1)',
       settings: {
         playwright: {
@@ -77,9 +59,7 @@ runRuleTester('prefer-to-have-count', rule, {
         const filesCount = await files.count();
         expect(filesCount).toBe(1)
       `,
-      errors: [
-        { column: 28, endColumn: 32, line: 3, messageId: 'useToHaveCount' },
-      ],
+      errors: [{ column: 28, endColumn: 32, line: 3, messageId: 'useToHaveCount' }],
       output: `
         const filesCount = files;
         await expect(filesCount).toHaveCount(1)
@@ -91,9 +71,7 @@ runRuleTester('prefer-to-have-count', rule, {
         const unrelatedConst = unrelated;
         expect(filesCount).toBe(1)
       `,
-      errors: [
-        { column: 28, endColumn: 32, line: 4, messageId: 'useToHaveCount' },
-      ],
+      errors: [{ column: 28, endColumn: 32, line: 4, messageId: 'useToHaveCount' }],
       output: `
         const filesCount = files;
         const unrelatedConst = unrelated;
@@ -106,9 +84,7 @@ runRuleTester('prefer-to-have-count', rule, {
         filesCount = await files.count();
         expect(filesCount).toBe(1);
       `,
-      errors: [
-        { column: 28, endColumn: 32, line: 4, messageId: 'useToHaveCount' },
-      ],
+      errors: [{ column: 28, endColumn: 32, line: 4, messageId: 'useToHaveCount' }],
       output: `
         let filesCount = 3;
         filesCount = files;
@@ -122,9 +98,7 @@ runRuleTester('prefer-to-have-count', rule, {
         let unrelatedVar = unrelated;
         expect(filesCount).toBe(1);
       `,
-      errors: [
-        { column: 28, endColumn: 32, line: 5, messageId: 'useToHaveCount' },
-      ],
+      errors: [{ column: 28, endColumn: 32, line: 5, messageId: 'useToHaveCount' }],
       output: `
         let filesCount = 3;
         filesCount = files;
@@ -139,9 +113,7 @@ runRuleTester('prefer-to-have-count', rule, {
         expect(filesCount).toBe(1);
         filesCount = 0;
       `,
-      errors: [
-        { column: 28, endColumn: 32, line: 4, messageId: 'useToHaveCount' },
-      ],
+      errors: [{ column: 28, endColumn: 32, line: 4, messageId: 'useToHaveCount' }],
       output: `
         let filesCount = 3;
         filesCount = files;
@@ -151,9 +123,7 @@ runRuleTester('prefer-to-have-count', rule, {
     },
     {
       code: "expect(await page.getByText('test').all()).toHaveLength(2)",
-      errors: [
-        { column: 44, endColumn: 56, line: 1, messageId: 'useToHaveCount' },
-      ],
+      errors: [{ column: 44, endColumn: 56, line: 1, messageId: 'useToHaveCount' }],
       output: "await expect(page.getByText('test')).toHaveCount(2)",
     },
   ],

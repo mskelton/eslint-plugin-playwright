@@ -279,9 +279,7 @@ runRuleTester('no-element-handle', rule, {
           suggestions: [
             {
               messageId: 'replaceElementHandleWithLocator',
-              output: test(
-                'function getHandle() { return page.locator("button"); }',
-              ),
+              output: test('function getHandle() { return page.locator("button"); }'),
             },
           ],
         },
@@ -299,9 +297,7 @@ runRuleTester('no-element-handle', rule, {
           suggestions: [
             {
               messageId: 'replaceElementHandlesWithLocator',
-              output: test(
-                'function getHandle() { return page.locator("button"); }',
-              ),
+              output: test('function getHandle() { return page.locator("button"); }'),
             },
           ],
         },

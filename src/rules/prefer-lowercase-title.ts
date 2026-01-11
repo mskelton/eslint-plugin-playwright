@@ -18,7 +18,7 @@ export default createRule({
     let describeCount = 0
 
     return {
-      CallExpression(node) {
+      'CallExpression'(node) {
         const call = parseFnCall(context, node)
         if (call?.type !== 'describe' && call?.type !== 'test') {
           return
@@ -38,10 +38,7 @@ export default createRule({
         }
 
         const description = getStringValue(title)
-        if (
-          !description ||
-          allowedPrefixes.some((name) => description.startsWith(name))
-        ) {
+        if (!description || allowedPrefixes.some((name) => description.startsWith(name))) {
           return
         }
 
@@ -58,14 +55,10 @@ export default createRule({
         context.report({
           data: { method },
           fix(fixer) {
-            const rangeIgnoringQuotes: AST.Range = [
-              title.range![0] + 1,
-              title.range![1] - 1,
-            ]
+            const rangeIgnoringQuotes: AST.Range = [title.range![0] + 1, title.range![1] - 1]
 
             const newDescription =
-              description.substring(0, 1).toLowerCase() +
-              description.substring(1)
+              description.substring(0, 1).toLowerCase() + description.substring(1)
 
             return fixer.replaceTextRange(rangeIgnoringQuotes, newDescription)
           },

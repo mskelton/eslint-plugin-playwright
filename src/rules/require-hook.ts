@@ -5,10 +5,7 @@ import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall, parseFnCall } from '../utils/parseFnCall.js'
 
 const isNullOrUndefined = (node: ESTree.Expression): boolean => {
-  return (
-    (node.type === 'Literal' && node.value === null) ||
-    isIdentifier(node, 'undefined')
-  )
+  return (node.type === 'Literal' && node.value === null) || isIdentifier(node, 'undefined')
 }
 
 const shouldBeInHook = (
@@ -21,17 +18,14 @@ const shouldBeInHook = (
       return shouldBeInHook(context, node.expression, allowedFunctionCalls)
     case 'CallExpression':
       return !(
-        parseFnCall(context, node) ||
-        allowedFunctionCalls.includes(getStringValue(node.callee))
+        parseFnCall(context, node) || allowedFunctionCalls.includes(getStringValue(node.callee))
       )
     case 'VariableDeclaration': {
       if (node.kind === 'const') {
         return false
       }
 
-      return node.declarations.some(
-        ({ init }) => init != null && !isNullOrUndefined(init),
-      )
+      return node.declarations.some(({ init }) => init != null && !isNullOrUndefined(init))
     }
 
     default:

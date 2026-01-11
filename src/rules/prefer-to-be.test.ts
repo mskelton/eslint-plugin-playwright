@@ -101,66 +101,48 @@ runRuleTester('prefer-to-be: null', rule, {
   invalid: [
     {
       code: 'expect(null).toBe(null);',
-      errors: [
-        { column: 14, endColumn: 18, line: 1, messageId: 'useToBeNull' },
-      ],
+      errors: [{ column: 14, endColumn: 18, line: 1, messageId: 'useToBeNull' }],
       output: 'expect(null).toBeNull();',
     },
     {
       code: 'expect(null).toEqual(null);',
-      errors: [
-        { column: 14, endColumn: 21, line: 1, messageId: 'useToBeNull' },
-      ],
+      errors: [{ column: 14, endColumn: 21, line: 1, messageId: 'useToBeNull' }],
       output: 'expect(null).toBeNull();',
     },
     {
       code: 'expect(null).toStrictEqual(null);',
-      errors: [
-        { column: 14, endColumn: 27, line: 1, messageId: 'useToBeNull' },
-      ],
+      errors: [{ column: 14, endColumn: 27, line: 1, messageId: 'useToBeNull' }],
       output: 'expect(null).toBeNull();',
     },
     {
       code: 'expect("a string").not.toBe(null);',
-      errors: [
-        { column: 24, endColumn: 28, line: 1, messageId: 'useToBeNull' },
-      ],
+      errors: [{ column: 24, endColumn: 28, line: 1, messageId: 'useToBeNull' }],
       output: 'expect("a string").not.toBeNull();',
     },
     {
       code: 'expect("a string").not["toBe"](null);',
-      errors: [
-        { column: 24, endColumn: 30, line: 1, messageId: 'useToBeNull' },
-      ],
+      errors: [{ column: 24, endColumn: 30, line: 1, messageId: 'useToBeNull' }],
       output: 'expect("a string").not["toBeNull"]();',
     },
     {
       code: 'expect("a string")["not"]["toBe"](null);',
-      errors: [
-        { column: 27, endColumn: 33, line: 1, messageId: 'useToBeNull' },
-      ],
+      errors: [{ column: 27, endColumn: 33, line: 1, messageId: 'useToBeNull' }],
       output: 'expect("a string")["not"]["toBeNull"]();',
     },
     {
       code: 'expect("a string").not.toEqual(null);',
-      errors: [
-        { column: 24, endColumn: 31, line: 1, messageId: 'useToBeNull' },
-      ],
+      errors: [{ column: 24, endColumn: 31, line: 1, messageId: 'useToBeNull' }],
       output: 'expect("a string").not.toBeNull();',
     },
     {
       code: 'expect("a string").not.toStrictEqual(null);',
-      errors: [
-        { column: 24, endColumn: 37, line: 1, messageId: 'useToBeNull' },
-      ],
+      errors: [{ column: 24, endColumn: 37, line: 1, messageId: 'useToBeNull' }],
       output: 'expect("a string").not.toBeNull();',
     },
     // Global aliases
     {
       code: 'assert(null).toBe(null);',
-      errors: [
-        { column: 14, endColumn: 18, line: 1, messageId: 'useToBeNull' },
-      ],
+      errors: [{ column: 14, endColumn: 18, line: 1, messageId: 'useToBeNull' }],
       output: 'assert(null).toBeNull();',
       settings: {
         playwright: {
@@ -201,66 +183,48 @@ runRuleTester('prefer-to-be: undefined', rule, {
   invalid: [
     {
       code: 'expect(undefined).toBe(undefined);',
-      errors: [
-        { column: 19, endColumn: 23, line: 1, messageId: 'useToBeUndefined' },
-      ],
+      errors: [{ column: 19, endColumn: 23, line: 1, messageId: 'useToBeUndefined' }],
       output: 'expect(undefined).toBeUndefined();',
     },
     {
       code: 'expect(undefined).toEqual(undefined);',
-      errors: [
-        { column: 19, endColumn: 26, line: 1, messageId: 'useToBeUndefined' },
-      ],
+      errors: [{ column: 19, endColumn: 26, line: 1, messageId: 'useToBeUndefined' }],
       output: 'expect(undefined).toBeUndefined();',
     },
     {
       code: 'expect(undefined).toStrictEqual(undefined);',
-      errors: [
-        { column: 19, endColumn: 32, line: 1, messageId: 'useToBeUndefined' },
-      ],
+      errors: [{ column: 19, endColumn: 32, line: 1, messageId: 'useToBeUndefined' }],
       output: 'expect(undefined).toBeUndefined();',
     },
     {
       code: 'expect("a string").not.toBe(undefined);',
-      errors: [
-        { column: 24, endColumn: 28, line: 1, messageId: 'useToBeDefined' },
-      ],
+      errors: [{ column: 24, endColumn: 28, line: 1, messageId: 'useToBeDefined' }],
       output: 'expect("a string").toBeDefined();',
     },
     {
       code: 'expect("a string").rejects.not.toBe(undefined);',
-      errors: [
-        { column: 32, endColumn: 36, line: 1, messageId: 'useToBeDefined' },
-      ],
+      errors: [{ column: 32, endColumn: 36, line: 1, messageId: 'useToBeDefined' }],
       output: 'expect("a string").rejects.toBeDefined();',
     },
     {
       code: 'expect("a string").rejects.not["toBe"](undefined);',
-      errors: [
-        { column: 32, endColumn: 38, line: 1, messageId: 'useToBeDefined' },
-      ],
+      errors: [{ column: 32, endColumn: 38, line: 1, messageId: 'useToBeDefined' }],
       output: 'expect("a string").rejects["toBeDefined"]();',
     },
     {
       code: 'expect("a string").not.toEqual(undefined);',
-      errors: [
-        { column: 24, endColumn: 31, line: 1, messageId: 'useToBeDefined' },
-      ],
+      errors: [{ column: 24, endColumn: 31, line: 1, messageId: 'useToBeDefined' }],
       output: 'expect("a string").toBeDefined();',
     },
     {
       code: 'expect("a string").not.toStrictEqual(undefined);',
-      errors: [
-        { column: 24, endColumn: 37, line: 1, messageId: 'useToBeDefined' },
-      ],
+      errors: [{ column: 24, endColumn: 37, line: 1, messageId: 'useToBeDefined' }],
       output: 'expect("a string").toBeDefined();',
     },
     // Global aliases
     {
       code: 'assert(undefined).toBe(undefined);',
-      errors: [
-        { column: 19, endColumn: 23, line: 1, messageId: 'useToBeUndefined' },
-      ],
+      errors: [{ column: 19, endColumn: 23, line: 1, messageId: 'useToBeUndefined' }],
       output: 'assert(undefined).toBeUndefined();',
       settings: {
         playwright: {
@@ -374,45 +338,33 @@ runRuleTester('prefer-to-be: undefined vs defined', rule, {
   invalid: [
     {
       code: 'expect(undefined).not.toBeDefined();',
-      errors: [
-        { column: 23, endColumn: 34, line: 1, messageId: 'useToBeUndefined' },
-      ],
+      errors: [{ column: 23, endColumn: 34, line: 1, messageId: 'useToBeUndefined' }],
       output: 'expect(undefined).toBeUndefined();',
     },
     {
       code: 'expect(undefined).resolves.not.toBeDefined();',
-      errors: [
-        { column: 32, endColumn: 43, line: 1, messageId: 'useToBeUndefined' },
-      ],
+      errors: [{ column: 32, endColumn: 43, line: 1, messageId: 'useToBeUndefined' }],
       output: 'expect(undefined).resolves.toBeUndefined();',
     },
     {
       code: 'expect(undefined).resolves.toBe(undefined);',
-      errors: [
-        { column: 28, endColumn: 32, line: 1, messageId: 'useToBeUndefined' },
-      ],
+      errors: [{ column: 28, endColumn: 32, line: 1, messageId: 'useToBeUndefined' }],
       output: 'expect(undefined).resolves.toBeUndefined();',
     },
     {
       code: 'expect("a string").not.toBeUndefined();',
-      errors: [
-        { column: 24, endColumn: 37, line: 1, messageId: 'useToBeDefined' },
-      ],
+      errors: [{ column: 24, endColumn: 37, line: 1, messageId: 'useToBeDefined' }],
       output: 'expect("a string").toBeDefined();',
     },
     {
       code: 'expect("a string").rejects.not.toBeUndefined();',
-      errors: [
-        { column: 32, endColumn: 45, line: 1, messageId: 'useToBeDefined' },
-      ],
+      errors: [{ column: 32, endColumn: 45, line: 1, messageId: 'useToBeDefined' }],
       output: 'expect("a string").rejects.toBeDefined();',
     },
     // Global aliases
     {
       code: 'assert(undefined).not.toBeDefined();',
-      errors: [
-        { column: 23, endColumn: 34, line: 1, messageId: 'useToBeUndefined' },
-      ],
+      errors: [{ column: 23, endColumn: 34, line: 1, messageId: 'useToBeUndefined' }],
       output: 'assert(undefined).toBeUndefined();',
       settings: {
         playwright: {

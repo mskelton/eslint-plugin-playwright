@@ -1,8 +1,4 @@
-import {
-  dereference,
-  equalityMatchers,
-  isPropertyAccessor,
-} from '../utils/ast.js'
+import { dereference, equalityMatchers, isPropertyAccessor } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { replaceAccessorFixer } from '../utils/fixer.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
@@ -37,15 +33,9 @@ export default createRule({
           fix(fixer) {
             return [
               // remove the "await" expression
-              fixer.removeRange([
-                argument.range![0],
-                argument.range![0] + 'await'.length + 1,
-              ]),
+              fixer.removeRange([argument.range![0], argument.range![0] + 'await'.length + 1]),
               // remove the "count()" method accessor
-              fixer.removeRange([
-                callee.property.range![0] - 1,
-                argument.argument.range![1],
-              ]),
+              fixer.removeRange([callee.property.range![0] - 1, argument.argument.range![1]]),
               // replace the current matcher with "toHaveCount"
               replaceAccessorFixer(fixer, call.matcher, 'toHaveCount'),
               // insert "await" to before "expect()"

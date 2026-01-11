@@ -1,16 +1,9 @@
 import ESTree from 'estree'
-import {
-  dereference,
-  getStringValue,
-  isStringNode,
-  StringNode,
-} from '../utils/ast.js'
+import { dereference, getStringValue, isStringNode, StringNode } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
 
-const doesBinaryExpressionContainStringNode = (
-  binaryExp: ESTree.BinaryExpression,
-): boolean => {
+const doesBinaryExpressionContainStringNode = (binaryExp: ESTree.BinaryExpression): boolean => {
   if (isStringNode(binaryExp.right)) {
     return true
   }
@@ -23,9 +16,7 @@ const doesBinaryExpressionContainStringNode = (
 }
 
 const quoteStringValue = (node: StringNode): string =>
-  node.type === 'TemplateLiteral'
-    ? `\`${node.quasis[0].value.raw}\``
-    : (node.raw ?? '')
+  node.type === 'TemplateLiteral' ? `\`${node.quasis[0].value.raw}\`` : (node.raw ?? '')
 
 const compileMatcherPattern = (
   matcherMaybeWithMessage: MatcherAndMessage | string,
@@ -38,10 +29,7 @@ const compileMatcherPattern = (
 }
 
 const compileMatcherPatterns = (
-  matchers:
-    | Partial<Record<MatcherGroups, string | MatcherAndMessage>>
-    | MatcherAndMessage
-    | string,
+  matchers: Partial<Record<MatcherGroups, string | MatcherAndMessage>> | MatcherAndMessage | string,
 ): Record<MatcherGroups, CompiledMatcherAndMessage | null> &
   Record<string, CompiledMatcherAndMessage | null> => {
   if (typeof matchers === 'string' || Array.isArray(matchers)) {
@@ -55,9 +43,7 @@ const compileMatcherPatterns = (
   }
 
   return {
-    describe: matchers.describe
-      ? compileMatcherPattern(matchers.describe)
-      : null,
+    describe: matchers.describe ? compileMatcherPattern(matchers.describe) : null,
     step: matchers.step ? compileMatcherPattern(matchers.step) : null,
     test: matchers.test ? compileMatcherPattern(matchers.test) : null,
   }
@@ -104,10 +90,7 @@ export default createRule({
       mustMatch,
       mustNotMatch,
     } = opts
-    const disallowedWordsRegexp = new RegExp(
-      `\\b(${disallowedWords.join('|')})\\b`,
-      'iu',
-    )
+    const disallowedWordsRegexp = new RegExp(`\\b(${disallowedWords.join('|')})\\b`, 'iu')
 
     const mustNotMatchPatterns = compileMatcherPatterns(mustNotMatch ?? {})
     const mustMatchPatterns = compileMatcherPatterns(mustMatch ?? {})
@@ -115,11 +98,7 @@ export default createRule({
     return {
       CallExpression(node) {
         const call = parseFnCall(context, node)
-        if (
-          call?.type !== 'test' &&
-          call?.type !== 'describe' &&
-          call?.type !== 'step'
-        ) {
+        if (call?.type !== 'test' && call?.type !== 'describe' && call?.type !== 'step') {
           return
         }
 
@@ -128,10 +107,7 @@ export default createRule({
         if (!title) return
 
         if (!isStringNode(title)) {
-          if (
-            title.type === 'BinaryExpression' &&
-            doesBinaryExpressionContainStringNode(title)
-          ) {
+          if (title.type === 'BinaryExpression' && doesBinaryExpressionContainStringNode(title)) {
             return
           }
 
@@ -179,10 +155,7 @@ export default createRule({
           }
         }
 
-        if (
-          ignoreSpaces === false &&
-          titleString.trim().length !== titleString.length
-        ) {
+        if (ignoreSpaces === false && titleString.trim().length !== titleString.length) {
           context.report({
             fix: (fixer) => [
               fixer.replaceTextRange(
@@ -211,8 +184,7 @@ export default createRule({
           })
         }
 
-        const [mustNotMatchPattern, mustNotMatchMessage] =
-          mustNotMatchPatterns[functionName] ?? []
+        const [mustNotMatchPattern, mustNotMatchMessage] = mustNotMatchPatterns[functionName] ?? []
 
         if (mustNotMatchPattern && mustNotMatchPattern.test(titleString)) {
           context.report({
@@ -221,17 +193,14 @@ export default createRule({
               message: mustNotMatchMessage ?? '',
               pattern: String(mustNotMatchPattern),
             },
-            messageId: mustNotMatchMessage
-              ? 'mustNotMatchCustom'
-              : 'mustNotMatch',
+            messageId: mustNotMatchMessage ? 'mustNotMatchCustom' : 'mustNotMatch',
             node: title,
           })
 
           return
         }
 
-        const [mustMatchPattern, mustMatchMessage] =
-          mustMatchPatterns[functionName] ?? []
+        const [mustMatchPattern, mustMatchMessage] = mustMatchPatterns[functionName] ?? []
 
         if (mustMatchPattern && !mustMatchPattern.test(titleString)) {
           context.report({

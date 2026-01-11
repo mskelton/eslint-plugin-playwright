@@ -35,9 +35,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           });
         });
       `,
-      errors: [
-        { column: 3, endColumn: 6, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 6, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -47,9 +45,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           });
         });
       `,
-      errors: [
-        { column: 3, endColumn: 6, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 6, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: `
@@ -59,9 +55,7 @@ runRuleTester('valid-expect-in-promise', rule, {
          });
        });
       `,
-      errors: [
-        { column: 10, endColumn: 13, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 10, endColumn: 13, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -71,9 +65,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           });
         });
       `,
-      errors: [
-        { column: 3, endColumn: 6, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 6, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -83,9 +75,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           });
         });
       `,
-      errors: [
-        { column: 3, endColumn: 6, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 6, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -95,9 +85,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           })
         })
       `,
-      errors: [
-        { column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -107,9 +95,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           })
         })
       `,
-      errors: [
-        { column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -121,9 +107,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           })
         })
       `,
-      errors: [
-        { column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -134,9 +118,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           })
         });
       `,
-      errors: [
-        { column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -147,9 +129,7 @@ runRuleTester('valid-expect-in-promise', rule, {
             .then(data => expect(data).toEqual('Hi'));
         });
       `,
-      errors: [
-        { column: 3, endColumn: 47, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 47, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: `
@@ -160,9 +140,7 @@ runRuleTester('valid-expect-in-promise', rule, {
             .then(data => expect(data).toEqual('Hi'));
         });
       `,
-      errors: [
-        { column: 11, endColumn: 55, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 11, endColumn: 55, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -173,9 +151,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           })
         });
       `,
-      errors: [
-        { column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -185,9 +161,7 @@ runRuleTester('valid-expect-in-promise', rule, {
             .then(() => expect(someThing).toEqual(value))
         });
       `,
-      errors: [
-        { column: 3, endColumn: 50, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 50, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -197,9 +171,7 @@ runRuleTester('valid-expect-in-promise', rule, {
             .then(() => {})
         });
       `,
-      errors: [
-        { column: 3, endColumn: 20, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 20, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -212,9 +184,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           })
         });
       `,
-      errors: [
-        { column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -227,9 +197,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           })
         });
       `,
-      errors: [
-        { column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -242,9 +210,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           })
         });
       `,
-      errors: [
-        { column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -259,9 +225,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           return anotherPromise.then(() => expect(x).toBe(y));
         });
       `,
-      errors: [
-        { column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -275,9 +239,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           return anotherPromise.then(() => expect(x).toBe(y));
         });
       `,
-      errors: [
-        { column: 3, endColumn: 35, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 35, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -291,9 +253,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           return anotherPromise.then(() => expect(x).toBe(y));
         });
       `,
-      errors: [
-        { column: 3, endColumn: 22, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 22, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -304,9 +264,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           })
         });
       `,
-      errors: [
-        { column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -317,9 +275,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           });
         });
       `,
-      errors: [
-        { column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -330,9 +286,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           })
         });
       `,
-      errors: [
-        { column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -344,9 +298,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           promise;
         });
       `,
-      errors: [
-        { column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -360,9 +312,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           await promise;
         });
       `,
-      errors: [
-        { column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -376,9 +326,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           await promise;
         });
       `,
-      errors: [
-        { column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -392,9 +340,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           await promise;
         });
       `,
-      errors: [
-        { column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -408,9 +354,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           await promise;
         });
       `,
-      errors: [
-        { column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -424,9 +368,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           await promise;
         });
       `,
-      errors: [
-        { column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -440,9 +382,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           await promise;
         });
       `,
-      errors: [
-        { column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -454,9 +394,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           await 1;
         });
       `,
-      errors: [
-        { column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -468,9 +406,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           await [];
         });
       `,
-      errors: [
-        { column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -482,9 +418,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           await Promise.all([anotherPromise]);
         });
       `,
-      errors: [
-        { column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -496,9 +430,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           await {};
         });
       `,
-      errors: [
-        { column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -510,9 +442,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           await Promise.all([]);
         });
       `,
-      errors: [
-        { column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -522,9 +452,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           }), x = 1;
         });
       `,
-      errors: [
-        { column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 9, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -534,9 +462,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           });
         });
       `,
-      errors: [
-        { column: 16, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 16, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -548,9 +474,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           });
         });
       `,
-      errors: [
-        { column: 16, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 16, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -563,9 +487,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           return somePromise;
         });
       `,
-      errors: [
-        { column: 3, endColumn: 6, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 6, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -578,9 +500,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           return somePromise;
         });
       `,
-      errors: [
-        { column: 3, endColumn: 6, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 3, endColumn: 6, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`
@@ -594,9 +514,7 @@ runRuleTester('valid-expect-in-promise', rule, {
           await somePromise;
         });
       `,
-      errors: [
-        { column: 7, endColumn: 5, messageId: 'expectInFloatingPromise' },
-      ],
+      errors: [{ column: 7, endColumn: 5, messageId: 'expectInFloatingPromise' }],
     },
     {
       code: dedent`

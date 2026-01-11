@@ -34,9 +34,7 @@ export default createRule({
               // If the restriction chain was found, return the portion of the
               // chain that matches the restriction chain.
               chain:
-                startIndex !== -1
-                  ? chain.slice(startIndex, startIndex + restrictionLinks)
-                  : [],
+                startIndex !== -1 ? chain.slice(startIndex, startIndex + restrictionLinks) : [],
               message,
               restriction,
             }

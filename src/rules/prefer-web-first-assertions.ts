@@ -51,12 +51,7 @@ const methods: Record<string, MethodConfig> = {
   textContent: { matcher: 'toHaveText', type: 'string' },
 }
 
-const supportedMatchers = new Set([
-  'toBe',
-  'toEqual',
-  'toBeTruthy',
-  'toBeFalsy',
-])
+const supportedMatchers = new Set(['toBe', 'toEqual', 'toBeTruthy', 'toBeFalsy'])
 
 export default createRule({
   create(context) {
@@ -72,10 +67,7 @@ export default createRule({
         if (!arg) return
 
         const call = arg.type === 'AwaitExpression' ? arg.argument : arg
-        if (
-          call.type !== 'CallExpression' ||
-          call.callee.type !== 'MemberExpression'
-        ) {
+        if (call.type !== 'CallExpression' || call.callee.type !== 'MemberExpression') {
           return
         }
 
@@ -88,26 +80,20 @@ export default createRule({
         if (!Object.hasOwn(methods, method)) return
 
         // Change the matcher
-        const notModifier = fnCall.modifiers.find(
-          (mod) => getStringValue(mod) === 'not',
-        )
+        const notModifier = fnCall.modifiers.find((mod) => getStringValue(mod) === 'not')
 
         const isFalsy =
           methodConfig.type === 'boolean' &&
-          ((!!fnCall.matcherArgs.length &&
-            isBooleanLiteral(fnCall.matcherArgs[0], false)) ||
+          ((!!fnCall.matcherArgs.length && isBooleanLiteral(fnCall.matcherArgs[0], false)) ||
             fnCall.matcherName === 'toBeFalsy')
 
-        const isInverse = methodConfig.inverse
-          ? notModifier || isFalsy
-          : notModifier && isFalsy
+        const isInverse = methodConfig.inverse ? notModifier || isFalsy : notModifier && isFalsy
 
         // Replace the old matcher with the new matcher. The inverse
         // matcher should only be used if the old statement was not a
         // double negation.
         const newMatcher =
-          (+!!notModifier ^ +isFalsy && methodConfig.inverse) ||
-          methodConfig.matcher
+          (+!!notModifier ^ +isFalsy && methodConfig.inverse) || methodConfig.matcher
 
         const { callee } = call
         context.report({
@@ -116,8 +102,7 @@ export default createRule({
             method,
           },
           fix: (fixer) => {
-            const methodArgs =
-              call.type === 'CallExpression' ? call.arguments : []
+            const methodArgs = call.type === 'CallExpression' ? call.arguments : []
 
             const methodEnd = methodArgs.length
               ? methodArgs.at(-1)!.range![1] + 1
@@ -129,10 +114,7 @@ export default createRule({
               // Remove the await keyword
               fixer.replaceTextRange([arg.range![0], call.range![0]], ''),
               // Remove the old Playwright method and any arguments
-              fixer.replaceTextRange(
-                [callee.property.range![0] - 1, methodEnd],
-                '',
-              ),
+              fixer.replaceTextRange([callee.property.range![0] - 1, methodEnd], ''),
             ]
 
             // Remove not from matcher chain if no longer needed
@@ -164,9 +146,7 @@ export default createRule({
             }
 
             // Add the new matcher arguments if needed
-            const hasOtherArgs = !!methodArgs.filter(
-              (arg) => !isBooleanLiteral(arg),
-            ).length
+            const hasOtherArgs = !!methodArgs.filter((arg) => !isBooleanLiteral(arg)).length
 
             if (methodArgs) {
               const range = fnCall.matcher.range!
@@ -175,12 +155,7 @@ export default createRule({
                 .concat(hasOtherArgs ? '' : [])
                 .join(', ')
 
-              fixes.push(
-                fixer.insertTextAfterRange(
-                  [range[0], range[1] + 1],
-                  stringArgs,
-                ),
-              )
+              fixes.push(fixer.insertTextAfterRange([range[0], range[1] + 1], stringArgs))
             }
 
             return fixes

@@ -1,9 +1,4 @@
-import {
-  equalityMatchers,
-  getRawValue,
-  getStringValue,
-  isBooleanLiteral,
-} from '../utils/ast.js'
+import { equalityMatchers, getRawValue, getStringValue, isBooleanLiteral } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
 import { NodeWithParent } from '../utils/types.js'
@@ -33,15 +28,12 @@ export default createRule({
 
         const matcherValue = getRawValue(matcherArg) === 'true'
         const [modifier] = call.modifiers
-        const hasNot = call.modifiers.some(
-          (node) => getStringValue(node) === 'not',
-        )
+        const hasNot = call.modifiers.some((node) => getStringValue(node) === 'not')
 
         // we need to negate the expectation if the current expected
         // value is itself negated by the "not" modifier
         const addNotModifier =
-          (comparison.operator === '!==' ? !matcherValue : matcherValue) ===
-          hasNot
+          (comparison.operator === '!==' ? !matcherValue : matcherValue) === hasNot
 
         context.report({
           messageId: 'useEqualityMatcher',
@@ -51,9 +43,7 @@ export default createRule({
             fix(fixer) {
               // preserve the existing modifier if it's not a negation
               let modifierText =
-                modifier && getStringValue(modifier) !== 'not'
-                  ? `.${getStringValue(modifier)}`
-                  : ''
+                modifier && getStringValue(modifier) !== 'not' ? `.${getStringValue(modifier)}` : ''
 
               if (addNotModifier) {
                 modifierText += `.not`
@@ -61,23 +51,14 @@ export default createRule({
 
               return [
                 // replace the comparison argument with the left-hand side of the comparison
-                fixer.replaceText(
-                  comparison,
-                  context.sourceCode.getText(comparison.left),
-                ),
+                fixer.replaceText(comparison, context.sourceCode.getText(comparison.left)),
                 // replace the current matcher & modifier with the preferred matcher
                 fixer.replaceTextRange(
-                  [
-                    expectCallEnd,
-                    (call.matcher as NodeWithParent).parent!.range![1],
-                  ],
+                  [expectCallEnd, (call.matcher as NodeWithParent).parent!.range![1]],
                   `${modifierText}.${equalityMatcher}`,
                 ),
                 // replace the matcher argument with the right-hand side of the comparison
-                fixer.replaceText(
-                  matcherArg,
-                  context.sourceCode.getText(comparison.right),
-                ),
+                fixer.replaceText(matcherArg, context.sourceCode.getText(comparison.right)),
               ]
             },
             messageId: 'suggestEqualityMatcher',

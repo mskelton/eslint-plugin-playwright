@@ -66,9 +66,7 @@ runRuleTester('prefer-equality-matcher: ===', rule, {
           column: 26,
           line: 1,
           messageId: 'useEqualityMatcher',
-          suggestions: expectSuggestions(
-            (m) => `expect(a).resolves.not.${m}(b);`,
-          ),
+          suggestions: expectSuggestions((m) => `expect(a).resolves.not.${m}(b);`),
         },
       ],
     },
@@ -101,9 +99,7 @@ runRuleTester('prefer-equality-matcher: ===', rule, {
           column: 30,
           line: 1,
           messageId: 'useEqualityMatcher',
-          suggestions: expectSuggestions(
-            (m) => `expect(a).resolves.not.${m}(b);`,
-          ),
+          suggestions: expectSuggestions((m) => `expect(a).resolves.not.${m}(b);`),
         },
       ],
     },
@@ -206,9 +202,7 @@ runRuleTester('prefer-equality-matcher: !==', rule, {
           column: 26,
           line: 1,
           messageId: 'useEqualityMatcher',
-          suggestions: expectSuggestions(
-            (m) => `expect(a).resolves.not.${m}(b);`,
-          ),
+          suggestions: expectSuggestions((m) => `expect(a).resolves.not.${m}(b);`),
         },
       ],
     },
@@ -263,9 +257,7 @@ runRuleTester('prefer-equality-matcher: !==', rule, {
           column: 30,
           line: 1,
           messageId: 'useEqualityMatcher',
-          suggestions: expectSuggestions(
-            (m) => `expect(a).resolves.not.${m}(b);`,
-          ),
+          suggestions: expectSuggestions((m) => `expect(a).resolves.not.${m}(b);`),
         },
       ],
     },

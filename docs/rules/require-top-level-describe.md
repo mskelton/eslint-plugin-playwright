@@ -53,10 +53,7 @@ using the `maxTopLevelDescribes` option:
 
 ```json
 {
-  "playwright/require-top-level-describe": [
-    "error",
-    { "maxTopLevelDescribes": 2 }
-  ]
+  "playwright/require-top-level-describe": ["error", { "maxTopLevelDescribes": 2 }]
 }
 ```
 

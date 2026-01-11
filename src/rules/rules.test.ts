@@ -17,10 +17,7 @@ test('exports all rules', async () => {
 })
 
 test('has all rules in the README', async () => {
-  const readme = await fs.readFile(
-    path.resolve(__dirname, '../../README.md'),
-    'utf-8',
-  )
+  const readme = await fs.readFile(path.resolve(__dirname, '../../README.md'), 'utf-8')
 
   const { rules } = plugin.configs['flat/recommended'].plugins.playwright
 

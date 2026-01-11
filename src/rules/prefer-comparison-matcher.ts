@@ -32,10 +32,7 @@ const operatorMatcher: Record<string, string | undefined> = {
   '>=': 'toBeGreaterThanOrEqual',
 }
 
-const determineMatcher = (
-  operator: string,
-  negated: boolean,
-): string | null => {
+const determineMatcher = (operator: string, negated: boolean): string | null => {
   const op = negated ? invertedOperators[operator] : operator
   return operatorMatcher[op!] ?? null
 }
@@ -63,9 +60,7 @@ export default createRule({
           return
         }
 
-        const hasNot = call.modifiers.some(
-          (node) => getStringValue(node) === 'not',
-        )
+        const hasNot = call.modifiers.some((node) => getStringValue(node) === 'not')
 
         const preferredMatcher = determineMatcher(
           comparison.operator,
@@ -82,29 +77,18 @@ export default createRule({
             // Preserve the existing modifier if it's not a negation
             const [modifier] = call.modifiers
             const modifierText =
-              modifier && getStringValue(modifier) !== 'not'
-                ? `.${getStringValue(modifier)}`
-                : ''
+              modifier && getStringValue(modifier) !== 'not' ? `.${getStringValue(modifier)}` : ''
 
             return [
               // Replace the comparison argument with the left-hand side of the comparison
-              fixer.replaceText(
-                comparison,
-                context.sourceCode.getText(comparison.left),
-              ),
+              fixer.replaceText(comparison, context.sourceCode.getText(comparison.left)),
               // Replace the current matcher & modifier with the preferred matcher
               fixer.replaceTextRange(
-                [
-                  expectCallEnd,
-                  (call.matcher as NodeWithParent).parent!.range![1],
-                ],
+                [expectCallEnd, (call.matcher as NodeWithParent).parent!.range![1]],
                 `${modifierText}.${preferredMatcher}`,
               ),
               // Replace the matcher argument with the right-hand side of the comparison
-              fixer.replaceText(
-                matcherArg,
-                context.sourceCode.getText(comparison.right),
-              ),
+              fixer.replaceText(matcherArg, context.sourceCode.getText(comparison.right)),
             ]
           },
           messageId: 'useToBeComparison',

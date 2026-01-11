@@ -19,67 +19,40 @@ export function getRawValue(node: ESTree.Node) {
   return node.type === 'Literal' ? node.raw : undefined
 }
 
-export function isIdentifier(
-  node: ESTree.Node | undefined,
-  name?: string | RegExp,
-) {
+export function isIdentifier(node: ESTree.Node | undefined, name?: string | RegExp) {
   return (
     node?.type === 'Identifier' &&
-    (!name ||
-      (typeof name === 'string' ? node.name === name : name.test(node.name)))
+    (!name || (typeof name === 'string' ? node.name === name : name.test(node.name)))
   )
 }
 
-function isLiteral<T>(
-  node: ESTree.Node,
-  type: string,
-  value?: T,
-): node is ESTree.Literal {
+function isLiteral<T>(node: ESTree.Node, type: string, value?: T): node is ESTree.Literal {
   return (
     node.type === 'Literal' &&
-    (value === undefined
-      ? typeof node.value === type
-      : (node.value as any) === value)
+    (value === undefined ? typeof node.value === type : (node.value as any) === value)
   )
 }
 
-const isTemplateLiteral = (
-  node: ESTree.Node,
-  value?: string,
-): node is ESTree.TemplateLiteral =>
+const isTemplateLiteral = (node: ESTree.Node, value?: string): node is ESTree.TemplateLiteral =>
   node.type === 'TemplateLiteral' &&
   node.quasis.length === 1 && // bail out if not simple
   (value === undefined || node.quasis[0].value.raw === value)
 
-export function isStringLiteral(
-  node: ESTree.Node,
-  value?: string,
-): node is ESTree.Literal {
+export function isStringLiteral(node: ESTree.Node, value?: string): node is ESTree.Literal {
   return isLiteral(node, 'string', value)
 }
 
-export function isBooleanLiteral(
-  node: ESTree.Node,
-  value?: boolean,
-): node is ESTree.Literal {
+export function isBooleanLiteral(node: ESTree.Node, value?: boolean): node is ESTree.Literal {
   return isLiteral(node, 'boolean', value)
 }
 
 export type StringNode = ESTree.Literal | ESTree.TemplateLiteral
 
-export function isStringNode(
-  node: ESTree.Node,
-  value?: string,
-): node is StringNode {
-  return (
-    node && (isStringLiteral(node, value) || isTemplateLiteral(node, value))
-  )
+export function isStringNode(node: ESTree.Node, value?: string): node is StringNode {
+  return node && (isStringLiteral(node, value) || isTemplateLiteral(node, value))
 }
 
-export function isPropertyAccessor(
-  node: ESTree.MemberExpression,
-  name: string | RegExp,
-) {
+export function isPropertyAccessor(node: ESTree.MemberExpression, name: string | RegExp) {
   const value = getStringValue(node.property)
   return typeof name === 'string' ? value === name : name.test(value)
 }
@@ -110,10 +83,7 @@ export function dig(node: ESTree.Node, identifier: string | RegExp): boolean {
         : false
 }
 
-export function isPageMethod(
-  node: ESTree.CallExpression,
-  name: string | RegExp,
-) {
+export function isPageMethod(node: ESTree.CallExpression, name: string | RegExp) {
   return (
     node.callee.type === 'MemberExpression' &&
     dig(node.callee.object, /(^(page|frame)|(Page|Frame)$)/) &&
@@ -121,20 +91,12 @@ export function isPageMethod(
   )
 }
 
-export type FunctionExpression = (
-  | ESTree.ArrowFunctionExpression
-  | ESTree.FunctionExpression
-) &
+export type FunctionExpression = (ESTree.ArrowFunctionExpression | ESTree.FunctionExpression) &
   Rule.NodeParentExtension
 
 /** Returns a boolean to indicate if the node is a function or arrow function */
-export function isFunction(
-  node: ESTree.Node | undefined,
-): node is FunctionExpression {
-  return (
-    node?.type === 'ArrowFunctionExpression' ||
-    node?.type === 'FunctionExpression'
-  )
+export function isFunction(node: ESTree.Node | undefined): node is FunctionExpression {
+  return node?.type === 'ArrowFunctionExpression' || node?.type === 'FunctionExpression'
 }
 
 export const equalityMatchers = new Set(['toBe', 'toEqual', 'toStrictEqual'])
@@ -162,13 +124,11 @@ export function getNodeName(node: ESTree.Node): string | null {
 
 const isVariableDeclarator = (
   node: ESTree.Node | null,
-): node is TypedNodeWithParent<'VariableDeclarator'> =>
-  node?.type === 'VariableDeclarator'
+): node is TypedNodeWithParent<'VariableDeclarator'> => node?.type === 'VariableDeclarator'
 
 const isAssignmentExpression = (
   node: ESTree.Node | null,
-): node is TypedNodeWithParent<'AssignmentExpression'> =>
-  node?.type === 'AssignmentExpression'
+): node is TypedNodeWithParent<'AssignmentExpression'> => node?.type === 'AssignmentExpression'
 
 /**
  * Given a Node and an assignment expression, finds out if the assignment
@@ -184,17 +144,12 @@ const isAssignmentExpression = (
  *   expression doesn't contain a range array, this will also return false
  *   because their relative positions cannot be calculated.
  */
-function isNodeLastAssignment(
-  node: ESTree.Identifier,
-  assignment: AssignmentExpression,
-) {
+function isNodeLastAssignment(node: ESTree.Identifier, assignment: AssignmentExpression) {
   if (node.range && assignment.range && node.range[0] < assignment.range[1]) {
     return false
   }
 
-  return (
-    assignment.left.type === 'Identifier' && assignment.left.name === node.name
-  )
+  return assignment.left.type === 'Identifier' && assignment.left.name === node.name
 }
 
 /**
@@ -216,10 +171,7 @@ function isNodeLastAssignment(
  *   variable = 1
  *   console.log(variable) // dereferenced value of the 'variable' node is 1
  */
-export function dereference(
-  context: Rule.RuleContext,
-  node: ESTree.Node | undefined,
-) {
+export function dereference(context: Rule.RuleContext, node: ESTree.Node | undefined) {
   if (node?.type !== 'Identifier') {
     return node
   }
@@ -254,10 +206,7 @@ export function dereference(
  *     foo()
  *     ;[1, 2, 3].forEach(bar)
  */
-export const getActualLastToken = (
-  sourceCode: SourceCode,
-  node: ESTree.Node,
-): AST.Token => {
+export const getActualLastToken = (sourceCode: SourceCode, node: ESTree.Node): AST.Token => {
   const semiToken = sourceCode.getLastToken(node)!
   const prevToken = sourceCode.getTokenBefore(semiToken)!
   const nextToken = sourceCode.getTokenAfter(semiToken)

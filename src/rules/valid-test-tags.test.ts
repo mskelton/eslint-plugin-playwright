@@ -16,10 +16,7 @@ runTSRuleTester('valid-test-tags', validTestTags, {
     // Array of tags without @ prefix
     {
       code: "test('my test', { tag: ['e2e', 'login'] }, async ({ page }) => {})",
-      errors: [
-        { messageId: 'invalidTagFormat' },
-        { messageId: 'invalidTagFormat' },
-      ],
+      errors: [{ messageId: 'invalidTagFormat' }, { messageId: 'invalidTagFormat' }],
     },
     // Tag not in allowedTags list
     {

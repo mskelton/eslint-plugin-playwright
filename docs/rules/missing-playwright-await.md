@@ -34,9 +34,6 @@ your own async `expect` matchers.
 
 ```json
 {
-  "playwright/missing-playwright-await": [
-    "error",
-    { "customMatchers": ["toBeCustomThing"] }
-  ]
+  "playwright/missing-playwright-await": ["error", { "customMatchers": ["toBeCustomThing"] }]
 }
 ```

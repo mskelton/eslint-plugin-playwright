@@ -5,11 +5,8 @@ import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall, parseFnCall } from '../utils/parseFnCall.js'
 import { KnownCallExpression, NodeWithParent } from '../utils/types.js'
 
-const isCatchCall = (
-  node: ESTree.CallExpression,
-): node is KnownCallExpression =>
-  node.callee.type === 'MemberExpression' &&
-  isPropertyAccessor(node.callee, 'catch')
+const isCatchCall = (node: ESTree.CallExpression): node is KnownCallExpression =>
+  node.callee.type === 'MemberExpression' && isPropertyAccessor(node.callee, 'catch')
 
 const getTestCallExpressionsFromDeclaredVariables = (
   context: Rule.RuleContext,
@@ -23,8 +20,7 @@ const getTestCallExpressionsFromDeclaredVariables = (
         .filter(
           // ESLint types are infurating
           (node): node is any =>
-            node?.type === 'CallExpression' &&
-            isTypeOfFnCall(context, node, ['test']),
+            node?.type === 'CallExpression' && isTypeOfFnCall(context, node, ['test']),
         ),
     ],
     [] as ESTree.CallExpression[],
@@ -41,7 +37,7 @@ export default createRule({
     const decreaseConditionalDepth = () => inTestCase && conditionalDepth--
 
     return {
-      CallExpression(node: ESTree.CallExpression) {
+      'CallExpression'(node: ESTree.CallExpression) {
         const call = parseFnCall(context, node)
 
         if (call?.type === 'test') {
@@ -75,11 +71,11 @@ export default createRule({
           inPromiseCatch = false
         }
       },
-      CatchClause: increaseConditionalDepth,
+      'CatchClause': increaseConditionalDepth,
       'CatchClause:exit': decreaseConditionalDepth,
-      ConditionalExpression: increaseConditionalDepth,
+      'ConditionalExpression': increaseConditionalDepth,
       'ConditionalExpression:exit': decreaseConditionalDepth,
-      FunctionDeclaration(node) {
+      'FunctionDeclaration'(node) {
         const declaredVariables = context.sourceCode.getDeclaredVariables(node)
         const testCallExpressions = getTestCallExpressionsFromDeclaredVariables(
           context,
@@ -90,11 +86,11 @@ export default createRule({
           inTestCase = true
         }
       },
-      IfStatement: increaseConditionalDepth,
+      'IfStatement': increaseConditionalDepth,
       'IfStatement:exit': decreaseConditionalDepth,
-      LogicalExpression: increaseConditionalDepth,
+      'LogicalExpression': increaseConditionalDepth,
       'LogicalExpression:exit': decreaseConditionalDepth,
-      SwitchStatement: increaseConditionalDepth,
+      'SwitchStatement': increaseConditionalDepth,
       'SwitchStatement:exit': decreaseConditionalDepth,
     }
   },

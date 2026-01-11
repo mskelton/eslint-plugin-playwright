@@ -3,9 +3,7 @@ import { getStringValue, isFunction, isStringLiteral } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
 
-const paramsLocation = (
-  params: ESTree.CallExpression['arguments'] | ESTree.Pattern[],
-) => {
+const paramsLocation = (params: ESTree.CallExpression['arguments'] | ESTree.Pattern[]) => {
   const [first] = params
   const last = params[params.length - 1]
 
@@ -102,8 +100,7 @@ export default createRule({
       missingCallback: 'Describe requires a callback',
       noAsyncDescribeCallback: 'No async describe callback',
       unexpectedDescribeArgument: 'Unexpected argument(s) in describe callback',
-      unexpectedReturnInDescribe:
-        'Unexpected return statement in describe callback',
+      unexpectedReturnInDescribe: 'Unexpected return statement in describe callback',
     },
     schema: [],
     type: 'problem',

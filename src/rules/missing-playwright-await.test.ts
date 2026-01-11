@@ -237,9 +237,7 @@ runRuleTester('missing-playwright-await', rule, {
     },
     {
       code: test('assert(page).toBeChecked()'),
-      errors: [
-        { column: 28, endColumn: 34, endLine: 1, line: 1, messageId: 'expect' },
-      ],
+      errors: [{ column: 28, endColumn: 34, endLine: 1, line: 1, messageId: 'expect' }],
       output: test('await assert(page).toBeChecked()'),
       settings: {
         playwright: {

@@ -8,11 +8,7 @@ type Pattern = {
   replacement: string
 }
 
-const compilePatterns = ({
-  testIdAttribute,
-}: {
-  testIdAttribute: string
-}): Pattern[] => {
+const compilePatterns = ({ testIdAttribute }: { testIdAttribute: string }): Pattern[] => {
   const patterns = [
     {
       attribute: 'aria-label',

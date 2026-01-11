@@ -6,124 +6,84 @@ runRuleTester('valid-expect', rule, {
     // Matcher not found
     {
       code: 'expect(foo)',
-      errors: [
-        { column: 1, endColumn: 12, line: 1, messageId: 'matcherNotFound' },
-      ],
+      errors: [{ column: 1, endColumn: 12, line: 1, messageId: 'matcherNotFound' }],
     },
     {
       code: 'softExpect(foo)',
-      errors: [
-        { column: 1, endColumn: 16, line: 1, messageId: 'matcherNotFound' },
-      ],
+      errors: [{ column: 1, endColumn: 16, line: 1, messageId: 'matcherNotFound' }],
     },
     {
       code: 'expect(foo).not',
-      errors: [
-        { column: 13, endColumn: 16, line: 1, messageId: 'matcherNotFound' },
-      ],
+      errors: [{ column: 13, endColumn: 16, line: 1, messageId: 'matcherNotFound' }],
     },
     {
       code: 'expect.soft(foo)',
-      errors: [
-        { column: 1, endColumn: 17, line: 1, messageId: 'matcherNotFound' },
-      ],
+      errors: [{ column: 1, endColumn: 17, line: 1, messageId: 'matcherNotFound' }],
     },
     {
       code: 'expect.soft(foo).not',
-      errors: [
-        { column: 18, endColumn: 21, line: 1, messageId: 'matcherNotFound' },
-      ],
+      errors: [{ column: 18, endColumn: 21, line: 1, messageId: 'matcherNotFound' }],
     },
     {
       code: 'expect["soft"](foo)["not"]',
-      errors: [
-        { column: 21, endColumn: 26, line: 1, messageId: 'matcherNotFound' },
-      ],
+      errors: [{ column: 21, endColumn: 26, line: 1, messageId: 'matcherNotFound' }],
     },
     {
       code: 'expect.poll(foo)',
-      errors: [
-        { column: 1, endColumn: 17, line: 1, messageId: 'matcherNotFound' },
-      ],
+      errors: [{ column: 1, endColumn: 17, line: 1, messageId: 'matcherNotFound' }],
     },
     {
       code: 'expect.poll(foo).not',
-      errors: [
-        { column: 18, endColumn: 21, line: 1, messageId: 'matcherNotFound' },
-      ],
+      errors: [{ column: 18, endColumn: 21, line: 1, messageId: 'matcherNotFound' }],
     },
     {
       code: 'expect[`poll`](foo)[`not`]',
-      errors: [
-        { column: 21, endColumn: 26, line: 1, messageId: 'matcherNotFound' },
-      ],
+      errors: [{ column: 21, endColumn: 26, line: 1, messageId: 'matcherNotFound' }],
     },
     // Matcher not called
     {
       code: 'expect(foo).toBe',
-      errors: [
-        { column: 13, endColumn: 17, line: 1, messageId: 'matcherNotCalled' },
-      ],
+      errors: [{ column: 13, endColumn: 17, line: 1, messageId: 'matcherNotCalled' }],
     },
     {
       code: 'expect(foo).not.toBe',
-      errors: [
-        { column: 17, endColumn: 21, line: 1, messageId: 'matcherNotCalled' },
-      ],
+      errors: [{ column: 17, endColumn: 21, line: 1, messageId: 'matcherNotCalled' }],
     },
     {
       code: 'expect(foo)["not"].toBe',
-      errors: [
-        { column: 20, endColumn: 24, line: 1, messageId: 'matcherNotCalled' },
-      ],
+      errors: [{ column: 20, endColumn: 24, line: 1, messageId: 'matcherNotCalled' }],
     },
     {
       code: 'something(expect(foo).not.toBe)',
-      errors: [
-        { column: 27, endColumn: 31, line: 1, messageId: 'matcherNotCalled' },
-      ],
+      errors: [{ column: 27, endColumn: 31, line: 1, messageId: 'matcherNotCalled' }],
     },
     {
       code: 'expect.soft(foo).toEqual',
-      errors: [
-        { column: 18, endColumn: 25, line: 1, messageId: 'matcherNotCalled' },
-      ],
+      errors: [{ column: 18, endColumn: 25, line: 1, messageId: 'matcherNotCalled' }],
     },
     {
       code: 'expect.soft(foo).not.toEqual',
-      errors: [
-        { column: 22, endColumn: 29, line: 1, messageId: 'matcherNotCalled' },
-      ],
+      errors: [{ column: 22, endColumn: 29, line: 1, messageId: 'matcherNotCalled' }],
     },
     {
       code: 'something(expect.soft(foo).not.toEqual)',
-      errors: [
-        { column: 32, endColumn: 39, line: 1, messageId: 'matcherNotCalled' },
-      ],
+      errors: [{ column: 32, endColumn: 39, line: 1, messageId: 'matcherNotCalled' }],
     },
     {
       code: 'expect.poll(() => foo).toBe',
-      errors: [
-        { column: 24, endColumn: 28, line: 1, messageId: 'matcherNotCalled' },
-      ],
+      errors: [{ column: 24, endColumn: 28, line: 1, messageId: 'matcherNotCalled' }],
     },
     {
       code: 'expect.poll(() => foo).not.toBe',
-      errors: [
-        { column: 28, endColumn: 32, line: 1, messageId: 'matcherNotCalled' },
-      ],
+      errors: [{ column: 28, endColumn: 32, line: 1, messageId: 'matcherNotCalled' }],
     },
     {
       code: 'expect["poll"](() => foo)["not"][`toBe`]',
-      errors: [
-        { column: 34, endColumn: 40, line: 1, messageId: 'matcherNotCalled' },
-      ],
+      errors: [{ column: 34, endColumn: 40, line: 1, messageId: 'matcherNotCalled' }],
     },
     {
       code: 'something(expect["poll"](() => foo)["not"][`toBe`])',
-      errors: [
-        { column: 44, endColumn: 50, line: 1, messageId: 'matcherNotCalled' },
-      ],
+      errors: [{ column: 44, endColumn: 50, line: 1, messageId: 'matcherNotCalled' }],
     },
     // minArgs
     {
@@ -202,9 +162,7 @@ runRuleTester('valid-expect', rule, {
     // Global aliases
     {
       code: 'assert(foo)',
-      errors: [
-        { column: 1, endColumn: 12, line: 1, messageId: 'matcherNotFound' },
-      ],
+      errors: [{ column: 1, endColumn: 12, line: 1, messageId: 'matcherNotFound' }],
       settings: {
         playwright: {
           globalAliases: { expect: ['assert'] },

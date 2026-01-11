@@ -254,9 +254,7 @@ runRuleTester('no-restricted-locators', rule, {
     test('await page.locator(".btn")'),
     test('await page.click()'),
     // Chained calls
-    test(
-      'const section = page.getByRole("section"); section.getByRole("button")',
-    ),
+    test('const section = page.getByRole("section"); section.getByRole("button")'),
     // Variable references
     test(
       'const button = page.getByRole("button", { name: "common button" }); page.locator(button)',

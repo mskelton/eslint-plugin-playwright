@@ -42,8 +42,7 @@ export default createRule({
                   ? fixer.remove(node.parent)
                   : fixer.removeRange([
                       slowNode.range![0] - 1,
-                      slowNode.range![1] +
-                        Number(slowNode.type !== 'Identifier'),
+                      slowNode.range![1] + Number(slowNode.type !== 'Identifier'),
                     ])
               },
               messageId: 'removeSlowedTestAnnotation',

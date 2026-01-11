@@ -26,18 +26,12 @@ const getBlockType = (
     const expr = func.parent
 
     // arrow function or function expr
-    if (
-      expr.type === 'VariableDeclarator' ||
-      expr.type === 'MethodDefinition'
-    ) {
+    if (expr.type === 'VariableDeclarator' || expr.type === 'MethodDefinition') {
       return 'function'
     }
 
     // if it's not a variable, it will be callExpr, we only care about describe
-    if (
-      expr.type === 'CallExpression' &&
-      isTypeOfFnCall(context, expr, ['describe'])
-    ) {
+    if (expr.type === 'CallExpression' && isTypeOfFnCall(context, expr, ['describe'])) {
       return 'describe'
     }
   }
@@ -45,21 +39,14 @@ const getBlockType = (
   return null
 }
 
-type BlockType =
-  | 'arrow'
-  | 'describe'
-  | 'fixture'
-  | 'function'
-  | 'hook'
-  | 'template'
-  | 'test'
+type BlockType = 'arrow' | 'describe' | 'fixture' | 'function' | 'hook' | 'template' | 'test'
 
 export default createRule({
   create(context: Rule.RuleContext) {
     const callStack: BlockType[] = []
 
     return {
-      ArrowFunctionExpression(node) {
+      'ArrowFunctionExpression'(node) {
         if (node.parent?.type !== 'CallExpression') {
           callStack.push('arrow')
         }
@@ -69,7 +56,7 @@ export default createRule({
           callStack.pop()
         }
       },
-      BlockStatement(statement) {
+      'BlockStatement'(statement) {
         const blockType = getBlockType(context, statement)
 
         if (blockType) {
@@ -81,13 +68,12 @@ export default createRule({
           callStack.pop()
         }
       },
-      CallExpression(node) {
+      'CallExpression'(node) {
         const call = parseFnCall(context, node)
 
         if (call?.type === 'expect') {
           if (
-            (call.head.node as NodeWithParent).parent?.type ===
-              'MemberExpression' &&
+            (call.head.node as NodeWithParent).parent?.type === 'MemberExpression' &&
             call.members.length === 1
           ) {
             return
@@ -109,10 +95,7 @@ export default createRule({
           callStack.push('hook')
         }
 
-        if (
-          node.callee.type === 'MemberExpression' &&
-          isPropertyAccessor(node.callee, 'extend')
-        ) {
+        if (node.callee.type === 'MemberExpression' && isPropertyAccessor(node.callee, 'extend')) {
           callStack.push('fixture')
         }
 
@@ -127,8 +110,7 @@ export default createRule({
           (top === 'test' &&
             isTypeOfFnCall(context, node, ['test']) &&
             node.callee.type !== 'MemberExpression') ||
-          (top === 'template' &&
-            node.callee.type === 'TaggedTemplateExpression') ||
+          (top === 'template' && node.callee.type === 'TaggedTemplateExpression') ||
           (top === 'fixture' &&
             node.callee.type === 'MemberExpression' &&
             isPropertyAccessor(node.callee, 'extend'))

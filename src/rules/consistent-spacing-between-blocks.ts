@@ -1,10 +1,6 @@
 import type { AST, Rule, SourceCode } from 'eslint'
 import type * as ESTree from 'estree'
-import {
-  areTokensOnSameLine,
-  getActualLastToken,
-  getPaddingLineSequences,
-} from '../utils/ast.js'
+import { areTokensOnSameLine, getActualLastToken, getPaddingLineSequences } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall } from '../utils/parseFnCall.js'
 import { createScopeInfo, ScopeInfo } from '../utils/scope.js'
@@ -32,11 +28,7 @@ function isValidParent(parentType: string): boolean {
  * the`prevNode` has trailing comments, it inserts a blank line after the
  * trailing comments.
  */
-function fixPadding(
-  prevNode: ESTree.Node,
-  nextNode: ESTree.Node,
-  ctx: Context,
-): void {
+function fixPadding(prevNode: ESTree.Node, nextNode: ESTree.Node, ctx: Context): void {
   const { ruleContext, sourceCode } = ctx
   const paddingLines = getPaddingLineSequences(prevNode, nextNode, sourceCode)
 
@@ -79,9 +71,7 @@ function fixPadding(
         includeComments: true,
       }) || nextNode) as AST.Token
 
-      const insertText = areTokensOnSameLine(prevToken, nextToken)
-        ? '\n\n'
-        : '\n'
+      const insertText = areTokensOnSameLine(prevToken, nextToken) ? '\n\n' : '\n'
 
       return fixer.insertTextAfter(prevToken, insertText)
     },
@@ -113,19 +103,10 @@ function isTestNode(node: ESTree.Node, ctx: Context): boolean {
     return false
   }
 
-  return isTypeOfFnCall(ctx.ruleContext, curNode, [
-    'describe',
-    'test',
-    'step',
-    'hook',
-  ])
+  return isTypeOfFnCall(ctx.ruleContext, curNode, ['describe', 'test', 'step', 'hook'])
 }
 
-function testPadding(
-  prevNode: ESTree.Node,
-  nextNode: ESTree.Node,
-  ctx: Context,
-) {
+function testPadding(prevNode: ESTree.Node, nextNode: ESTree.Node, ctx: Context) {
   while (nextNode.type === 'LabeledStatement') {
     nextNode = nextNode.body
   }
@@ -161,16 +142,16 @@ export default createRule({
 
     return {
       ':statement': (node: ESTree.Node) => verifyNode(node, ctx),
-      BlockStatement: scopeInfo.enter,
+      'BlockStatement': scopeInfo.enter,
       'BlockStatement:exit': scopeInfo.exit,
-      Program: scopeInfo.enter,
+      'Program': scopeInfo.enter,
       'Program:exit': scopeInfo.enter,
-      SwitchCase(node) {
+      'SwitchCase'(node) {
         verifyNode(node, ctx)
         scopeInfo.enter()
       },
       'SwitchCase:exit': scopeInfo.exit,
-      SwitchStatement: scopeInfo.enter,
+      'SwitchStatement': scopeInfo.enter,
       'SwitchStatement:exit': scopeInfo.exit,
     }
   },

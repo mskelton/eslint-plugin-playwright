@@ -111,7 +111,7 @@ runRuleTester('{rule-name}', rule, {
 
 - **TypeScript strict mode** - All code must be properly typed
 - **ESLint compliance** - Code must pass the project's own linting rules
-- **Prettier formatting** - Consistent code formatting
+- **Oxfmt formatting** - Consistent code formatting
 - **Comprehensive testing** - Aim for 100% test coverage on new rules
 
 ## Key Utilities & APIs
@@ -235,7 +235,7 @@ runRuleTester('{rule-name}', rule, {
 - `yarn test:watch` - Run tests in watch mode
 - `yarn build` - Build the plugin
 - `yarn lint` - Run ESLint
-- `yarn format` - Format code with Prettier
+- `yarn format` - Format code with oxfmt
 
 ### Release Process
 

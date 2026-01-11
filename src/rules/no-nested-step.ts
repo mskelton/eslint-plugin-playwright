@@ -9,10 +9,7 @@ export default createRule({
     function pushStepCallback(node: Rule.Node) {
       const { parent } = node
 
-      if (
-        parent?.type !== 'CallExpression' ||
-        !isTypeOfFnCall(context, parent, ['step'])
-      ) {
+      if (parent?.type !== 'CallExpression' || !isTypeOfFnCall(context, parent, ['step'])) {
         return
       }
 
@@ -29,18 +26,15 @@ export default createRule({
     function popStepCallback(node: Rule.Node) {
       const { parent } = node
 
-      if (
-        parent?.type === 'CallExpression' &&
-        isTypeOfFnCall(context, parent, ['step'])
-      ) {
+      if (parent?.type === 'CallExpression' && isTypeOfFnCall(context, parent, ['step'])) {
         stack.pop()
       }
     }
 
     return {
-      ArrowFunctionExpression: pushStepCallback,
+      'ArrowFunctionExpression': pushStepCallback,
       'ArrowFunctionExpression:exit': popStepCallback,
-      FunctionExpression: pushStepCallback,
+      'FunctionExpression': pushStepCallback,
       'FunctionExpression:exit': popStepCallback,
     }
   },

@@ -49,8 +49,8 @@ import requireSoftAssertions from './rules/require-soft-assertions.js'
 import requireToThrowMessage from './rules/require-to-throw-message.js'
 import requireTopLevelDescribe from './rules/require-top-level-describe.js'
 import validDescribeCallback from './rules/valid-describe-callback.js'
-import validExpect from './rules/valid-expect.js'
 import validExpectInPromise from './rules/valid-expect-in-promise.js'
+import validExpect from './rules/valid-expect.js'
 import validTestTags from './rules/valid-test-tags.js'
 import validTitle from './rules/valid-title.js'
 
@@ -173,6 +173,6 @@ export = {
   configs: {
     'flat/recommended': flatConfig,
     'playwright-test': legacyConfig,
-    recommended: legacyConfig,
+    'recommended': legacyConfig,
   },
 }

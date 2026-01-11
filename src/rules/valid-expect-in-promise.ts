@@ -1,11 +1,6 @@
 import { Rule } from 'eslint'
 import * as ESTree from 'estree'
-import {
-  getNodeName,
-  getStringValue,
-  isFunction,
-  isIdentifier,
-} from '../utils/ast.js'
+import { getNodeName, getStringValue, isFunction, isIdentifier } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import {
   findTopMostCallExpression,
@@ -48,9 +43,7 @@ const isTestCaseCallWithCallbackArg = (
     return false
   }
 
-  const isJestEach = jestCallFn.members.some(
-    (s) => getStringValue(s) === 'each',
-  )
+  const isJestEach = jestCallFn.members.some((s) => getStringValue(s) === 'each')
 
   if (isJestEach && node.callee.type !== 'TaggedTemplateExpression') {
     // isJestEach but not a TaggedTemplateExpression, so this must be
@@ -64,11 +57,7 @@ const isTestCaseCallWithCallbackArg = (
 
   const callbackArgIndex = Number(isJestEach)
 
-  return (
-    callback &&
-    isFunction(callback) &&
-    callback.params.length === 1 + callbackArgIndex
-  )
+  return callback && isFunction(callback) && callback.params.length === 1 + callbackArgIndex
 }
 
 const isPromiseMethodThatUsesValue = (
@@ -78,10 +67,7 @@ const isPromiseMethodThatUsesValue = (
   const name = getStringValue(identifier)
   if (node.argument == null) return false
 
-  if (
-    node.argument.type === 'CallExpression' &&
-    node.argument.arguments.length > 0
-  ) {
+  if (node.argument.type === 'CallExpression' && node.argument.arguments.length > 0) {
     const nodeName = getNodeName(node.argument)
 
     if (['Promise.all', 'Promise.allSettled'].includes(nodeName as string)) {
@@ -112,22 +98,14 @@ const isPromiseMethodThatUsesValue = (
  */
 const isValueAwaitedInElements = (
   name: string,
-  elements:
-    | ESTree.ArrayExpression['elements']
-    | ESTree.CallExpression['arguments'],
+  elements: ESTree.ArrayExpression['elements'] | ESTree.CallExpression['arguments'],
 ): boolean => {
   for (const element of elements) {
-    if (
-      element?.type === 'AwaitExpression' &&
-      isIdentifier(element.argument, name)
-    ) {
+    if (element?.type === 'AwaitExpression' && isIdentifier(element.argument, name)) {
       return true
     }
 
-    if (
-      element?.type === 'ArrayExpression' &&
-      isValueAwaitedInElements(name, element.elements)
-    ) {
+    if (element?.type === 'ArrayExpression' && isValueAwaitedInElements(name, element.elements)) {
       return true
     }
   }
@@ -139,10 +117,7 @@ const isValueAwaitedInElements = (
  * Attempts to determine if the runtime value represented by the given
  * `identifier` is `await`ed as an argument along the given call expression
  */
-const isValueAwaitedInArguments = (
-  name: string,
-  call: ESTree.CallExpression,
-): boolean => {
+const isValueAwaitedInArguments = (name: string, call: ESTree.CallExpression): boolean => {
   let node: ESTree.Node = call
 
   while (node) {
@@ -164,9 +139,7 @@ const isValueAwaitedInArguments = (
   return false
 }
 
-const getLeftMostCallExpression = (
-  call: ESTree.CallExpression,
-): ESTree.CallExpression => {
+const getLeftMostCallExpression = (call: ESTree.CallExpression): ESTree.CallExpression => {
   let leftMostCallExpression: ESTree.CallExpression = call
   let node: ESTree.Node = call
 
@@ -271,9 +244,7 @@ const isValueAwaitedOrReturned = (
   return false
 }
 
-const findFirstBlockBodyUp = (
-  node: ESTree.Node,
-): ESTree.BlockStatement['body'] => {
+const findFirstBlockBodyUp = (node: ESTree.Node): ESTree.BlockStatement['body'] => {
   let parent: ESTree.Node = node
 
   while (parent) {
@@ -289,20 +260,14 @@ const findFirstBlockBodyUp = (
   )
 }
 
-const isDirectlyWithinTestCaseCall = (
-  context: Rule.RuleContext,
-  node: ESTree.Node,
-): boolean => {
+const isDirectlyWithinTestCaseCall = (context: Rule.RuleContext, node: ESTree.Node): boolean => {
   let parent: ESTree.Node = node
 
   while (parent) {
     if (isFunction(parent)) {
       parent = parent.parent
 
-      return (
-        parent?.type === 'CallExpression' &&
-        isTypeOfFnCall(context, parent, ['test'])
-      )
+      return parent?.type === 'CallExpression' && isTypeOfFnCall(context, parent, ['test'])
     }
 
     parent = (parent as NodeWithParent).parent
@@ -339,7 +304,7 @@ export default createRule({
     const chains: boolean[] = []
 
     return {
-      CallExpression(node: ESTree.CallExpression) {
+      'CallExpression'(node: ESTree.CallExpression) {
         // there are too many ways that the done argument could be used with
         // promises that contain expect that would make the promise safe for us
         if (isTestCaseCallWithCallbackArg(context, node)) {
@@ -410,11 +375,7 @@ export default createRule({
           case 'AssignmentExpression': {
             if (
               parent.left.type === 'Identifier' &&
-              isValueAwaitedOrReturned(
-                context,
-                parent.left,
-                findFirstBlockBodyUp(parent),
-              )
+              isValueAwaitedOrReturned(context, parent.left, findFirstBlockBodyUp(parent))
             ) {
               return
             }
@@ -441,8 +402,7 @@ export default createRule({
   meta: {
     docs: {
       category: 'Best Practices',
-      description:
-        'Require promises that have expectations in their chain to be valid',
+      description: 'Require promises that have expectations in their chain to be valid',
       recommended: true,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/valid-expect-in-promise.md',
     },

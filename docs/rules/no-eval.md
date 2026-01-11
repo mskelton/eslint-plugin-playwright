@@ -7,11 +7,7 @@ Examples of **incorrect** code for this rule:
 ```javascript
 const searchValue = await page.$eval('#search', (el) => el.value)
 
-const divCounts = await page.$$eval(
-  'div',
-  (divs, min) => divs.length >= min,
-  10,
-)
+const divCounts = await page.$$eval('div', (divs, min) => divs.length >= min, 10)
 
 await page.$eval('#search', (el) => el.value)
 await page.$$eval('#search', (el) => el.value)

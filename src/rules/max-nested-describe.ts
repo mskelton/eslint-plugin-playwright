@@ -9,7 +9,7 @@ export default createRule({
     const describes: ESTree.CallExpression[] = []
 
     return {
-      CallExpression(node) {
+      'CallExpression'(node) {
         if (isTypeOfFnCall(context, node, ['describe'])) {
           describes.unshift(node)
 

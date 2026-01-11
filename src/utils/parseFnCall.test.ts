@@ -58,7 +58,7 @@ const rule = {
       recommended: false,
     },
     messages: {
-      details: '{{ data }}',
+      'details': '{{ data }}',
       'matcher-not-called': 'matcherNotCalled',
       'matcher-not-found': 'matcherNotFound',
       'modifier-unknown': 'modifierUnknown',
@@ -72,10 +72,7 @@ interface TestResolvedFnWithNode extends Omit<ResolvedFnWithNode, 'node'> {
   node: string
 }
 
-interface TestParsedFnCall extends Omit<
-  ParsedFnCall,
-  'head' | 'members' | 'modifiers'
-> {
+interface TestParsedFnCall extends Omit<ParsedFnCall, 'head' | 'members' | 'modifiers'> {
   args?: (string | null)[]
   head: TestResolvedFnWithNode
   matcher?: string

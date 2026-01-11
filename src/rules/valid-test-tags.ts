@@ -16,17 +16,13 @@ export default createRule({
 
     // Validate that the options are not used together
     if (allowedTags.length > 0 && disallowedTags.length > 0) {
-      throw new Error(
-        'The allowedTags and disallowedTags options cannot be used together',
-      )
+      throw new Error('The allowedTags and disallowedTags options cannot be used together')
     }
 
     // Validate that all configured tags start with @
     for (const tag of [...allowedTags, ...disallowedTags]) {
       if (typeof tag === 'string' && !tag.startsWith('@')) {
-        throw new Error(
-          `Invalid tag "${tag}" in configuration: tags must start with @`,
-        )
+        throw new Error(`Invalid tag "${tag}" in configuration: tags must start with @`)
       }
     }
 
@@ -83,11 +79,7 @@ export default createRule({
         // Check for tags in the title (first argument)
         if (node.arguments.length > 0) {
           const titleArg = node.arguments[0]
-          if (
-            titleArg &&
-            titleArg.type === 'Literal' &&
-            typeof titleArg.value === 'string'
-          ) {
+          if (titleArg && titleArg.type === 'Literal' && typeof titleArg.value === 'string') {
             const titleTags = extractTagsFromTitle(titleArg.value)
             for (const tag of titleTags) {
               validateTag(tag, node)
@@ -125,11 +117,7 @@ export default createRule({
         } else if (tagValue.type === 'ArrayExpression') {
           // Handle array of strings
           for (const element of tagValue.elements) {
-            if (
-              !element ||
-              element.type !== 'Literal' ||
-              typeof element.value !== 'string'
-            ) {
+            if (!element || element.type !== 'Literal' || typeof element.value !== 'string') {
               return // Skip invalid elements, TypeScript will handle this
             }
             validateTag(element.value, node)
@@ -145,8 +133,7 @@ export default createRule({
   },
   meta: {
     docs: {
-      description:
-        'Enforce valid tag format in Playwright test blocks and titles',
+      description: 'Enforce valid tag format in Playwright test blocks and titles',
       recommended: true,
     },
     messages: {

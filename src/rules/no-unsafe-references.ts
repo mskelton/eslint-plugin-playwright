@@ -9,21 +9,14 @@ import { NodeWithParent } from '../utils/types.js'
 function collectVariables(scope: Scope.Scope | null): string[] {
   if (!scope || scope.type === 'global') return []
 
-  return [
-    ...collectVariables(scope.upper),
-    ...scope.variables.map((ref) => ref.name),
-  ]
+  return [...collectVariables(scope.upper), ...scope.variables.map((ref) => ref.name)]
 }
 
 /**
  * Add the variables from the outer scope as arguments to `page.evaluate()` or
  * `page.addInitScript()`.
  */
-function addArgument(
-  fixer: Rule.RuleFixer,
-  node: ESTree.CallExpression,
-  refs: string,
-) {
+function addArgument(fixer: Rule.RuleFixer, node: ESTree.CallExpression, refs: string) {
   // This should never happen, but just in case
   if (!node.arguments.length) return
 
@@ -53,10 +46,7 @@ function addArgument(
 }
 
 /** Get the opening parenthesis of the function. */
-function getParen(
-  context: Rule.RuleContext,
-  node: ESTree.Node,
-): AST.Token | null {
+function getParen(context: Rule.RuleContext, node: ESTree.Node): AST.Token | null {
   let token: AST.Token | null = context.sourceCode.getFirstToken(node)
 
   while (token && token.value !== '(') {
@@ -93,11 +83,7 @@ export default createRule({
   create(context) {
     return {
       CallExpression(node) {
-        if (
-          !isPageMethod(node, 'evaluate') &&
-          !isPageMethod(node, 'addInitScript')
-        )
-          return
+        if (!isPageMethod(node, 'evaluate') && !isPageMethod(node, 'addInitScript')) return
 
         const [fn] = node.arguments
         if (!fn || !isFunction(fn)) return
@@ -116,9 +102,7 @@ export default createRule({
           })
           .filter((ref) => allRefs.has(ref.identifier.name))
           .forEach((ref, i, arr) => {
-            const methodName = isPageMethod(node, 'evaluate')
-              ? 'evaluate'
-              : 'addInitScript'
+            const methodName = isPageMethod(node, 'evaluate') ? 'evaluate' : 'addInitScript'
             const descriptor: Rule.ReportDescriptor = {
               data: { method: methodName, variable: ref.identifier.name },
               messageId: 'noUnsafeReference',
@@ -136,10 +120,9 @@ export default createRule({
               fix(fixer) {
                 const refs = arr.map((ref) => ref.identifier.name).join(', ')
 
-                return [
-                  addArgument(fixer, node, refs),
-                  addParam(context, fixer, fn, refs),
-                ].filter(truthy)
+                return [addArgument(fixer, node, refs), addParam(context, fixer, fn, refs)].filter(
+                  truthy,
+                )
               },
             })
           })
@@ -149,15 +132,13 @@ export default createRule({
   meta: {
     docs: {
       category: 'Possible Errors',
-      description:
-        'Prevent unsafe variable references in page.evaluate() and page.addInitScript()',
+      description: 'Prevent unsafe variable references in page.evaluate() and page.addInitScript()',
       recommended: true,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-unsafe-references.md',
     },
     fixable: 'code',
     messages: {
-      noUnsafeReference:
-        'Unsafe reference to variable "{{ variable }}" in page.{{ method }}()',
+      noUnsafeReference: 'Unsafe reference to variable "{{ variable }}" in page.{{ method }}()',
     },
     type: 'problem',
   },

@@ -44,17 +44,14 @@ export default createRule({
           return
         }
 
-        const notModifier = call.modifiers.find(
-          (node) => getStringValue(node) === 'not',
-        )
+        const notModifier = call.modifiers.find((node) => getStringValue(node) === 'not')
 
         context.report({
           fix(fixer) {
             // We need to negate the expectation if the current expected
             // value is itself negated by the "not" modifier
             const addNotModifier =
-              matcherArg.type === 'Literal' &&
-              matcherArg.value === !!notModifier
+              matcherArg.type === 'Literal' && matcherArg.value === !!notModifier
 
             const fixes = [
               // remove the "includes" call entirely
@@ -63,10 +60,7 @@ export default createRule({
                 includesCall.range![1],
               ]),
               // replace the current matcher with "toContain", adding "not" if needed
-              fixer.replaceText(
-                matcher,
-                addNotModifier ? 'not.toContain' : 'toContain',
-              ),
+              fixer.replaceText(matcher, addNotModifier ? 'not.toContain' : 'toContain'),
               // replace the matcher argument with the value from the "includes"
               fixer.replaceText(
                 call.matcherArgs[0],
@@ -76,12 +70,7 @@ export default createRule({
 
             // Remove the "not" modifier if needed
             if (notModifier) {
-              fixes.push(
-                fixer.removeRange([
-                  notModifier.range![0],
-                  notModifier.range![1] + 1,
-                ]),
-              )
+              fixes.push(fixer.removeRange([notModifier.range![0], notModifier.range![1] + 1]))
             }
 
             return fixes

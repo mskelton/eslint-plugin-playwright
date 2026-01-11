@@ -74,9 +74,7 @@ runRuleTester('prefer-locator', rule, {
       code: `const locator = page.locator('input[type="password"]')`,
     },
     {
-      code: test(
-        `await page.locator('input[type="password"]').fill('password')`,
-      ),
+      code: test(`await page.locator('input[type="password"]').fill('password')`),
     },
     {
       code: test(`await page.locator('xpath=//button').dblclick()`),
@@ -85,9 +83,7 @@ runRuleTester('prefer-locator', rule, {
       code: `page.locator('xpath=//button').click()`,
     },
     {
-      code: test(
-        `await page.frameLocator('#my-iframe').locator('css=button').click()`,
-      ),
+      code: test(`await page.frameLocator('#my-iframe').locator('css=button').click()`),
     },
     {
       code: test(`await page.evaluate('1 + 2')`),

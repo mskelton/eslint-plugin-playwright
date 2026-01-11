@@ -5,27 +5,19 @@ import rule from './no-eval.js'
 runRuleTester('no-eval', rule, {
   invalid: [
     {
-      code: test(
-        'const searchValue = await page.$eval("#search", el => el.value);',
-      ),
+      code: test('const searchValue = await page.$eval("#search", el => el.value);'),
       errors: [{ column: 54, endColumn: 64, line: 1, messageId: 'noEval' }],
     },
     {
-      code: test(
-        'const searchValue = await this.page.$eval("#search", el => el.value);',
-      ),
+      code: test('const searchValue = await this.page.$eval("#search", el => el.value);'),
       errors: [{ column: 54, endColumn: 69, line: 1, messageId: 'noEval' }],
     },
     {
-      code: test(
-        'const searchValue = await page["$eval"]("#search", el => el.value);',
-      ),
+      code: test('const searchValue = await page["$eval"]("#search", el => el.value);'),
       errors: [{ column: 54, endColumn: 67, line: 1, messageId: 'noEval' }],
     },
     {
-      code: test(
-        'const searchValue = await page[`$eval`]("#search", el => el.value);',
-      ),
+      code: test('const searchValue = await page[`$eval`]("#search", el => el.value);'),
       errors: [{ column: 54, endColumn: 67, line: 1, messageId: 'noEval' }],
     },
     {
@@ -93,23 +85,11 @@ runRuleTester('no-eval', rule, {
     test('await this.page.locator(".tweet").evaluate(node => node.innerText)'),
     test('await page.locator(".tweet")["evaluate"](node => node.innerText)'),
     test('await page.locator(".tweet")[`evaluate`](node => node.innerText)'),
-    test(
-      'await (await page.$(".tweet")).$eval(".like", node => node.innerText)',
-    ),
-    test(
-      'await (await page.$(".tweet"))["$eval"](".like", node => node.innerText)',
-    ),
-    test(
-      'await (await page.$(".tweet")).$$eval(".like", node => node.innerText)',
-    ),
-    test(
-      'await (await page.$(".tweet"))[`$$eval`](".like", node => node.innerText)',
-    ),
-    test(
-      'await page.locator("div").evaluateAll((divs, min) => divs.length >= min, 10);',
-    ),
-    test(
-      'await this.page.locator("div").evaluateAll((divs, min) => divs.length >= min, 10);',
-    ),
+    test('await (await page.$(".tweet")).$eval(".like", node => node.innerText)'),
+    test('await (await page.$(".tweet"))["$eval"](".like", node => node.innerText)'),
+    test('await (await page.$(".tweet")).$$eval(".like", node => node.innerText)'),
+    test('await (await page.$(".tweet"))[`$$eval`](".like", node => node.innerText)'),
+    test('await page.locator("div").evaluateAll((divs, min) => divs.length >= min, 10);'),
+    test('await this.page.locator("div").evaluateAll((divs, min) => divs.length >= min, 10);'),
   ],
 })

@@ -4,9 +4,7 @@ import { isPageMethod } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 
 function getPropertyRange(node: ESTree.Node): AST.Range {
-  return node.type === 'Identifier'
-    ? node.range!
-    : [node.range![0] + 1, node.range![1] - 1]
+  return node.type === 'Identifier' ? node.range! : [node.range![0] + 1, node.range![1] - 1]
 }
 
 export default createRule({
@@ -23,22 +21,12 @@ export default createRule({
                   const { property } = node.callee as ESTree.MemberExpression
 
                   // Replace $/$$ with locator
-                  const fixes = [
-                    fixer.replaceTextRange(
-                      getPropertyRange(property),
-                      'locator',
-                    ),
-                  ]
+                  const fixes = [fixer.replaceTextRange(getPropertyRange(property), 'locator')]
 
                   // Remove the await expression if it exists as locators do
                   // not need to be awaited.
                   if (node.parent.type === 'AwaitExpression') {
-                    fixes.push(
-                      fixer.removeRange([
-                        node.parent.range![0],
-                        node.range![0],
-                      ]),
-                    )
+                    fixes.push(fixer.removeRange([node.parent.range![0], node.range![0]]))
                   }
 
                   return fixes
@@ -56,8 +44,7 @@ export default createRule({
   meta: {
     docs: {
       category: 'Possible Errors',
-      description:
-        'The use of ElementHandle is discouraged, use Locator instead',
+      description: 'The use of ElementHandle is discouraged, use Locator instead',
       recommended: true,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-element-handle.md',
     },

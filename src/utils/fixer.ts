@@ -2,8 +2,7 @@ import { AST, Rule } from 'eslint'
 import ESTree from 'estree'
 import { NodeWithParent } from './types.js'
 
-export const getRangeOffset = (node: ESTree.Node) =>
-  node.type === 'Identifier' ? 0 : 1
+export const getRangeOffset = (node: ESTree.Node) => (node.type === 'Identifier' ? 0 : 1)
 
 /**
  * Replaces an accessor node with the given `text`.
@@ -11,27 +10,17 @@ export const getRangeOffset = (node: ESTree.Node) =>
  * This ensures that fixes produce valid code when replacing both dot-based and
  * bracket-based property accessors.
  */
-export function replaceAccessorFixer(
-  fixer: Rule.RuleFixer,
-  node: ESTree.Node,
-  text: string,
-) {
+export function replaceAccessorFixer(fixer: Rule.RuleFixer, node: ESTree.Node, text: string) {
   const [start, end] = node.range!
 
-  return fixer.replaceTextRange(
-    [start + getRangeOffset(node), end - getRangeOffset(node)],
-    text,
-  )
+  return fixer.replaceTextRange([start + getRangeOffset(node), end - getRangeOffset(node)], text)
 }
 
 /**
  * Removes an object property, and if it's parent object contains no other keys,
  * removes the object in it's entirety.
  */
-export function removePropertyFixer(
-  fixer: Rule.RuleFixer,
-  property: ESTree.Property,
-) {
+export function removePropertyFixer(fixer: Rule.RuleFixer, property: ESTree.Property) {
   const parent = (property as NodeWithParent).parent
   if (parent?.type !== 'ObjectExpression') return
 

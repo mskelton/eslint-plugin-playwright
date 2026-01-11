@@ -70,10 +70,7 @@ function isSupportedMethod(node: ESTree.CallExpression) {
   if (node.callee.type !== 'MemberExpression') return false
 
   const name = getStringValue(node.callee.property)
-  return (
-    locatorMethods.has(name) ||
-    (pageMethods.has(name) && isPageMethod(node, name))
-  )
+  return locatorMethods.has(name) || (pageMethods.has(name) && isPageMethod(node, name))
 }
 
 export default createRule({
@@ -96,14 +93,9 @@ export default createRule({
     }
 
     return {
-      'AwaitExpression > CallExpression'(
-        node: ESTree.CallExpression & Rule.NodeParentExtension,
-      ) {
+      'AwaitExpression > CallExpression'(node: ESTree.CallExpression & Rule.NodeParentExtension) {
         // await page.locator('.foo')
-        if (
-          node.callee.type === 'MemberExpression' &&
-          isSupportedMethod(node)
-        ) {
+        if (node.callee.type === 'MemberExpression' && isSupportedMethod(node)) {
           return fix(node.parent)
         }
 
@@ -111,9 +103,7 @@ export default createRule({
         const call = parseFnCall(context, node)
         if (
           call?.type === 'expect' &&
-          !call.modifiers.some((modifier) =>
-            isIdentifier(modifier, /^(resolves|rejects)$/),
-          ) &&
+          !call.modifiers.some((modifier) => isIdentifier(modifier, /^(resolves|rejects)$/)) &&
           !call.members.some((member) => isIdentifier(member, 'poll')) &&
           expectMatchers.has(call.matcherName)
         ) {
@@ -131,8 +121,7 @@ export default createRule({
     },
     fixable: 'code',
     messages: {
-      noUselessAwait:
-        'Unnecessary await expression. This method does not return a Promise.',
+      noUselessAwait: 'Unnecessary await expression. This method does not return a Promise.',
     },
     type: 'problem',
   },

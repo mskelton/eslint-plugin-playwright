@@ -9,7 +9,7 @@ export default createRule({
     let inHook = false
 
     return {
-      CallExpression(node) {
+      'CallExpression'(node) {
         // Ignore everything that is passed into a hook
         if (inHook) return
 
@@ -57,8 +57,7 @@ export default createRule({
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/prefer-hooks-in-order.md',
     },
     messages: {
-      reorderHooks:
-        '`{{ currentHook }}` hooks should be before any `{{ previousHook }}` hooks',
+      reorderHooks: '`{{ currentHook }}` hooks should be before any `{{ previousHook }}` hooks',
     },
     type: 'suggestion',
   },

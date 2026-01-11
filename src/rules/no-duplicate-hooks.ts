@@ -7,7 +7,7 @@ export default createRule({
     const hookContexts: Array<Record<string, number>> = [{}]
 
     return {
-      CallExpression(node) {
+      'CallExpression'(node) {
         const call = parseFnCall(context, node)
         if (!call) return
 
@@ -21,9 +21,7 @@ export default createRule({
 
         const currentLayer = hookContexts[hookContexts.length - 1]
         const name =
-          node.callee.type === 'MemberExpression'
-            ? getStringValue(node.callee.property)
-            : ''
+          node.callee.type === 'MemberExpression' ? getStringValue(node.callee.property) : ''
 
         currentLayer[name] ||= 0
         currentLayer[name] += 1

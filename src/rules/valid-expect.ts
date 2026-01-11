@@ -2,16 +2,10 @@ import * as ESTree from 'estree'
 import { getStringValue } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { getAmountData } from '../utils/misc.js'
-import {
-  isSupportedAccessor,
-  modifiers,
-  parseFnCallWithReason,
-} from '../utils/parseFnCall.js'
+import { isSupportedAccessor, modifiers, parseFnCallWithReason } from '../utils/parseFnCall.js'
 import { NodeWithParent } from '../utils/types.js'
 
-const findTopMostMemberExpression = (
-  node: ESTree.MemberExpression,
-): ESTree.MemberExpression => {
+const findTopMostMemberExpression = (node: ESTree.MemberExpression): ESTree.MemberExpression => {
   let topMostMemberExpression = node
   let parent = (node as NodeWithParent).parent
 
@@ -60,8 +54,7 @@ export default createRule({
           if (call === 'matcher-not-called') {
             context.report({
               messageId:
-                isSupportedAccessor(reportingNode) &&
-                modifiers.has(getStringValue(reportingNode))
+                isSupportedAccessor(reportingNode) && modifiers.has(getStringValue(reportingNode))
                   ? 'matcherNotFound'
                   : 'matcherNotCalled',
               node: reportingNode,

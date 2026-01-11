@@ -126,9 +126,7 @@ runRuleTester('valid-title', rule, {
     'test.slow(browserName === "webkit", "This feature is slow on Mac")',
     {
       code: 'test("correctly sets the value", () => {});',
-      options: [
-        { disallowedWords: ['correct'], ignoreTypeOfDescribeName: false },
-      ],
+      options: [{ disallowedWords: ['correct'], ignoreTypeOfDescribeName: false }],
     },
     {
       code: 'test("correctly sets the value", () => {});',
@@ -459,9 +457,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           messageId: 'mustMatch',
         },
       ],
-      options: [
-        { mustMatch: { describe: /#(?:unit|integration|e2e)/u.source } },
-      ],
+      options: [{ mustMatch: { describe: /#(?:unit|integration|e2e)/u.source } }],
     },
     {
       code: 'test.step("the test", () => {});',
@@ -491,9 +487,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           messageId: 'mustMatch',
         },
       ],
-      options: [
-        { mustMatch: { describe: /#(?:unit|integration|e2e)/u.source } },
-      ],
+      options: [{ mustMatch: { describe: /#(?:unit|integration|e2e)/u.source } }],
     },
     // Global aliases
     {
@@ -568,15 +562,11 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
     },
     {
       code: 'test("correctly sets the value", () => {});',
-      options: [
-        { mustMatch: { describe: /#(?:unit|integration|e2e)/u.source } },
-      ],
+      options: [{ mustMatch: { describe: /#(?:unit|integration|e2e)/u.source } }],
     },
     {
       code: 'test.step("correctly sets the value", () => {});',
-      options: [
-        { mustMatch: { describe: /#(?:unit|integration|e2e)/u.source } },
-      ],
+      options: [{ mustMatch: { describe: /#(?:unit|integration|e2e)/u.source } }],
     },
     {
       code: dedent`

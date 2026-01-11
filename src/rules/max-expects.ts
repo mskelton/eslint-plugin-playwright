@@ -15,8 +15,7 @@ export default createRule({
     const maybeResetCount = (node: ESTree.Node) => {
       const parent = (node as NodeWithParent).parent
       const isTestFn =
-        parent?.type !== 'CallExpression' ||
-        isTypeOfFnCall(context, parent, ['test'])
+        parent?.type !== 'CallExpression' || isTypeOfFnCall(context, parent, ['test'])
 
       if (isTestFn) {
         count = 0
@@ -24,9 +23,9 @@ export default createRule({
     }
 
     return {
-      ArrowFunctionExpression: maybeResetCount,
+      'ArrowFunctionExpression': maybeResetCount,
       'ArrowFunctionExpression:exit': maybeResetCount,
-      CallExpression(node) {
+      'CallExpression'(node) {
         const call = parseFnCall(context, node)
 
         if (
@@ -49,7 +48,7 @@ export default createRule({
           })
         }
       },
-      FunctionExpression: maybeResetCount,
+      'FunctionExpression': maybeResetCount,
       'FunctionExpression:exit': maybeResetCount,
     }
   },
@@ -61,8 +60,7 @@ export default createRule({
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/max-expects.md',
     },
     messages: {
-      exceededMaxAssertion:
-        'Too many assertion calls ({{ count }}) - maximum allowed is {{ max }}',
+      exceededMaxAssertion: 'Too many assertion calls ({{ count }}) - maximum allowed is {{ max }}',
     },
     schema: [
       {

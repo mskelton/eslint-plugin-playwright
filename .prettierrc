@@ -1,6 +1,0 @@
-{
-  "semi": false,
-  "proseWrap": "always",
-  "singleQuote": true,
-  "plugins": ["prettier-plugin-jsdoc"]
-}

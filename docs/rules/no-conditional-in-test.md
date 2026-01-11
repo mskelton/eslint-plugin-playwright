@@ -33,8 +33,7 @@ test('bar', async ({ page }) => {
 })
 
 test('baz', async ({ page }) => {
-  const hotkey =
-    process.platform === 'linux' ? ['Control', 'Alt', 'f'] : ['Alt', 'f']
+  const hotkey = process.platform === 'linux' ? ['Control', 'Alt', 'f'] : ['Alt', 'f']
   await Promise.all(hotkey.map((x) => page.keyboard.down(x)))
 
   expect(actionIsPerformed()).toBe(true)
@@ -70,8 +69,7 @@ test('bar', async ({ page }) => {
   await expect(page.locator('.my-image').count()).toBeGreaterThan(0)
 })
 
-const hotkey =
-  process.platform === 'linux' ? ['Control', 'Alt', 'f'] : ['Alt', 'f']
+const hotkey = process.platform === 'linux' ? ['Control', 'Alt', 'f'] : ['Alt', 'f']
 
 test('baz', async ({ page }) => {
   await Promise.all(hotkey.map((x) => page.keyboard.down(x)))

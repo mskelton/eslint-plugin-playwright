@@ -4,11 +4,7 @@ import { createRule } from '../utils/createRule.js'
 import { ParsedFnCall, parseFnCall } from '../utils/parseFnCall.js'
 import { NodeWithParent } from '../utils/types.js'
 
-const validTypes = new Set([
-  'AwaitExpression',
-  'ReturnStatement',
-  'ArrowFunctionExpression',
-])
+const validTypes = new Set(['AwaitExpression', 'ReturnStatement', 'ArrowFunctionExpression'])
 
 const expectPlaywrightMatchers = [
   'toBeChecked',

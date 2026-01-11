@@ -16,11 +16,7 @@ export default createRule({
             suggest: [
               {
                 fix: (fixer) => {
-                  return replaceAccessorFixer(
-                    fixer,
-                    call.matcher,
-                    'toStrictEqual',
-                  )
+                  return replaceAccessorFixer(fixer, call.matcher, 'toStrictEqual')
                 },
                 messageId: 'suggestReplaceWithStrictEqual',
               },

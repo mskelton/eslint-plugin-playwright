@@ -32,9 +32,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       output: test('await expect(page.locator(".tweet")).toBeVisible()'),
     },
     {
-      code: test(
-        'expect(await page.locator(".tweet").isVisible()).toBe(false)',
-      ),
+      code: test('expect(await page.locator(".tweet").isVisible()).toBe(false)'),
       errors: [
         {
           column: 28,
@@ -131,9 +129,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       `),
     },
     {
-      code: test(
-        'expect(await page.locator(".tweet").isVisible()).toEqual(true)',
-      ),
+      code: test('expect(await page.locator(".tweet").isVisible()).toEqual(true)'),
       errors: [
         {
           column: 28,
@@ -146,9 +142,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       output: test('await expect(page.locator(".tweet")).toBeVisible()'),
     },
     {
-      code: test(
-        'expect(await page.locator(".tweet").isVisible()).toEqual(false)',
-      ),
+      code: test('expect(await page.locator(".tweet").isVisible()).toEqual(false)'),
       errors: [
         {
           column: 28,
@@ -161,9 +155,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       output: test('await expect(page.locator(".tweet")).toBeHidden()'),
     },
     {
-      code: test(
-        'expect(await page.locator(".tweet").isVisible()).not.toBe(true)',
-      ),
+      code: test('expect(await page.locator(".tweet").isVisible()).not.toBe(true)'),
       errors: [
         {
           column: 28,
@@ -176,9 +168,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       output: test('await expect(page.locator(".tweet")).toBeHidden()'),
     },
     {
-      code: test(
-        'expect(await page.locator(".tweet").isVisible()).not.toBe(false)',
-      ),
+      code: test('expect(await page.locator(".tweet").isVisible()).not.toBe(false)'),
       errors: [
         {
           column: 28,
@@ -273,9 +263,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
 
     // getAttribute
     {
-      code: test(
-        'expect.soft(await foo.getAttribute("aria-label")).toBe("bar")',
-      ),
+      code: test('expect.soft(await foo.getAttribute("aria-label")).toBe("bar")'),
       errors: [
         {
           column: 28,
@@ -285,14 +273,10 @@ runRuleTester('prefer-web-first-assertions', rule, {
           messageId: 'useWebFirstAssertion',
         },
       ],
-      output: test(
-        'await expect.soft(foo).toHaveAttribute("aria-label", "bar")',
-      ),
+      output: test('await expect.soft(foo).toHaveAttribute("aria-label", "bar")'),
     },
     {
-      code: test(
-        'expect.soft(await foo.getAttribute("aria-label")).not.toBe("bar")',
-      ),
+      code: test('expect.soft(await foo.getAttribute("aria-label")).not.toBe("bar")'),
       errors: [
         {
           column: 28,
@@ -302,14 +286,10 @@ runRuleTester('prefer-web-first-assertions', rule, {
           messageId: 'useWebFirstAssertion',
         },
       ],
-      output: test(
-        'await expect.soft(foo).not.toHaveAttribute("aria-label", "bar")',
-      ),
+      output: test('await expect.soft(foo).not.toHaveAttribute("aria-label", "bar")'),
     },
     {
-      code: test(
-        'expect.soft(await page.locator("foo").getAttribute("aria-label")).toBe("bar")',
-      ),
+      code: test('expect.soft(await page.locator("foo").getAttribute("aria-label")).toBe("bar")'),
       errors: [
         {
           column: 28,
@@ -319,9 +299,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
           messageId: 'useWebFirstAssertion',
         },
       ],
-      output: test(
-        'await expect.soft(page.locator("foo")).toHaveAttribute("aria-label", "bar")',
-      ),
+      output: test('await expect.soft(page.locator("foo")).toHaveAttribute("aria-label", "bar")'),
     },
     {
       code: test(
@@ -341,9 +319,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       ),
     },
     {
-      code: test(
-        'expect(page.locator(".element").getAttribute("data-testid")).toBe("submit")',
-      ),
+      code: test('expect(page.locator(".element").getAttribute("data-testid")).toBe("submit")'),
       errors: [
         {
           column: 28,
@@ -386,9 +362,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       output: test('await expect.soft(foo).not.toHaveText("bar")'),
     },
     {
-      code: test(
-        'expect(page.locator(".text").innerText()).toBe("Hello World")',
-      ),
+      code: test('expect(page.locator(".text").innerText()).toBe("Hello World")'),
       errors: [
         {
           column: 28,
@@ -398,9 +372,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
           messageId: 'useWebFirstAssertion',
         },
       ],
-      output: test(
-        'await expect(page.locator(".text")).toHaveText("Hello World")',
-      ),
+      output: test('await expect(page.locator(".text")).toHaveText("Hello World")'),
     },
 
     // inputValue
@@ -431,9 +403,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       output: test('await expect[`soft`](foo).not.toHaveValue("bar")'),
     },
     {
-      code: test(
-        'expect(page.locator(".input").inputValue()).toBe("user input")',
-      ),
+      code: test('expect(page.locator(".input").inputValue()).toBe("user input")'),
       errors: [
         {
           column: 28,
@@ -443,9 +413,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
           messageId: 'useWebFirstAssertion',
         },
       ],
-      output: test(
-        'await expect(page.locator(".input")).toHaveValue("user input")',
-      ),
+      output: test('await expect(page.locator(".input")).toHaveValue("user input")'),
     },
 
     // textContent
@@ -620,9 +588,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       `),
     },
     {
-      code: test(
-        'expect(page.locator(".content").textContent()).toBe("Some content")',
-      ),
+      code: test('expect(page.locator(".content").textContent()).toBe("Some content")'),
       errors: [
         {
           column: 28,
@@ -632,9 +598,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
           messageId: 'useWebFirstAssertion',
         },
       ],
-      output: test(
-        'await expect(page.locator(".content")).toHaveText("Some content")',
-      ),
+      output: test('await expect(page.locator(".content")).toHaveText("Some content")'),
     },
 
     // isChecked
@@ -662,14 +626,10 @@ runRuleTester('prefer-web-first-assertions', rule, {
           messageId: 'useWebFirstAssertion',
         },
       ],
-      output: test(
-        'await expect(page.locator("howdy")).toBeChecked({ checked: foo })',
-      ),
+      output: test('await expect(page.locator("howdy")).toBeChecked({ checked: foo })'),
     },
     {
-      code: test(
-        'expect(await page.locator("howdy").isChecked()).toBeTruthy()',
-      ),
+      code: test('expect(await page.locator("howdy").isChecked()).toBeTruthy()'),
       errors: [
         {
           column: 28,
@@ -682,9 +642,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       output: test('await expect(page.locator("howdy")).toBeChecked()'),
     },
     {
-      code: test(
-        'expect(await page.locator("howdy").isChecked()).not.toBe(true)',
-      ),
+      code: test('expect(await page.locator("howdy").isChecked()).not.toBe(true)'),
       errors: [
         {
           column: 28,
@@ -697,9 +655,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       output: test('await expect(page.locator("howdy")).not.toBeChecked()'),
     },
     {
-      code: test(
-        'expect(await page.locator("howdy").isChecked()).not.toBe(bar)',
-      ),
+      code: test('expect(await page.locator("howdy").isChecked()).not.toBe(bar)'),
       errors: [
         {
           column: 28,
@@ -709,9 +665,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
           messageId: 'useWebFirstAssertion',
         },
       ],
-      output: test(
-        'await expect(page.locator("howdy")).not.toBeChecked({ checked: bar })',
-      ),
+      output: test('await expect(page.locator("howdy")).not.toBeChecked({ checked: bar })'),
     },
     {
       code: test('expect(await page.locator("howdy").isChecked()).toBe(false)'),
@@ -740,9 +694,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       output: test('await expect(page.locator("howdy")).not.toBeChecked()'),
     },
     {
-      code: test(
-        'expect(await page.locator("howdy").isChecked()).not.toBe(false)',
-      ),
+      code: test('expect(await page.locator("howdy").isChecked()).not.toBe(false)'),
       errors: [
         {
           column: 28,
@@ -956,9 +908,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       output: test('await expect(foo).toBeEditable()'),
     },
     {
-      code: test(
-        'expect(await page.locator("howdy").isEditable()).not.toBe(true)',
-      ),
+      code: test('expect(await page.locator("howdy").isEditable()).not.toBe(true)'),
       errors: [
         {
           column: 28,
@@ -971,9 +921,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       output: test('await expect(page.locator("howdy")).not.toBeEditable()'),
     },
     {
-      code: test(
-        'expect(await page.locator("howdy").isEditable()).toBe(false)',
-      ),
+      code: test('expect(await page.locator("howdy").isEditable()).toBe(false)'),
       errors: [
         {
           column: 28,
@@ -986,9 +934,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       output: test('await expect(page.locator("howdy")).not.toBeEditable()'),
     },
     {
-      code: test(
-        'expect(await page.locator("howdy").isEditable()).toBeFalsy()',
-      ),
+      code: test('expect(await page.locator("howdy").isEditable()).toBeFalsy()'),
       errors: [
         {
           column: 28,
@@ -1001,9 +947,7 @@ runRuleTester('prefer-web-first-assertions', rule, {
       output: test('await expect(page.locator("howdy")).not.toBeEditable()'),
     },
     {
-      code: test(
-        'expect(await page.locator("howdy").isEditable()).not.toBe(false)',
-      ),
+      code: test('expect(await page.locator("howdy").isEditable()).not.toBe(false)'),
       errors: [
         {
           column: 28,

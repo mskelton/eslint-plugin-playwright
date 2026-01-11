@@ -1,11 +1,7 @@
 import * as ESTree from 'estree'
 import { getStringValue, isBooleanLiteral } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
-import {
-  getRangeOffset,
-  removePropertyFixer,
-  replaceAccessorFixer,
-} from '../utils/fixer.js'
+import { getRangeOffset, removePropertyFixer, replaceAccessorFixer } from '../utils/fixer.js'
 import { truthy } from '../utils/misc.js'
 import { type ParsedExpectFnCall, parseFnCall } from '../utils/parseFnCall.js'
 
@@ -28,9 +24,7 @@ function getOptions(call: ParsedExpectFnCall, name: string) {
 
   const property = arg.properties.find(
     (p): p is ESTree.Property =>
-      p.type === 'Property' &&
-      getStringValue(p.key) === name &&
-      isBooleanLiteral(p.value),
+      p.type === 'Property' && getStringValue(p.key) === name && isBooleanLiteral(p.value),
   )
 
   return {
@@ -53,17 +47,13 @@ export default createRule({
 
         // If the matcher has an options argument, we need to check if it has
         // a `visible` or `enabled` property that is a boolean literal.
-        const options = config.argName
-          ? getOptions(call, config.argName)
-          : undefined
+        const options = config.argName ? getOptions(call, config.argName) : undefined
 
         // If an argument is provided to the `visible` or `enabled` property, but
         // we can't determine it's value, we can't safely remove the `not` modifier.
         if (options?.arg && options.value === undefined) return
 
-        const notModifier = call.modifiers.find(
-          (mod) => getStringValue(mod) === 'not',
-        )
+        const notModifier = call.modifiers.find((mod) => getStringValue(mod) === 'not')
 
         // If the matcher is not negated, or the matcher has no options, we can
         // safely ignore it.

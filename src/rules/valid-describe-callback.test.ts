@@ -119,27 +119,19 @@ runRuleTester('valid-describe-callback', rule, {
           test('bar', () => {})
         )
       `,
-      errors: [
-        { column: 22, line: 1, messageId: 'unexpectedReturnInDescribe' },
-      ],
+      errors: [{ column: 22, line: 1, messageId: 'unexpectedReturnInDescribe' }],
     },
     {
       code: 'describe("foo", done => {})',
-      errors: [
-        { column: 17, line: 1, messageId: 'unexpectedDescribeArgument' },
-      ],
+      errors: [{ column: 17, line: 1, messageId: 'unexpectedDescribeArgument' }],
     },
     {
       code: 'describe("foo", function (done) {})',
-      errors: [
-        { column: 27, line: 1, messageId: 'unexpectedDescribeArgument' },
-      ],
+      errors: [{ column: 27, line: 1, messageId: 'unexpectedDescribeArgument' }],
     },
     {
       code: 'describe("foo", function (one, two, three) {})',
-      errors: [
-        { column: 27, line: 1, messageId: 'unexpectedDescribeArgument' },
-      ],
+      errors: [{ column: 27, line: 1, messageId: 'unexpectedDescribeArgument' }],
     },
     {
       code: 'describe("foo", async function (done) {})',
@@ -151,9 +143,7 @@ runRuleTester('valid-describe-callback', rule, {
     // Global aliases
     {
       code: 'it.describe("foo", done => {})',
-      errors: [
-        { column: 20, line: 1, messageId: 'unexpectedDescribeArgument' },
-      ],
+      errors: [{ column: 20, line: 1, messageId: 'unexpectedDescribeArgument' }],
       settings: {
         playwright: {
           globalAliases: { test: ['it'] },

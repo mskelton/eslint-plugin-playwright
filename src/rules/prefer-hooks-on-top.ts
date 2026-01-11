@@ -6,7 +6,7 @@ export default createRule({
     const stack = [false]
 
     return {
-      CallExpression(node) {
+      'CallExpression'(node) {
         if (isTypeOfFnCall(context, node, ['test'])) {
           stack[stack.length - 1] = true
         }

@@ -7,39 +7,27 @@ runRuleTester('require-top-level-describe', rule, {
     // Top level hooks
     {
       code: 'test.beforeAll(() => {})',
-      errors: [
-        { column: 1, endColumn: 15, line: 1, messageId: 'unexpectedHook' },
-      ],
+      errors: [{ column: 1, endColumn: 15, line: 1, messageId: 'unexpectedHook' }],
     },
     {
       code: 'test.beforeEach(() => {})',
-      errors: [
-        { column: 1, endColumn: 16, line: 1, messageId: 'unexpectedHook' },
-      ],
+      errors: [{ column: 1, endColumn: 16, line: 1, messageId: 'unexpectedHook' }],
     },
     {
       code: 'test.afterAll(() => {})',
-      errors: [
-        { column: 1, endColumn: 14, line: 1, messageId: 'unexpectedHook' },
-      ],
+      errors: [{ column: 1, endColumn: 14, line: 1, messageId: 'unexpectedHook' }],
     },
     {
       code: 'test.afterEach(() => {})',
-      errors: [
-        { column: 1, endColumn: 15, line: 1, messageId: 'unexpectedHook' },
-      ],
+      errors: [{ column: 1, endColumn: 15, line: 1, messageId: 'unexpectedHook' }],
     },
     {
       code: 'test["afterEach"](() => {})',
-      errors: [
-        { column: 1, endColumn: 18, line: 1, messageId: 'unexpectedHook' },
-      ],
+      errors: [{ column: 1, endColumn: 18, line: 1, messageId: 'unexpectedHook' }],
     },
     {
       code: 'test[`afterEach`](() => {})',
-      errors: [
-        { column: 1, endColumn: 18, line: 1, messageId: 'unexpectedHook' },
-      ],
+      errors: [{ column: 1, endColumn: 18, line: 1, messageId: 'unexpectedHook' }],
     },
     {
       code: dedent`
@@ -59,54 +47,38 @@ runRuleTester('require-top-level-describe', rule, {
     // Top level tests
     {
       code: 'test("foo", () => {})',
-      errors: [
-        { column: 1, endColumn: 5, line: 1, messageId: 'unexpectedTest' },
-      ],
+      errors: [{ column: 1, endColumn: 5, line: 1, messageId: 'unexpectedTest' }],
     },
     {
       code: 'test.skip("foo", () => {})',
-      errors: [
-        { column: 1, endColumn: 10, line: 1, messageId: 'unexpectedTest' },
-      ],
+      errors: [{ column: 1, endColumn: 10, line: 1, messageId: 'unexpectedTest' }],
     },
     {
       code: 'test.fixme("foo", () => {})',
-      errors: [
-        { column: 1, endColumn: 11, line: 1, messageId: 'unexpectedTest' },
-      ],
+      errors: [{ column: 1, endColumn: 11, line: 1, messageId: 'unexpectedTest' }],
     },
     {
       code: 'test.only("foo", () => {})',
-      errors: [
-        { column: 1, endColumn: 10, line: 1, messageId: 'unexpectedTest' },
-      ],
+      errors: [{ column: 1, endColumn: 10, line: 1, messageId: 'unexpectedTest' }],
     },
     {
       code: 'test["only"]("foo", () => {})',
-      errors: [
-        { column: 1, endColumn: 13, line: 1, messageId: 'unexpectedTest' },
-      ],
+      errors: [{ column: 1, endColumn: 13, line: 1, messageId: 'unexpectedTest' }],
     },
     {
       code: 'test[`only`]("foo", () => {})',
-      errors: [
-        { column: 1, endColumn: 13, line: 1, messageId: 'unexpectedTest' },
-      ],
+      errors: [{ column: 1, endColumn: 13, line: 1, messageId: 'unexpectedTest' }],
     },
     {
       code: 'test("foo", { tag: ["@fast"] }, () => {})',
-      errors: [
-        { column: 1, endColumn: 5, line: 1, messageId: 'unexpectedTest' },
-      ],
+      errors: [{ column: 1, endColumn: 5, line: 1, messageId: 'unexpectedTest' }],
     },
     {
       code: dedent`
         test("foo", () => {})
         test.describe("suite", () => {});
       `,
-      errors: [
-        { column: 1, endColumn: 5, line: 1, messageId: 'unexpectedTest' },
-      ],
+      errors: [{ column: 1, endColumn: 5, line: 1, messageId: 'unexpectedTest' }],
     },
     {
       code: dedent`
@@ -115,9 +87,7 @@ runRuleTester('require-top-level-describe', rule, {
           test("bar", () => {})
         });
       `,
-      errors: [
-        { column: 1, endColumn: 5, line: 1, messageId: 'unexpectedTest' },
-      ],
+      errors: [{ column: 1, endColumn: 5, line: 1, messageId: 'unexpectedTest' }],
     },
     // Too many describes
     {
@@ -194,9 +164,7 @@ runRuleTester('require-top-level-describe', rule, {
     // Global aliases
     {
       code: 'it.beforeAll(() => {})',
-      errors: [
-        { column: 1, endColumn: 13, line: 1, messageId: 'unexpectedHook' },
-      ],
+      errors: [{ column: 1, endColumn: 13, line: 1, messageId: 'unexpectedHook' }],
       settings: {
         playwright: {
           globalAliases: { test: ['it'] },

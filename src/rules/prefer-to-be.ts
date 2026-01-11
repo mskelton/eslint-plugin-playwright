@@ -29,9 +29,7 @@ function reportPreferToBe(
 ) {
   context.report({
     fix(fixer) {
-      const fixes = [
-        replaceAccessorFixer(fixer, call.matcher, `toBe${whatToBe}`),
-      ]
+      const fixes = [replaceAccessorFixer(fixer, call.matcher, `toBe${whatToBe}`)]
 
       if (call.matcherArgs?.length && whatToBe !== '') {
         fixes.push(fixer.remove(call.matcherArgs[0]))
@@ -57,9 +55,7 @@ export default createRule({
         if (call?.type !== 'expect') return
 
         const notMatchers = ['toBeUndefined', 'toBeDefined']
-        const notModifier = call.modifiers.find(
-          (node) => getStringValue(node) === 'not',
-        )
+        const notModifier = call.modifiers.find((node) => getStringValue(node) === 'not')
 
         if (notModifier && notMatchers.includes(call.matcherName)) {
           return reportPreferToBe(
