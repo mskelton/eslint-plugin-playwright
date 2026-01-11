@@ -204,6 +204,27 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
         test('does something', () => {});
       `,
     },
+    {
+      code: dedent`
+        test("first", () => {});test("second", () => {});
+        test.describe("suite", () => {});test("test", () => {});
+      `,
+      errors: [
+        { line: 1, messageId: 'missingWhitespace' },
+        { line: 2, messageId: 'missingWhitespace' },
+        { line: 2, messageId: 'missingWhitespace' },
+      ],
+      name: 'Same line test calls',
+      output: dedent`
+        test("first", () => {});
+
+        test("second", () => {});
+
+        test.describe("suite", () => {});
+
+        test("test", () => {});
+      `,
+    },
   ],
   valid: [
     {
