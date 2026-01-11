@@ -35,8 +35,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "vitest --run --hideSkippedTests",
-    "test:watch": "vitest --reporter=dot --run",
+    "test": "vitest --hideSkippedTests",
+    "test:watch": "vitest --reporter=dot",
     "ts": "tsc --noEmit"
   },
   "peerDependencies": {

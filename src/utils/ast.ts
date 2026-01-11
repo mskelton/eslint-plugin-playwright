@@ -1,4 +1,4 @@
-import { Rule } from 'eslint'
+import { AST, Rule, SourceCode } from 'eslint'
 import ESTree, { AssignmentExpression } from 'estree'
 import { isSupportedAccessor } from './parseFnCall.js'
 import { NodeWithParent, TypedNodeWithParent } from './types.js'
@@ -244,3 +244,66 @@ export function dereference(
 
   return expr?.right ?? decl?.init
 }
+
+/**
+ * Gets the actual last token.
+ *
+ * If a semicolon is semicolon-less style's semicolon, this ignores it. For
+ * example:
+ *
+ *     foo()
+ *     ;[1, 2, 3].forEach(bar)
+ */
+export const getActualLastToken = (
+  sourceCode: SourceCode,
+  node: ESTree.Node,
+): AST.Token => {
+  const semiToken = sourceCode.getLastToken(node)!
+  const prevToken = sourceCode.getTokenBefore(semiToken)!
+  const nextToken = sourceCode.getTokenAfter(semiToken)
+
+  const isSemicolonLessStyle =
+    !!prevToken &&
+    !!nextToken &&
+    prevToken.range![0] >= node.range![0] &&
+    semiToken.type === 'Punctuator' &&
+    semiToken.value === ';' &&
+    semiToken.loc.start.line !== prevToken.loc.end.line &&
+    semiToken.loc.end.line === nextToken.loc.start.line
+
+  return isSemicolonLessStyle ? prevToken : semiToken
+}
+
+/**
+ * Gets padding line sequences between the given 2 statements. Comments are
+ * separators of the padding line sequences.
+ */
+export const getPaddingLineSequences = (
+  prevNode: ESTree.Node,
+  nextNode: ESTree.Node,
+  sourceCode: SourceCode,
+): AST.Token[][] => {
+  const pairs: AST.Token[][] = []
+  let prevToken = getActualLastToken(sourceCode, prevNode)
+
+  if (nextNode.loc!.start.line - prevToken.loc.end.line >= 2) {
+    do {
+      const token = sourceCode.getTokenAfter(prevToken, {
+        includeComments: true,
+      }) as AST.Token
+
+      if (token.loc.start.line - prevToken.loc.end.line >= 2) {
+        pairs.push([prevToken, token])
+      }
+
+      prevToken = token
+    } while (prevToken.range[0] < nextNode.range![0])
+  }
+
+  return pairs
+}
+
+export const areTokensOnSameLine = (
+  left: ESTree.Comment | AST.Token,
+  right: ESTree.Comment | AST.Token,
+): boolean => left.loc!.end.line === right.loc!.start.line
