@@ -1,7 +1,6 @@
 import ESTree from 'estree'
 import {
   equalityMatchers,
-  getParent,
   getStringValue,
   isBooleanLiteral,
   isPropertyAccessor,

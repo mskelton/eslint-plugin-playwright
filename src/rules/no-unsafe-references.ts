@@ -1,11 +1,6 @@
 import { AST, Rule, Scope } from 'eslint'
 import * as ESTree from 'estree'
-import {
-  getParent,
-  getStringValue,
-  isFunction,
-  isPageMethod,
-} from '../utils/ast.js'
+import { getStringValue, isFunction, isPageMethod } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { truthy } from '../utils/misc.js'
 import { NodeWithParent } from '../utils/types.js'
