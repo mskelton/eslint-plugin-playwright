@@ -133,8 +133,10 @@ export default createRule({
   },
   meta: {
     docs: {
+      category: 'Possible Errors',
       description: 'Enforce valid tag format in Playwright test blocks and titles',
       recommended: true,
+      url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/valid-test-tags.md',
     },
     messages: {
       disallowedTag: 'Tag "{{tag}}" is not allowed',
