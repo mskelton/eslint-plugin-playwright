@@ -49,7 +49,7 @@
     "semantic-release": "^25.0.2",
     "tsup": "^8.0.1",
     "typescript": "^5.2.2",
-    "vitest": "^1.6.1"
+    "vitest": "^4.0.17"
   },
   "peerDependencies": {
     "eslint": ">=8.40.0"
