@@ -324,5 +324,34 @@ runRuleTester('no-conditional-in-test', rule, {
     `test('test', async ({ page }) => {
       const value = someFunction() ?? defaultValue;
     })`,
+    // Logical OR should be allowed
+    `test('test', async ({ page }) => {
+      const button = page.locator('button');
+      const {x = 0, y = 0, width = 0, height = 0} = (await button.boundingBox()) || {};
+    })`,
+    `test('test', async ({ page }) => {
+      const value = someFunction() || {};
+    })`,
+    `test('test', async ({ page }) => {
+      const value = someFunction() || { default: true };
+    })`,
+    // Nullish coalescing assignment should be allowed
+    `test('test', async ({ page }) => {
+      let value;
+      value ??= defaultValue;
+    })`,
+    `test('test', async ({ page }) => {
+      const obj = {};
+      obj.prop ??= 'default';
+    })`,
+    // Logical OR assignment should be allowed
+    `test('test', async ({ page }) => {
+      let value;
+      value ||= defaultValue;
+    })`,
+    `test('test', async ({ page }) => {
+      const obj = {};
+      obj.prop ||= 'default';
+    })`,
   ],
 })
