@@ -1,4 +1,4 @@
-import ESTree from 'estree'
+import type * as ESTree from 'estree'
 import { createRule } from '../utils/createRule.js'
 import { getAmountData } from '../utils/misc.js'
 import { isTypeOfFnCall, parseFnCall } from '../utils/parseFnCall.js'

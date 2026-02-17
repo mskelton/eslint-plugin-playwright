@@ -1,14 +1,14 @@
-import { Rule } from 'eslint'
-import * as ESTree from 'estree'
+import type { Rule } from 'eslint'
+import type * as ESTree from 'estree'
+import type { NodeWithParent, Settings } from './types.js'
 import {
   findParent,
   getStringValue,
   isFunction,
   isIdentifier,
   isStringNode,
-  StringNode,
+  type StringNode,
 } from './ast.js'
-import { NodeWithParent, Settings } from './types.js'
 
 const testHooks = new Set(['afterAll', 'afterEach', 'beforeAll', 'beforeEach'])
 

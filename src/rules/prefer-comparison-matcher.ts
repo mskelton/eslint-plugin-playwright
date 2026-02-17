@@ -1,4 +1,5 @@
-import * as ESTree from 'estree'
+import type * as ESTree from 'estree'
+import type { NodeWithParent } from '../utils/types.js'
 import {
   equalityMatchers,
   getRawValue,
@@ -8,7 +9,6 @@ import {
 } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
-import { NodeWithParent } from '../utils/types.js'
 
 const isString = (node: ESTree.Node) => {
   return isStringLiteral(node) || node.type === 'TemplateLiteral'

@@ -1,5 +1,5 @@
-import { Rule } from 'eslint'
-import { Settings } from './types.js'
+import type { Rule } from 'eslint'
+import type { Settings } from './types.js'
 
 /** Interpolate a message replacing any data placeholders (e.g. `{{foo}}`) */
 function interpolate(str: string, data: Record<string, string> | undefined) {

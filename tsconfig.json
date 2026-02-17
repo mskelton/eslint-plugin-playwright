@@ -5,7 +5,9 @@
     "moduleResolution": "nodenext",
     "strict": true,
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "erasableSyntaxOnly": true,
+    "rewriteRelativeImportExtensions": true,
+    "verbatimModuleSyntax": true
   },
   "include": ["src"]
 }

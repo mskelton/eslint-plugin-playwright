@@ -1,4 +1,4 @@
-import { Rule } from 'eslint'
+import type { Rule } from 'eslint'
 import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall } from '../utils/parseFnCall.js'
 

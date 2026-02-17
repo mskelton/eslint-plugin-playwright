@@ -1,5 +1,5 @@
-import { Rule } from 'eslint'
-import * as ESTree from 'estree'
+import type { Rule } from 'eslint'
+import type * as ESTree from 'estree'
 import { getStringValue, isFunction, isIdentifier } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall, parseFnCall } from '../utils/parseFnCall.js'

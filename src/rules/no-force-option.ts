@@ -1,4 +1,4 @@
-import ESTree from 'estree'
+import type * as ESTree from 'estree'
 import { getStringValue, isBooleanLiteral } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 

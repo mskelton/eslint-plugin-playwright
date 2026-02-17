@@ -1,4 +1,4 @@
-import * as ESTree from 'estree'
+import type * as ESTree from 'estree'
 
 export interface Scope {
   prevNode: ESTree.Node | null
