@@ -1,9 +1,9 @@
-import { Rule } from 'eslint'
-import ESTree from 'estree'
+import type { Rule } from 'eslint'
+import type * as ESTree from 'estree'
 import { equalityMatchers, getStringValue, isIdentifier } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { replaceAccessorFixer } from '../utils/fixer.js'
-import { ParsedExpectFnCall, parseFnCall } from '../utils/parseFnCall.js'
+import { type ParsedExpectFnCall, parseFnCall } from '../utils/parseFnCall.js'
 
 function shouldUseToBe(call: ParsedExpectFnCall) {
   let arg = call.matcherArgs[0]

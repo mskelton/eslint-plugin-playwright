@@ -1,5 +1,5 @@
-import { AST } from 'eslint'
-import ESTree from 'estree'
+import type { AST } from 'eslint'
+import type * as ESTree from 'estree'
 import { isPageMethod } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 

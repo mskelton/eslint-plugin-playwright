@@ -1,9 +1,9 @@
-import { Rule } from 'eslint'
-import * as ESTree from 'estree'
+import type { Rule } from 'eslint'
+import type * as ESTree from 'estree'
+import type { NodeWithParent } from '../utils/types.js'
 import { isFunction, isPropertyAccessor } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall, parseFnCall } from '../utils/parseFnCall.js'
-import { NodeWithParent } from '../utils/types.js'
 
 const getBlockType = (
   context: Rule.RuleContext,

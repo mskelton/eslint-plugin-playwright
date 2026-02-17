@@ -1,7 +1,7 @@
-import { AST, Rule, SourceCode } from 'eslint'
-import ESTree, { AssignmentExpression } from 'estree'
+import type { AST, Rule, SourceCode } from 'eslint'
+import type * as ESTree from 'estree'
+import type { NodeWithParent, TypedNodeWithParent } from './types.js'
 import { isSupportedAccessor } from './parseFnCall.js'
-import { NodeWithParent, TypedNodeWithParent } from './types.js'
 
 export function getStringValue(node: ESTree.Node | undefined) {
   if (!node) return ''
@@ -144,7 +144,7 @@ const isAssignmentExpression = (
  *   expression doesn't contain a range array, this will also return false
  *   because their relative positions cannot be calculated.
  */
-function isNodeLastAssignment(node: ESTree.Identifier, assignment: AssignmentExpression) {
+function isNodeLastAssignment(node: ESTree.Identifier, assignment: ESTree.AssignmentExpression) {
   if (node.range && assignment.range && node.range[0] < assignment.range[1]) {
     return false
   }

@@ -1,7 +1,7 @@
+import type { NodeWithParent } from '../utils/types.js'
 import { equalityMatchers, getRawValue, getStringValue, isBooleanLiteral } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
-import { NodeWithParent } from '../utils/types.js'
 
 export default createRule({
   create(context) {

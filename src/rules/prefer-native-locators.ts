@@ -1,4 +1,4 @@
-import { AST } from 'eslint'
+import type { AST } from 'eslint'
 import { getStringValue, isPageMethod } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 

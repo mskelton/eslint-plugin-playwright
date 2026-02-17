@@ -1,5 +1,5 @@
+import type { Rule } from 'eslint'
 import { TSESTree } from '@typescript-eslint/utils'
-import { Rule } from 'eslint'
 import { createRule } from '../utils/createRule.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
 

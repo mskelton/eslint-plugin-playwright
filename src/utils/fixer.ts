@@ -1,6 +1,6 @@
-import { AST, Rule } from 'eslint'
-import ESTree from 'estree'
-import { NodeWithParent } from './types.js'
+import type { AST, Rule } from 'eslint'
+import type * as ESTree from 'estree'
+import type { NodeWithParent } from './types.js'
 
 export const getRangeOffset = (node: ESTree.Node) => (node.type === 'Identifier' ? 0 : 1)
 

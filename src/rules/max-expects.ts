@@ -1,7 +1,7 @@
-import * as ESTree from 'estree'
+import type * as ESTree from 'estree'
+import type { NodeWithParent } from '../utils/types.js'
 import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall, parseFnCall } from '../utils/parseFnCall.js'
-import { NodeWithParent } from '../utils/types.js'
 
 export default createRule({
   create(context) {

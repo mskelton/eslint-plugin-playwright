@@ -1,5 +1,5 @@
-import ESTree from 'estree'
-import { dereference, getStringValue, isStringNode, StringNode } from '../utils/ast.js'
+import type * as ESTree from 'estree'
+import { dereference, getStringValue, isStringNode, type StringNode } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
 

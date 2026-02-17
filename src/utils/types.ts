@@ -1,5 +1,5 @@
-import { Rule } from 'eslint'
-import ESTree from 'estree'
+import type { Rule } from 'eslint'
+import type * as ESTree from 'estree'
 
 export type NodeWithParent = ESTree.Node & Rule.NodeParentExtension
 

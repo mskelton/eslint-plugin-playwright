@@ -1,5 +1,6 @@
-import { Rule } from 'eslint'
-import * as ESTree from 'estree'
+import type { Rule } from 'eslint'
+import type * as ESTree from 'estree'
+import type { KnownCallExpression, NodeWithParent } from '../utils/types.js'
 import { getNodeName, getStringValue, isFunction, isIdentifier } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import {
@@ -8,7 +9,6 @@ import {
   isTypeOfFnCall,
   parseFnCall,
 } from '../utils/parseFnCall.js'
-import { KnownCallExpression, NodeWithParent } from '../utils/types.js'
 
 const isPromiseChainCall = (node: ESTree.Node): node is KnownCallExpression => {
   if (

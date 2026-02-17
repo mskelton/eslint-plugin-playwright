@@ -1,6 +1,6 @@
+import type { Rule } from 'eslint'
+import type * as ESTree from 'estree'
 import dedent from 'dedent'
-import { Rule } from 'eslint'
-import * as ESTree from 'estree'
 import { getStringValue } from './ast.js'
 import {
   isSupportedAccessor,
