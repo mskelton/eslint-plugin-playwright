@@ -21,6 +21,7 @@ import noPagePause from './rules/no-page-pause.js'
 import noRawLocators from './rules/no-raw-locators.js'
 import noRestrictedLocators from './rules/no-restricted-locators.js'
 import noRestrictedMatchers from './rules/no-restricted-matchers.js'
+import noRestrictedRoles from './rules/no-restricted-roles.js'
 import noSkippedTest from './rules/no-skipped-test.js'
 import noSlowedTest from './rules/no-slowed-test.js'
 import noStandaloneExpect from './rules/no-standalone-expect.js'
@@ -79,6 +80,7 @@ const index = {
     'no-raw-locators': noRawLocators,
     'no-restricted-locators': noRestrictedLocators,
     'no-restricted-matchers': noRestrictedMatchers,
+    'no-restricted-roles': noRestrictedRoles,
     'no-skipped-test': noSkippedTest,
     'no-slowed-test': noSlowedTest,
     'no-standalone-expect': noStandaloneExpect,
