@@ -1,9 +1,9 @@
 import type { Rule, Scope } from 'eslint'
 import type * as ESTree from 'estree'
-import type { KnownCallExpression, NodeWithParent } from '../utils/types.js'
 import { isPropertyAccessor } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall, parseFnCall } from '../utils/parseFnCall.js'
+import type { KnownCallExpression, NodeWithParent } from '../utils/types.js'
 
 const isCatchCall = (node: ESTree.CallExpression): node is KnownCallExpression =>
   node.callee.type === 'MemberExpression' && isPropertyAccessor(node.callee, 'catch')

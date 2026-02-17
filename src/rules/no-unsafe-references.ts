@@ -1,9 +1,9 @@
 import type { AST, Rule, Scope } from 'eslint'
 import type * as ESTree from 'estree'
-import type { NodeWithParent } from '../utils/types.js'
 import { getStringValue, isFunction, isPageMethod } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { truthy } from '../utils/misc.js'
+import type { NodeWithParent } from '../utils/types.js'
 
 /** Collect all variable references in the parent scopes recursively. */
 function collectVariables(scope: Scope.Scope | null): string[] {

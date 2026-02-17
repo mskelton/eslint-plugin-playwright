@@ -1,8 +1,8 @@
 import type * as ESTree from 'estree'
-import type { NodeWithParent } from '../utils/types.js'
 import { getStringValue, isIdentifier } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { type ParsedFnCall, parseFnCall } from '../utils/parseFnCall.js'
+import type { NodeWithParent } from '../utils/types.js'
 
 const validTypes = new Set(['AwaitExpression', 'ReturnStatement', 'ArrowFunctionExpression'])
 

@@ -1,9 +1,9 @@
 import type * as ESTree from 'estree'
-import type { NodeWithParent } from '../utils/types.js'
 import { getStringValue } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { getAmountData } from '../utils/misc.js'
 import { isSupportedAccessor, modifiers, parseFnCallWithReason } from '../utils/parseFnCall.js'
+import type { NodeWithParent } from '../utils/types.js'
 
 const findTopMostMemberExpression = (node: ESTree.MemberExpression): ESTree.MemberExpression => {
   let topMostMemberExpression = node

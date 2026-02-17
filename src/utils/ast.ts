@@ -1,7 +1,7 @@
 import type { AST, Rule, SourceCode } from 'eslint'
 import type * as ESTree from 'estree'
-import type { NodeWithParent, TypedNodeWithParent } from './types.js'
 import { isSupportedAccessor } from './parseFnCall.js'
+import type { NodeWithParent, TypedNodeWithParent } from './types.js'
 
 export function getStringValue(node: ESTree.Node | undefined) {
   if (!node) return ''

@@ -1,10 +1,10 @@
 import type { AST, Rule, SourceCode } from 'eslint'
 import type * as ESTree from 'estree'
-import type { NodeWithParent } from '../utils/types.js'
 import { areTokensOnSameLine, getActualLastToken, getPaddingLineSequences } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall } from '../utils/parseFnCall.js'
 import { createScopeInfo, type ScopeInfo } from '../utils/scope.js'
+import type { NodeWithParent } from '../utils/types.js'
 
 interface Context {
   ruleContext: Rule.RuleContext

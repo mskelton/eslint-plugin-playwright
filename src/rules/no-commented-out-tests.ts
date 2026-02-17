@@ -1,7 +1,7 @@
 import type { Rule } from 'eslint'
 import type * as ESTree from 'estree'
-import type { Settings } from '../utils/types.js'
 import { createRule } from '../utils/createRule.js'
+import type { Settings } from '../utils/types.js'
 
 function getTestNames(context: Rule.RuleContext) {
   const settings = context.settings as unknown as Settings | undefined

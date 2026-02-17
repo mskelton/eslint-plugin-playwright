@@ -1,5 +1,4 @@
 import type * as ESTree from 'estree'
-import type { KnownCallExpression, NodeWithParent } from '../utils/types.js'
 import {
   equalityMatchers,
   getStringValue,
@@ -8,6 +7,7 @@ import {
 } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
+import type { KnownCallExpression, NodeWithParent } from '../utils/types.js'
 
 type FixableIncludesCallExpression = KnownCallExpression
 
