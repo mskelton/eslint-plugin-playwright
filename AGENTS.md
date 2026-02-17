@@ -232,7 +232,6 @@ runRuleTester('{rule-name}', rule, {
 
 - `yarn install` - Install dependencies
 - `yarn test` - Run all tests
-- `yarn test:watch` - Run tests in watch mode
 - `yarn build` - Build the plugin
 - `yarn lint` - Run ESLint
 - `yarn format` - Format code with oxfmt

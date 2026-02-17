@@ -32,7 +32,6 @@
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
     "test": "vitest --hideSkippedTests",
-    "test:watch": "vitest --reporter=dot",
     "typecheck": "tsc --noEmit",
     "ci": "yarn format:check && yarn lint && yarn typecheck"
   },
