@@ -33,7 +33,8 @@
     "format:check": "oxfmt --check .",
     "test": "vitest --hideSkippedTests",
     "test:watch": "vitest --reporter=dot",
-    "ts": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "ci": "yarn format:check && yarn lint && yarn typecheck"
   },
   "dependencies": {
     "globals": "^16.4.0"

@@ -31,4 +31,4 @@ jobs:
         run: yarn test
 
       - name: Type check
-        run: yarn ts
+        run: yarn typecheck
