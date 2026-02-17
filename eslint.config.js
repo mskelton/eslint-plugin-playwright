@@ -6,6 +6,11 @@ export default [
     ignores: ['dist/**', '.yarn/**'],
   },
   {
+    rules: {
+      'sort/imports': 'off',
+    },
+  },
+  {
     files: ['**/*.test.ts'],
     rules: {
       'no-template-curly-in-string': 'off',
