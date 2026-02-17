@@ -1,4 +1,4 @@
-# Enforce consistent spacing between test blocks (`enforce-consistent-spacing-between-blocks`)
+# Enforce consistent spacing between test blocks (`consistent-spacing-between-blocks`)
 
 Ensure that there is a consistent spacing between test blocks.
 
