@@ -1,10 +1,24 @@
 import type * as ESTree from 'estree'
-import { getStringValue, isIdentifier } from '../utils/ast.js'
+import { getStringValue, isIdentifier, isPageMethod } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { type ParsedFnCall, parseFnCall } from '../utils/parseFnCall.js'
 import type { NodeWithParent } from '../utils/types.js'
 
 const validTypes = new Set(['AwaitExpression', 'ReturnStatement', 'ArrowFunctionExpression'])
+
+const waitForMethods = [
+  'waitForConsoleMessage',
+  'waitForDownload',
+  'waitForEvent',
+  'waitForFileChooser',
+  'waitForFunction',
+  'waitForPopup',
+  'waitForRequest',
+  'waitForResponse',
+  'waitForWebSocket',
+]
+
+const waitForMethodsRegex = new RegExp(`^(${waitForMethods.join('|')})$`)
 
 const expectPlaywrightMatchers = [
   'toBeChecked',
@@ -140,6 +154,18 @@ export default createRule({
 
     return {
       CallExpression(node) {
+        if (isPageMethod(node, waitForMethodsRegex)) {
+          if (!checkValidity(node, new Set())) {
+            const methodName = getStringValue((node.callee as ESTree.MemberExpression).property)
+            context.report({
+              data: { methodName },
+              messageId: 'waitFor',
+              node,
+            })
+          }
+          return
+        }
+
         const call = parseFnCall(context, node)
         if (call?.type !== 'step' && call?.type !== 'expect') return
 
@@ -169,6 +195,7 @@ export default createRule({
       expect: "'{{matcherName}}' must be awaited or returned.",
       expectPoll: "'expect.poll' matchers must be awaited or returned.",
       testStep: "'test.step' must be awaited or returned.",
+      waitFor: "'{{methodName}}' must be awaited or returned.",
     },
     schema: [
       {

@@ -245,6 +245,40 @@ runRuleTester('missing-playwright-await', rule, {
         },
       },
     },
+
+    // waitFor methods
+    {
+      code: test('page.waitForResponse("https://example.com")'),
+      errors: [{ column: 28, messageId: 'waitFor' }],
+    },
+    {
+      code: test('page.waitForRequest("https://example.com")'),
+      errors: [{ column: 28, messageId: 'waitFor' }],
+    },
+    {
+      code: test('page.waitForEvent("download")'),
+      errors: [{ column: 28, messageId: 'waitFor' }],
+    },
+    {
+      code: test('page["waitForResponse"]("https://example.com")'),
+      errors: [{ column: 28, messageId: 'waitFor' }],
+    },
+    {
+      code: test('page[`waitForResponse`]("https://example.com")'),
+      errors: [{ column: 28, messageId: 'waitFor' }],
+    },
+    {
+      code: test('this.page.waitForResponse("https://example.com")'),
+      errors: [{ column: 28, messageId: 'waitFor' }],
+    },
+    {
+      code: dedent(
+        test(`
+          const promise = page.waitForResponse("https://example.com")
+        `),
+      ),
+      errors: [{ line: 2, messageId: 'waitFor' }],
+    },
   ],
   valid: [
     // Basic
@@ -378,5 +412,47 @@ runRuleTester('missing-playwright-await', rule, {
         `),
       ),
     },
+
+    // waitFor methods - valid patterns
+    { code: test('await page.waitForResponse("https://example.com")') },
+    { code: test('await page.waitForRequest("https://example.com")') },
+    { code: test('await page.waitForEvent("download")') },
+    { code: test('await page.waitForConsoleMessage()') },
+    { code: test('await page.waitForDownload()') },
+    { code: test('await page.waitForFileChooser()') },
+    { code: test('await page.waitForFunction(() => true)') },
+    { code: test('await page.waitForPopup()') },
+    { code: test('await page.waitForWebSocket("wss://example.com")') },
+    { code: test('return page.waitForResponse("https://example.com")') },
+    { code: test('const fn = () => page.waitForResponse("https://example.com")') },
+    {
+      code: test(`
+        await Promise.all([
+          page.locator("button").click(),
+          page.waitForResponse("https://example.com"),
+        ])
+      `),
+    },
+    {
+      code: dedent(
+        test(`
+          const responsePromise = page.waitForResponse("https://example.com")
+          await page.locator("button").click()
+          await responsePromise
+        `),
+      ),
+    },
+    {
+      code: dedent(
+        test(`
+          const responsePromise = page.waitForResponse("https://example.com")
+          await page.locator("button").click()
+          return responsePromise
+        `),
+      ),
+    },
+    { code: test('await this.page.waitForResponse("https://example.com")') },
+    { code: test('await page["waitForResponse"]("https://example.com")') },
+    { code: test('await page[`waitForResponse`]("https://example.com")') },
   ],
 })
