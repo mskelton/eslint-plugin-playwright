@@ -178,8 +178,7 @@ runRuleTester('{rule-name}', rule, {
 
 ### Test Utilities
 
-- `javascript` template literal for multi-line code
-- `typescript` template literal for TypeScript code
+- `dedent` template literal for multi-line code
 - `test()` wrapper for common test patterns
 - Global alias testing with settings
 

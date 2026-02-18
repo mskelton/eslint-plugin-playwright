@@ -40,10 +40,7 @@ const responsePromise = page.waitForResponse('https://example.com/api')
 await page.locator('button').click()
 await responsePromise
 
-await Promise.all([
-  page.locator('button').click(),
-  page.waitForResponse('https://example.com/api'),
-])
+await Promise.all([page.locator('button').click(), page.waitForResponse('https://example.com/api')])
 ```
 
 ## Options

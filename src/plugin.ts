@@ -48,6 +48,7 @@ import preferToHaveLength from './rules/prefer-to-have-length.js'
 import preferWebFirstAssertions from './rules/prefer-web-first-assertions.js'
 import requireHook from './rules/require-hook.js'
 import requireSoftAssertions from './rules/require-soft-assertions.js'
+import requireTags from './rules/require-tags.js'
 import requireToPassTimeout from './rules/require-to-pass-timeout.js'
 import requireToThrowMessage from './rules/require-to-throw-message.js'
 import requireTopLevelDescribe from './rules/require-top-level-describe.js'
@@ -109,6 +110,7 @@ export const plugin = {
     'prefer-web-first-assertions': preferWebFirstAssertions,
     'require-hook': requireHook,
     'require-soft-assertions': requireSoftAssertions,
+    'require-tags': requireTags,
     'require-to-pass-timeout': requireToPassTimeout,
     'require-to-throw-message': requireToThrowMessage,
     'require-top-level-describe': requireTopLevelDescribe,
