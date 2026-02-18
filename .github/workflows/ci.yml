@@ -1,4 +1,4 @@
-name: Test
+name: CI
 
 on:
   push:
@@ -20,6 +20,9 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
+
+      - name: Check for duplicate dependencies
+        run: yarn dedupe --check
 
       - name: Check formatting
         run: yarn format:check
