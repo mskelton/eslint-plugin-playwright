@@ -175,7 +175,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           column: 17,
           data: {
             functionName: 'describe',
-            pattern: /(?:#(?!unit|e2e))\w+/u,
+            pattern: /(?:#(?!unit|e2e))\w+/u.toString(),
           },
           line: 8,
           messageId: 'mustNotMatch',
@@ -184,7 +184,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           column: 10,
           data: {
             functionName: 'test',
-            pattern: /(?:#(?!unit|e2e))\w+/u,
+            pattern: /(?:#(?!unit|e2e))\w+/u.toString(),
           },
           line: 9,
           messageId: 'mustNotMatch',
@@ -193,7 +193,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           column: 17,
           data: {
             functionName: 'step',
-            pattern: /(?:#(?!unit|e2e))\w+/u,
+            pattern: /(?:#(?!unit|e2e))\w+/u.toString(),
           },
           line: 10,
           messageId: 'mustNotMatch',
@@ -228,7 +228,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           data: {
             functionName: 'describe',
             message: 'Please include "#unit" or "#e2e" in titles',
-            pattern: /(?:#(?!unit|e2e))\w+/u,
+            pattern: /(?:#(?!unit|e2e))\w+/u.toString(),
           },
           line: 8,
           messageId: 'mustNotMatchCustom',
@@ -238,7 +238,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           data: {
             functionName: 'test',
             message: 'Please include "#unit" or "#e2e" in titles',
-            pattern: /(?:#(?!unit|e2e))\w+/u,
+            pattern: /(?:#(?!unit|e2e))\w+/u.toString(),
           },
           line: 9,
           messageId: 'mustNotMatchCustom',
@@ -247,7 +247,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           column: 17,
           data: {
             message: 'Please include "#unit" or "#e2e" in titles',
-            pattern: /(?:#(?!unit|e2e))\w+/u,
+            pattern: /(?:#(?!unit|e2e))\w+/u.toString(),
           },
           line: 10,
           messageId: 'mustNotMatchCustom',
@@ -287,7 +287,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           column: 17,
           data: {
             functionName: 'describe',
-            pattern: /(?:#(?!unit|e2e))\w+/u,
+            pattern: /(?:#(?!unit|e2e))\w+/u.toString(),
           },
           line: 8,
           messageId: 'mustNotMatch',
@@ -322,7 +322,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           data: {
             functionName: 'describe',
             message: 'Please include "#unit" or "#e2e" in describe titles',
-            pattern: /(?:#(?!unit|e2e))\w+/u,
+            pattern: /(?:#(?!unit|e2e))\w+/u.toString(),
           },
           line: 8,
           messageId: 'mustNotMatchCustom',
@@ -361,7 +361,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           column: 17,
           data: {
             functionName: 'describe',
-            pattern: /(?:#(?!unit|e2e))\w+/u,
+            pattern: /(?:#(?!unit|e2e))\w+/u.toString(),
           },
           line: 8,
           messageId: 'mustNotMatch',
@@ -396,7 +396,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           data: {
             functionName: 'test',
             message: 'Please include "#unit" or "#e2e" in it titles',
-            pattern: /^[^#]+$|(?:#(?:unit|e2e))/u,
+            pattern: /^[^#]+$|(?:#(?:unit|e2e))/u.toString(),
           },
           line: 3,
           messageId: 'mustMatchCustom',
@@ -406,7 +406,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           data: {
             functionName: 'describe',
             message: 'Please include "#unit" or "#e2e" in describe titles',
-            pattern: /(?:#(?!unit|e2e))\w+/u,
+            pattern: /(?:#(?!unit|e2e))\w+/u.toString(),
           },
           line: 8,
           messageId: 'mustNotMatchCustom',
@@ -436,7 +436,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           column: 6,
           data: {
             functionName: 'test',
-            pattern: /#(?:unit|integration|e2e)/u,
+            pattern: /#(?:unit|integration|e2e)/u.toString(),
           },
           line: 1,
           messageId: 'mustMatch',
@@ -451,7 +451,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           column: 15,
           data: {
             functionName: 'describe',
-            pattern: /#(?:unit|integration|e2e)/u,
+            pattern: /#(?:unit|integration|e2e)/u.toString(),
           },
           line: 1,
           messageId: 'mustMatch',
@@ -466,7 +466,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           column: 11,
           data: {
             functionName: 'step',
-            pattern: /#(?:unit|integration|e2e)/u,
+            pattern: /#(?:unit|integration|e2e)/u.toString(),
           },
           line: 1,
           messageId: 'mustMatch',
@@ -481,7 +481,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           column: 20,
           data: {
             functionName: 'describe',
-            pattern: /#(?:unit|integration|e2e)/u,
+            pattern: /#(?:unit|integration|e2e)/u.toString(),
           },
           line: 1,
           messageId: 'mustMatch',
@@ -509,7 +509,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           column: 15,
           data: {
             functionName: 'describe',
-            pattern: /(?:#(?!unit|e2e))\w+/u,
+            pattern: /(?:#(?!unit|e2e))\w+/u.toString(),
           },
           line: 8,
           messageId: 'mustNotMatch',
@@ -518,7 +518,7 @@ runRuleTester('mustMatch & mustNotMatch options', rule, {
           column: 8,
           data: {
             functionName: 'test',
-            pattern: /(?:#(?!unit|e2e))\w+/u,
+            pattern: /(?:#(?!unit|e2e))\w+/u.toString(),
           },
           line: 9,
           messageId: 'mustNotMatch',

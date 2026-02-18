@@ -75,7 +75,6 @@ export default createRule({
   },
   meta: {
     docs: {
-      category: 'Best Practices',
       description: 'Enforce lowercase test names',
       recommended: false,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/prefer-lowercase-title.md',

@@ -50,7 +50,6 @@ export default createRule({
   },
   meta: {
     docs: {
-      category: 'Best Practices',
       description: 'Prevent usage of `{ force: true }` option.',
       recommended: true,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-force-option.md',

@@ -34,7 +34,6 @@ export default createRule({
   },
   meta: {
     docs: {
-      category: 'Best Practices',
       description: 'Enforces a maximum depth to nested describe calls',
       recommended: true,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/max-nested-describe.md',

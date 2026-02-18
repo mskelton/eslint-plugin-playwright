@@ -55,7 +55,6 @@ export default createRule({
   },
   meta: {
     docs: {
-      category: 'Best Practices',
       description: 'Disallows the usage of specific roles in getByRole()',
       recommended: false,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-restricted-roles.md',

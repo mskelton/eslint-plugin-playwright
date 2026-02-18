@@ -332,7 +332,6 @@ export const findTopMostCallExpression = (
     // `something(expect(x).not.resolves.toBe)`.
     if (parent.type === 'CallExpression' && parent.callee === child) {
       top = parent
-      node = parent
       parent = (parent as NodeWithParent).parent
       continue
     }

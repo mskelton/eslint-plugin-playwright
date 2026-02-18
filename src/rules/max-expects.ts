@@ -54,7 +54,6 @@ export default createRule({
   },
   meta: {
     docs: {
-      category: 'Best Practices',
       description: 'Enforces a maximum number assertion calls in a test body',
       recommended: false,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/max-expects.md',

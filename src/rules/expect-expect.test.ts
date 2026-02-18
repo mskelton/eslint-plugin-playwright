@@ -6,11 +6,11 @@ runRuleTester('expect-expect', rule, {
   invalid: [
     {
       code: 'test("should fail", () => {});',
-      errors: [{ messageId: 'noAssertions', type: 'Identifier' }],
+      errors: [{ column: 1, endColumn: 5, line: 1, messageId: 'noAssertions' }],
     },
     {
       code: 'test.skip("should fail", () => {});',
-      errors: [{ messageId: 'noAssertions', type: 'MemberExpression' }],
+      errors: [{ column: 1, endColumn: 10, line: 1, messageId: 'noAssertions' }],
     },
     {
       code: dedent`
@@ -18,7 +18,7 @@ runRuleTester('expect-expect', rule, {
           await assertCustomCondition(page)
         })
       `,
-      errors: [{ messageId: 'noAssertions', type: 'Identifier' }],
+      errors: [{ column: 1, endColumn: 5, line: 1, messageId: 'noAssertions' }],
     },
     {
       code: dedent`
@@ -26,7 +26,7 @@ runRuleTester('expect-expect', rule, {
           await assertCustomCondition(page)
         })
       `,
-      errors: [{ messageId: 'noAssertions', type: 'Identifier' }],
+      errors: [{ column: 1, endColumn: 5, line: 1, messageId: 'noAssertions' }],
       name: 'Custom assert function',
       options: [{ assertFunctionNames: ['wayComplexCustomCondition'] }],
     },
@@ -36,13 +36,13 @@ runRuleTester('expect-expect', rule, {
           await assertCustomCondition(page)
         })
       `,
-      errors: [{ messageId: 'noAssertions', type: 'Identifier' }],
+      errors: [{ column: 1, endColumn: 5, line: 1, messageId: 'noAssertions' }],
       name: 'Custom assert function pattern mismatch',
       options: [{ assertFunctionPatterns: ['^verify.*', '^check.*'] }],
     },
     {
       code: 'it("should pass", () => hi(true).toBeDefined())',
-      errors: [{ messageId: 'noAssertions', type: 'Identifier' }],
+      errors: [{ column: 1, endColumn: 3, line: 1, messageId: 'noAssertions' }],
       name: 'Global aliases',
       settings: {
         playwright: {

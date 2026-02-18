@@ -47,8 +47,11 @@ export function createRule(rule: Rule.RuleModule): Rule.RuleModule {
         cwd: context.cwd,
         filename: context.filename,
         id: context.id,
+        languageOptions: context.languageOptions,
         options: context.options,
+        // @ts-expect-error - Legacy context property
         parserOptions: context.parserOptions,
+        // @ts-expect-error - Legacy context property
         parserPath: context.parserPath,
         physicalFilename: context.physicalFilename,
         report,

@@ -29,7 +29,6 @@ export default createRule({
   },
   meta: {
     docs: {
-      category: 'Possible Errors',
       description: 'Prevent usage of page.waitForNavigation()',
       recommended: true,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-wait-for-navigation.md',

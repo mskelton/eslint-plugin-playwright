@@ -124,7 +124,6 @@ export default createRule({
   },
   meta: {
     docs: {
-      category: 'Possible Errors',
       description: 'Enforce valid `expect()` usage',
       recommended: true,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/valid-expect.md',

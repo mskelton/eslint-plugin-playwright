@@ -69,7 +69,6 @@ export default createRule({
   },
   meta: {
     docs: {
-      category: 'Best Practices',
       description: 'Suggest using the built-in equality matchers',
       recommended: false,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/prefer-equality-matcher.md',

@@ -19,7 +19,6 @@ export default createRule({
   },
   meta: {
     docs: {
-      category: 'Possible Errors',
       description: `Disallow usage of page locators that are not used`,
       recommended: true,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-unused-locators.md',

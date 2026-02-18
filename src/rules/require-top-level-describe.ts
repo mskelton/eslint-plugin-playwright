@@ -49,7 +49,6 @@ export default createRule({
   },
   meta: {
     docs: {
-      category: 'Best Practices',
       description: 'Require test cases and hooks to be inside a `test.describe` block',
       recommended: false,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/require-top-level-describe.md',

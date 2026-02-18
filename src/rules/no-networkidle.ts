@@ -51,7 +51,6 @@ export default createRule({
   },
   meta: {
     docs: {
-      category: 'Possible Errors',
       description: 'Prevent usage of the networkidle option',
       recommended: true,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-networkidle.md',

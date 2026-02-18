@@ -53,7 +53,6 @@ const rule = {
   }),
   meta: {
     docs: {
-      category: 'Possible Errors',
       description: 'Fake rule for testing parseFnCall',
       recommended: false,
     },

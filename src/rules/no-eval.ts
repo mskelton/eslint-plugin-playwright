@@ -18,7 +18,6 @@ export default createRule({
   },
   meta: {
     docs: {
-      category: 'Possible Errors',
       description:
         'The use of `page.$eval` and `page.$$eval` are discouraged, use `locator.evaluate` or `locator.evaluateAll` instead',
       recommended: true,

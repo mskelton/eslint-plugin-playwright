@@ -54,7 +54,6 @@ export default createRule({
   },
   meta: {
     docs: {
-      category: 'Best Practices',
       description: 'Prevent usage of the `.slow()` slow test annotation.',
       recommended: false,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-slowed-test.md',

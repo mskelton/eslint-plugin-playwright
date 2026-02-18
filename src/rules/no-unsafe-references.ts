@@ -131,7 +131,6 @@ export default createRule({
   },
   meta: {
     docs: {
-      category: 'Possible Errors',
       description: 'Prevent unsafe variable references in page.evaluate() and page.addInitScript()',
       recommended: true,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-unsafe-references.md',
