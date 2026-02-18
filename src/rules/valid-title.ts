@@ -111,6 +111,12 @@ export default createRule({
             return
           }
 
+          // Skip type checking for identifiers and member expressions we
+          // couldn't dereference - we can't determine their type statically.
+          if (title.type === 'Identifier' || title.type === 'MemberExpression') {
+            return
+          }
+
           if (
             !(
               (call.type === 'describe' && ignoreTypeOfDescribeName) ||

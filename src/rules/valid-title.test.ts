@@ -671,27 +671,6 @@ runRuleTester('title-must-be-string', rule, {
       ],
     },
     {
-      code: 'test.describe(myFunction, () => 1);',
-      errors: [
-        {
-          column: 15,
-          line: 1,
-          messageId: 'titleMustBeString',
-        },
-      ],
-      options: [{ ignoreTypeOfDescribeName: false }],
-    },
-    {
-      code: 'test.describe(myFunction, () => {});',
-      errors: [
-        {
-          column: 15,
-          line: 1,
-          messageId: 'titleMustBeString',
-        },
-      ],
-    },
-    {
       code: 'test.describe(6, function () {})',
       errors: [
         {
@@ -796,6 +775,61 @@ runRuleTester('title-must-be-string', rule, {
         test(title, () => {
           expect(1).toBe(1);
         });
+      `,
+    },
+    // Destructured variables from loops - cannot trace type, should not error
+    {
+      code: dedent`
+        const cases = [{ name: 'test one' }, { name: 'test two' }];
+        for (const { name } of cases) {
+          test(name, () => {
+            expect(1).toBe(1);
+          });
+        }
+      `,
+    },
+    // Destructured in forEach callback
+    {
+      code: dedent`
+        const cases = [{ name: 'test one' }];
+        cases.forEach(({ name }) => {
+          test(name, () => {});
+        });
+      `,
+    },
+    // Destructured from array index
+    {
+      code: dedent`
+        const cases = [{ name: 'test one' }];
+        const { name } = cases[0];
+        test(name, () => {});
+      `,
+    },
+    // Array destructuring
+    {
+      code: dedent`
+        const cases = ['test one', 'test two'];
+        for (const name of cases) {
+          test(name, () => {});
+        }
+      `,
+    },
+    // Member expression access (cases[0].name)
+    {
+      code: dedent`
+        const cases = [{ name: 'test one' }];
+        test(cases[0].name, () => {});
+      `,
+    },
+    // describe with destructured variable
+    {
+      code: dedent`
+        const suites = [{ name: 'suite one' }];
+        for (const { name } of suites) {
+          test.describe(name, () => {
+            test('inner', () => {});
+          });
+        }
       `,
     },
     // Global aliases
