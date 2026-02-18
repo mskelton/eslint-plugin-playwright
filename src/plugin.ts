@@ -8,6 +8,7 @@ import noCommentedOutTests from './rules/no-commented-out-tests.js'
 import noConditionalExpect from './rules/no-conditional-expect.js'
 import noConditionalInTest from './rules/no-conditional-in-test.js'
 import noDuplicateHooks from './rules/no-duplicate-hooks.js'
+import noDuplicateSlow from './rules/no-duplicate-slow.js'
 import noElementHandle from './rules/no-element-handle.js'
 import noEval from './rules/no-eval.js'
 import noFocusedTest from './rules/no-focused-test.js'
@@ -68,6 +69,7 @@ export const plugin = {
     'no-conditional-expect': noConditionalExpect,
     'no-conditional-in-test': noConditionalInTest,
     'no-duplicate-hooks': noDuplicateHooks,
+    'no-duplicate-slow': noDuplicateSlow,
     'no-element-handle': noElementHandle,
     'no-eval': noEval,
     'no-focused-test': noFocusedTest,
