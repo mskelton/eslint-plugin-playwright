@@ -279,6 +279,18 @@ runRuleTester('missing-playwright-await', rule, {
       ),
       errors: [{ line: 2, messageId: 'waitFor' }],
     },
+    {
+      code: test('page.waitForResponse("https://example.com").then(res => res.json())'),
+      errors: [{ column: 28, messageId: 'waitFor' }],
+    },
+    {
+      code: test('page.waitForResponse("https://example.com").catch(() => null)'),
+      errors: [{ column: 28, messageId: 'waitFor' }],
+    },
+    {
+      code: test('page.waitForResponse("https://example.com").then(r => r).catch(() => null)'),
+      errors: [{ column: 28, messageId: 'waitFor' }],
+    },
   ],
   valid: [
     // Basic
@@ -424,6 +436,17 @@ runRuleTester('missing-playwright-await', rule, {
     { code: test('await page.waitForPopup()') },
     { code: test('await page.waitForWebSocket("wss://example.com")') },
     { code: test('return page.waitForResponse("https://example.com")') },
+    { code: test('await page.waitForResponse("https://example.com").then(res => res.json())') },
+    { code: test('await page.waitForResponse("https://example.com").catch(() => null)') },
+    { code: test('await page.waitForResponse("https://example.com").finally(() => {})') },
+    {
+      code: test(
+        'await page.waitForResponse("https://example.com").then(res => res.json()).catch(() => null)',
+      ),
+    },
+    { code: test('return page.waitForResponse("https://example.com").then(res => res.json())') },
+    { code: test('const fn = () => page.waitForResponse("https://example.com").then(r => r)') },
+    { code: test('await expect(page).toBeVisible().catch(() => {})') },
     { code: test('const fn = () => page.waitForResponse("https://example.com")') },
     {
       code: test(`
