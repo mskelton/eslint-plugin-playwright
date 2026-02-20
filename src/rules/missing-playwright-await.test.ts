@@ -424,6 +424,7 @@ runRuleTester('missing-playwright-await', rule, {
     { code: test('await page.waitForPopup()') },
     { code: test('await page.waitForWebSocket("wss://example.com")') },
     { code: test('return page.waitForResponse("https://example.com")') },
+    { code: test('await page.waitForResponse("https://example.com").then(res => res.json())') },
     { code: test('const fn = () => page.waitForResponse("https://example.com")') },
     {
       code: test(`

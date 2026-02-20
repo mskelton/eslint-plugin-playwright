@@ -115,6 +115,15 @@ export default createRule({
       // check any further.
       if (validTypes.has(parent.type)) return true
 
+      // If part of a promise chain, walk the chain up.
+      if (
+        parent.type === 'MemberExpression' &&
+        isIdentifier(parent.property, /^(then|catch|finally)$/) &&
+        parent.parent?.type === 'CallExpression'
+      ) {
+        return checkValidity(parent.parent, visited)
+      }
+
       // If the parent is an array, we need to check the grandparent to see if
       // it's a Promise.all, or a variable.
       if (parent.type === 'ArrayExpression') {
