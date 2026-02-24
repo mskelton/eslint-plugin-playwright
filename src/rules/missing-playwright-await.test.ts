@@ -279,6 +279,7 @@ runRuleTester('missing-playwright-await', rule, {
       ),
       errors: [{ line: 2, messageId: 'waitFor' }],
     },
+    // .then() / .catch() without await on the chain is still invalid
     {
       code: test('page.waitForResponse("https://example.com").then(res => res.json())'),
       errors: [{ column: 28, messageId: 'waitFor' }],
@@ -471,6 +472,37 @@ runRuleTester('missing-playwright-await', rule, {
           const responsePromise = page.waitForResponse("https://example.com")
           await page.locator("button").click()
           return responsePromise
+        `),
+      ),
+    },
+    {
+      code: dedent(
+        test(`
+          const currentIdentityResponse = page.waitForResponse('**/v1/auth/users/current-identity')
+          const currentIdentity = await currentIdentityResponse.then((res) => res.json())
+        `),
+      ),
+    },
+    {
+      code: dedent(
+        test(`
+          const downloadPromise = page.waitForEvent('download')
+          await page.getByRole('option', { name: /download/i }).click()
+          if (help) {
+            await downloadPromise
+          }
+        `),
+      ),
+    },
+    {
+      code: dedent(
+        test(`
+          const response = filterUrl
+            ? page.waitForResponse((response) => response.url().endsWith(filterUrl))
+            : null
+          if (response) {
+            await response
+          }
         `),
       ),
     },

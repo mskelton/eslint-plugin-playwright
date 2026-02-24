@@ -256,3 +256,8 @@ export const areTokensOnSameLine = (
   left: ESTree.Comment | AST.Token,
   right: ESTree.Comment | AST.Token,
 ): boolean => left.loc!.end.line === right.loc!.start.line
+
+
+export const isPromiseAccessor = (node: ESTree.Node): node is ESTree.MemberExpression => {
+  return node.type === 'MemberExpression' && isIdentifier(node.property, /^(then|catch|finally)$/)
+}

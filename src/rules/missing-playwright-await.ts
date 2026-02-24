@@ -1,5 +1,5 @@
 import type * as ESTree from 'estree'
-import { getStringValue, isIdentifier, isPageMethod } from '../utils/ast.js'
+import { getStringValue, isIdentifier, isPageMethod, isPromiseAccessor } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { type ParsedFnCall, parseFnCall } from '../utils/parseFnCall.js'
 import type { NodeWithParent } from '../utils/types.js'
@@ -69,6 +69,7 @@ const playwrightTestMatchers = [
   'toContainClass',
 ]
 
+/** For fix/error placement: report on the MemberExpression (e.g. expect) when present, else the node itself. */
 function getReportNode(node: ESTree.Node) {
   const parent = (node as NodeWithParent).parent
   return parent?.type === 'MemberExpression' ? parent : node
@@ -104,34 +105,91 @@ export default createRule({
       ...(options.customMatchers || []),
     ])
 
+    /**
+     * When a promise is assigned to a variable (e.g. `const x = page.waitForResponse(...)`),
+     * we only consider it "consumed" if that variable is read in a valid place (await/return)
+     * or passed to another variable that is. This checks only references to the declared
+     * variable(s), not every identifier in the scope.
+     */
+    function isVariableConsumed(
+      declarator: ESTree.VariableDeclarator,
+      checkValidity: (node: ESTree.Node, visited: Set<ESTree.Node>) => boolean,
+      validTypes: Set<string>,
+      visited: Set<ESTree.Node>,
+    ): boolean {
+      // e.g. `const x = ...` → one variable; destructuring → possibly several
+      const variables = context.sourceCode.getDeclaredVariables(declarator)
+      for (const variable of variables) {
+        for (const ref of variable.references) {
+          // Skip the declaration itself (the write); we only care where the value is read
+          if (!ref.isRead()) {
+            continue
+          }
+
+          const refParent = (ref.identifier as NodeWithParent).parent
+          if (visited.has(refParent)) {
+            continue
+          }
+
+          // Read is in a valid place: await x, return x, or (x) => ...
+          if (validTypes.has(refParent.type)) {
+            return true
+          }
+
+          // Value flows to another variable (e.g. const bar = foo); recurse so we
+          // check whether that variable is consumed
+          if (refParent.type === 'VariableDeclarator') {
+            if (checkValidity(ref.identifier as ESTree.Node, visited)) return true
+            continue
+          }
+
+          // Walk up (e.g. through .then(), ternary) to see if we end up in a valid place
+          if (checkValidity(refParent, visited)) return true
+        }
+      }
+      return false
+    }
+
     function checkValidity(node: ESTree.Node, visited: Set<ESTree.Node>) {
       const parent = (node as NodeWithParent).parent
-      if (!parent) return false
+      if (!parent) {
+        return false
+      }
 
-      if (visited.has(parent)) return false
+      if (visited.has(parent)) {
+        return false
+      }
+
       visited.add(parent)
 
-      // If the parent is a valid type (e.g. return or await), we don't need to
-      // check any further.
-      if (validTypes.has(parent.type)) return true
+      // Directly in a valid context: await expr, return expr, or (expr) => ...
+      if (validTypes.has(parent.type)) {
+        return true
+      }
 
-      // If part of a promise chain, walk the chain up.
-      if (
-        parent.type === 'MemberExpression' &&
-        isIdentifier(parent.property, /^(then|catch|finally)$/) &&
-        parent.parent?.type === 'CallExpression'
-      ) {
+      // We're the right-hand side of .then/.catch/.finally (e.g. in promise.then(...));
+      // walk up to the CallExpression so we can then see if it's awaited
+      if (isPromiseAccessor(parent) && parent.parent?.type === 'CallExpression') {
         return checkValidity(parent.parent, visited)
       }
 
-      // If the parent is an array, we need to check the grandparent to see if
-      // it's a Promise.all, or a variable.
+      // We're the promise in promise.then(...) — we're the object of the .then
+      // MemberExpression; walk up to the call so the next step can see await
+      if (parent.type === 'CallExpression' && parent.callee === node && isPromiseAccessor(node)) {
+        return checkValidity(parent, visited)
+      }
+
+      // Inside an array (e.g. [a, b] or Promise.all([...])); keep walking up
       if (parent.type === 'ArrayExpression') {
         return checkValidity(parent, visited)
       }
 
-      // If the parent is a call expression, we need to check the grandparent
-      // to see if it's a Promise.all.
+      // Inside a ternary (e.g. x ? promise : null); walk up to the declarator/assignment
+      if (parent.type === 'ConditionalExpression') {
+        return checkValidity(parent, visited)
+      }
+
+      // Inside Promise.all(...) — valid
       if (
         parent.type === 'CallExpression' &&
         parent.callee.type === 'MemberExpression' &&
@@ -141,21 +199,9 @@ export default createRule({
         return true
       }
 
-      // If the parent is a variable declarator, we need to check the scope to
-      // find where it is referenced. When we find the reference, we can
-      // re-check validity.
+      // Assigned to a variable — valid only if that variable is consumed (see above)
       if (parent.type === 'VariableDeclarator') {
-        const scope = context.sourceCode.getScope(parent.parent)
-
-        for (const ref of scope.references) {
-          const refParent = (ref.identifier as NodeWithParent).parent
-          if (visited.has(refParent)) continue
-          // If the parent of the reference is valid, we can immediately return
-          // true. Otherwise, we'll check the validity of the parent to continue
-          // the loop.
-          if (validTypes.has(refParent.type)) return true
-          if (checkValidity(refParent, visited)) return true
-        }
+        return isVariableConsumed(parent, checkValidity, validTypes, visited)
       }
 
       return false
