@@ -41,6 +41,7 @@ export default createRule({
 ```
 
 Key utilities (all imported from `../utils/`):
+
 - `parseFnCall` — parse Playwright calls (test, expect, describe, hook, step, config)
 - `isTypeOfFnCall` — check call type without full parse
 - `isPageMethod` — check if call is page method
@@ -83,16 +84,19 @@ Use `runTSRuleTester` (from same import) for TypeScript-specific rules.
 ### 3. Register in `src/plugin.ts`
 
 Add the import (alphabetical order):
+
 ```typescript
 import myNewRule from './rules/{rule-name}.js'
 ```
 
 Add to the `plugin.rules` object (alphabetical order):
+
 ```typescript
 '{rule-name}': myNewRule,
 ```
 
 If recommended, add to `sharedConfig.rules`:
+
 ```typescript
 'playwright/{rule-name}': 'error', // or 'warn'
 ```
@@ -128,10 +132,11 @@ _If rule has options, document them here. Otherwise omit this section._
 Insert a row in alphabetical order in the table (around line 120+):
 
 ```markdown
-| [{rule-name}](https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/{rule-name}.md) | Description of rule | ✅  | 🔧  | 💡  |
+| [{rule-name}](https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/{rule-name}.md) | Description of rule | ✅ | 🔧 | 💡 |
 ```
 
 Leave columns blank (`   `) when not applicable:
+
 - `✅` — rule is in recommended config
 - `🔧` — rule is auto-fixable (`fixable: 'code'`)
 - `💡` — rule has suggestions (`hasSuggestions: true`)
