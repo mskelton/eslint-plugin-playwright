@@ -22,7 +22,9 @@ export function replaceAccessorFixer(fixer: Rule.RuleFixer, node: ESTree.Node, t
  */
 export function removePropertyFixer(fixer: Rule.RuleFixer, property: ESTree.Property) {
   const parent = (property as NodeWithParent).parent
-  if (parent?.type !== 'ObjectExpression') return
+  if (parent?.type !== 'ObjectExpression') {
+    return
+  }
 
   // If the property is the only one in the object, remove the entire object.
   if (parent.properties.length === 1) {

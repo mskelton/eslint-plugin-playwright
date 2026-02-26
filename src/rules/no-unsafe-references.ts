@@ -7,7 +7,9 @@ import type { NodeWithParent } from '../utils/types.js'
 
 /** Collect all variable references in the parent scopes recursively. */
 function collectVariables(scope: Scope.Scope | null): string[] {
-  if (!scope || scope.type === 'global') return []
+  if (!scope || scope.type === 'global') {
+    return []
+  }
 
   return [...collectVariables(scope.upper), ...scope.variables.map((ref) => ref.name)]
 }
@@ -18,7 +20,9 @@ function collectVariables(scope: Scope.Scope | null): string[] {
  */
 function addArgument(fixer: Rule.RuleFixer, node: ESTree.CallExpression, refs: string) {
   // This should never happen, but just in case
-  if (!node.arguments.length) return
+  if (!node.arguments.length) {
+    return
+  }
 
   // If the only argument to the method is the function, we
   // have to add the references as the second argument.
@@ -29,7 +33,9 @@ function addArgument(fixer: Rule.RuleFixer, node: ESTree.CallExpression, refs: s
   // If there are at least two arguments, we can add the references after the
   // last element of the second argument, which should be an array.
   const arg = node.arguments.at(-1)
-  if (!arg) return
+  if (!arg) {
+    return
+  }
 
   // If the second argument is not an array, we have to replace it with an array
   // containing the existing argument and the new references.
@@ -83,10 +89,14 @@ export default createRule({
   create(context) {
     return {
       CallExpression(node) {
-        if (!isPageMethod(node, 'evaluate') && !isPageMethod(node, 'addInitScript')) return
+        if (!isPageMethod(node, 'evaluate') && !isPageMethod(node, 'addInitScript')) {
+          return
+        }
 
         const [fn] = node.arguments
-        if (!fn || !isFunction(fn)) return
+        if (!fn || !isFunction(fn)) {
+          return
+        }
 
         const { through, upper } = context.sourceCode.getScope(fn.body)
         const allRefs = new Set(collectVariables(upper))

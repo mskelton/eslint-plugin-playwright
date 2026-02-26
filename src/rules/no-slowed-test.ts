@@ -15,7 +15,9 @@ export default createRule({
         }
 
         const slowNode = call.members.find((s) => getStringValue(s) === 'slow')
-        if (!slowNode) return
+        if (!slowNode) {
+          return
+        }
 
         // If the call is a standalone `test.slow()` call, and not a test
         // annotation, we have to treat it a bit differently.

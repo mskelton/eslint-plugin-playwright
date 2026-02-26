@@ -29,7 +29,9 @@ const pageMethods = new Set([
 ])
 
 function isSupportedMethod(node: ESTree.CallExpression) {
-  if (node.callee.type !== 'MemberExpression') return false
+  if (node.callee.type !== 'MemberExpression') {
+    return false
+  }
 
   const name = getStringValue(node.callee.property)
   return pageMethods.has(name) && isPageMethod(node, name)
@@ -40,7 +42,9 @@ export default createRule({
     return {
       CallExpression(node) {
         // Must be a method we care about
-        if (!isSupportedMethod(node)) return
+        if (!isSupportedMethod(node)) {
+          return
+        }
 
         context.report({
           messageId: 'preferLocator',

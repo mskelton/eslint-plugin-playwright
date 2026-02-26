@@ -20,7 +20,9 @@ const matcherConfig: Record<string, { argName?: string; inverse: string }> = {
 
 function getOptions(call: ParsedExpectFnCall, name: string) {
   const [arg] = call.matcherArgs
-  if (arg?.type !== 'ObjectExpression') return
+  if (arg?.type !== 'ObjectExpression') {
+    return
+  }
 
   const property = arg.properties.find(
     (p): p is ESTree.Property =>
@@ -39,11 +41,15 @@ export default createRule({
     return {
       CallExpression(node) {
         const call = parseFnCall(context, node)
-        if (call?.type !== 'expect') return
+        if (call?.type !== 'expect') {
+          return
+        }
 
         // This rule only applies to specific matchers that have opposites
         const config = matcherConfig[call.matcherName]
-        if (!config) return
+        if (!config) {
+          return
+        }
 
         // If the matcher has an options argument, we need to check if it has
         // a `visible` or `enabled` property that is a boolean literal.
@@ -51,13 +57,17 @@ export default createRule({
 
         // If an argument is provided to the `visible` or `enabled` property, but
         // we can't determine it's value, we can't safely remove the `not` modifier.
-        if (options?.arg && options.value === undefined) return
+        if (options?.arg && options.value === undefined) {
+          return
+        }
 
         const notModifier = call.modifiers.find((mod) => getStringValue(mod) === 'not')
 
         // If the matcher is not negated, or the matcher has no options, we can
         // safely ignore it.
-        if (!notModifier && !options?.property) return
+        if (!notModifier && !options?.property) {
+          return
+        }
 
         // If the matcher is inverted, we need to remove the `not` modifier and
         // replace the matcher with it's inverse.

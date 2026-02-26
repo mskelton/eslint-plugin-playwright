@@ -69,13 +69,19 @@ export default createRule({
     return {
       CallExpression(node) {
         const fnCall = parseFnCall(context, node)
-        if (fnCall?.type !== 'expect') return
+        if (fnCall?.type !== 'expect') {
+          return
+        }
 
         const expect = findParent(fnCall.head.node, 'CallExpression')
-        if (!expect) return
+        if (!expect) {
+          return
+        }
 
         const arg = dereference(context, fnCall.args[0])
-        if (!arg) return
+        if (!arg) {
+          return
+        }
 
         const call = arg.type === 'AwaitExpression' ? arg.argument : arg
         if (call.type !== 'CallExpression' || call.callee.type !== 'MemberExpression') {
@@ -83,12 +89,16 @@ export default createRule({
         }
 
         // Matcher must be supported
-        if (!supportedMatchers.has(fnCall.matcherName)) return
+        if (!supportedMatchers.has(fnCall.matcherName)) {
+          return
+        }
 
         // Playwright method must be supported
         const method = getStringValue(call.callee.property)
         const methodConfig = methods[method]
-        if (!Object.hasOwn(methods, method)) return
+        if (!Object.hasOwn(methods, method)) {
+          return
+        }
 
         // Change the matcher
         const notModifier = fnCall.modifiers.find((mod) => getStringValue(mod) === 'not')

@@ -4,7 +4,9 @@ import { isSupportedAccessor } from './parseFnCall.js'
 import type { NodeWithParent, TypedNodeWithParent } from './types.js'
 
 export function getStringValue(node: ESTree.Node | undefined) {
-  if (!node) return ''
+  if (!node) {
+    return ''
+  }
 
   return node.type === 'Identifier'
     ? node.name
@@ -62,7 +64,9 @@ export function findParent<T extends ESTree.Node['type']>(
   type: T,
 ): TypedNodeWithParent<T> | undefined {
   const parent = (node as NodeWithParent).parent
-  if (!parent) return
+  if (!parent) {
+    return
+  }
 
   return parent.type === type
     ? (parent as unknown as TypedNodeWithParent<T>)

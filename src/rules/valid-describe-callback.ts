@@ -18,7 +18,9 @@ export default createRule({
     return {
       CallExpression(node) {
         const call = parseFnCall(context, node)
-        if (call?.group !== 'describe') return
+        if (call?.group !== 'describe') {
+          return
+        }
 
         // Ignore `describe.configure()` calls
         if (call.members.some((s) => getStringValue(s) === 'configure')) {

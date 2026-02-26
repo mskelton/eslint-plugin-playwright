@@ -20,7 +20,9 @@ function hasTests(context: Rule.RuleContext, node: ESTree.Comment) {
 export default createRule({
   create(context) {
     function checkNode(node: ESTree.Comment) {
-      if (!hasTests(context, node)) return
+      if (!hasTests(context, node)) {
+        return
+      }
 
       context.report({
         messageId: 'commentedTests',

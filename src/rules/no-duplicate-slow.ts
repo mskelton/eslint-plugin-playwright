@@ -10,7 +10,9 @@ export default createRule({
     return {
       'CallExpression'(node) {
         const call = parseFnCall(context, node)
-        if (!call) return
+        if (!call) {
+          return
+        }
 
         if (call.type === 'test' || call.type === 'describe') {
           // Inherit parent scope's slow status

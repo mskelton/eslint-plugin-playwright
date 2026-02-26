@@ -65,7 +65,9 @@ const isPromiseMethodThatUsesValue = (
   identifier: ESTree.Identifier | ESTree.Pattern,
 ): boolean => {
   const name = getStringValue(identifier)
-  if (node.argument == null) return false
+  if (node.argument == null) {
+    return false
+  }
 
   if (node.argument.type === 'CallExpression' && node.argument.arguments.length > 0) {
     const nodeName = getNodeName(node.argument)

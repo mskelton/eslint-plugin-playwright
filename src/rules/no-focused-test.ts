@@ -12,7 +12,9 @@ export default createRule({
         }
 
         const onlyNode = call.members.find((s) => getStringValue(s) === 'only')
-        if (!onlyNode) return
+        if (!onlyNode) {
+          return
+        }
 
         context.report({
           messageId: 'noFocusedTest',

@@ -16,7 +16,9 @@ export default createRule({
     return {
       'CallExpression'(node) {
         const call = parseFnCall(context, node)
-        if (!call) return
+        if (!call) {
+          return
+        }
 
         if (call.type === 'describe') {
           describeCount++

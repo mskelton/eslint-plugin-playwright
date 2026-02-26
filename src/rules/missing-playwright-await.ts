@@ -139,12 +139,16 @@ export default createRule({
           // Value flows to another variable (e.g. const bar = foo); recurse so we
           // check whether that variable is consumed
           if (refParent.type === 'VariableDeclarator') {
-            if (checkValidity(ref.identifier as ESTree.Node, visited)) return true
+            if (checkValidity(ref.identifier as ESTree.Node, visited)) {
+              return true
+            }
             continue
           }
 
           // Walk up (e.g. through .then(), ternary) to see if we end up in a valid place
-          if (checkValidity(refParent, visited)) return true
+          if (checkValidity(refParent, visited)) {
+            return true
+          }
         }
       }
       return false
@@ -227,7 +231,9 @@ export default createRule({
         }
 
         const call = parseFnCall(context, node)
-        if (call?.type !== 'step' && call?.type !== 'expect') return
+        if (call?.type !== 'step' && call?.type !== 'expect') {
+          return
+        }
 
         const result = getCallType(call, awaitableMatchers)
         const isValid = result ? checkValidity(node, new Set()) : false

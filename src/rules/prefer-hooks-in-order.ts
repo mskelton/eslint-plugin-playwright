@@ -11,7 +11,9 @@ export default createRule({
     return {
       'CallExpression'(node) {
         // Ignore everything that is passed into a hook
-        if (inHook) return
+        if (inHook) {
+          return
+        }
 
         const call = parseFnCall(context, node)
         if (call?.type !== 'hook') {
@@ -44,7 +46,9 @@ export default createRule({
           return
         }
 
-        if (inHook) return
+        if (inHook) {
+          return
+        }
         previousHookIndex = -1
       },
     }

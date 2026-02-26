@@ -36,6 +36,7 @@ export default defineConfig(
         },
       ],
       '@typescript-eslint/no-useless-constructor': 'error',
+      'curly': 'error',
       'no-template-curly-in-string': 'error',
       'no-unused-vars': 'off',
       'no-useless-constructor': 'off',

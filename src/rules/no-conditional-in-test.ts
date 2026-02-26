@@ -12,7 +12,9 @@ export default createRule({
       }
 
       const call = findParent(node, 'CallExpression')
-      if (!call) return
+      if (!call) {
+        return
+      }
 
       if (isTypeOfFnCall(context, call, ['test', 'step'])) {
         // Check if the conditional is inside the test body (the function passed as the last argument)
@@ -20,7 +22,9 @@ export default createRule({
 
         // Use findParent to check if the conditional is inside the test function body
         const functionBody = findParent(node, 'BlockStatement')
-        if (!functionBody) return
+        if (!functionBody) {
+          return
+        }
 
         // Check if this BlockStatement belongs to our test function
         let currentParent = functionBody.parent

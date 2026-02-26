@@ -67,7 +67,9 @@ const expectMatchers = new Set([
 ])
 
 function isSupportedMethod(node: ESTree.CallExpression) {
-  if (node.callee.type !== 'MemberExpression') return false
+  if (node.callee.type !== 'MemberExpression') {
+    return false
+  }
 
   const name = getStringValue(node.callee.property)
   return locatorMethods.has(name) || (pageMethods.has(name) && isPageMethod(node, name))

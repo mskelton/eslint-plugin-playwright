@@ -58,9 +58,13 @@ export default createRule({
 
     return {
       CallExpression(node) {
-        if (node.callee.type !== 'MemberExpression') return
+        if (node.callee.type !== 'MemberExpression') {
+          return
+        }
         const query = getStringValue(node.arguments[0])
-        if (!isPageMethod(node, 'locator')) return
+        if (!isPageMethod(node, 'locator')) {
+          return
+        }
 
         for (const pattern of patterns) {
           const match = query.match(pattern.pattern)

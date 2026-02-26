@@ -171,11 +171,21 @@ export type FnGroup = 'describe' | 'expect' | 'hook' | 'step' | 'test' | 'unknow
 export type FnType = FnGroup | 'config'
 
 function determinePlaywrightFnGroup(name: string): FnGroup {
-  if (name === 'step') return 'step'
-  if (name === 'expect') return 'expect'
-  if (name === 'describe') return 'describe'
-  if (name === 'test') return 'test'
-  if (testHooks.has(name)) return 'hook'
+  if (name === 'step') {
+    return 'step'
+  }
+  if (name === 'expect') {
+    return 'expect'
+  }
+  if (name === 'describe') {
+    return 'describe'
+  }
+  if (name === 'test') {
+    return 'test'
+  }
+  if (testHooks.has(name)) {
+    return 'hook'
+  }
   return 'unknown'
 }
 
@@ -352,11 +362,15 @@ function parse(
   node: ESTree.CallExpression,
 ): ParsedFnCall | string | null {
   const chain = new Chain(node)
-  if (!chain.nodes?.length) return null
+  if (!chain.nodes?.length) {
+    return null
+  }
 
   const [first, ...rest] = chain.nodes
   const resolved = resolveToPlaywrightFn(context, first)
-  if (!resolved) return null
+  if (!resolved) {
+    return null
+  }
 
   let name = resolved.original ?? resolved.local
   const links = [name, ...rest.map((link) => getStringValue(link))]
@@ -398,7 +412,9 @@ function parse(
     }
 
     const result = parseExpectCall(chain, parsedFnCall, stage)
-    if (!result) return null
+    if (!result) {
+      return null
+    }
 
     // If the `expect` call chain is not valid, only report on the topmost node
     // since all members in the chain are likely to get flagged for some reason

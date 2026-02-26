@@ -15,7 +15,9 @@ export default createRule({
         }
 
         const skipNode = call.members.find((s) => getStringValue(s) === 'skip')
-        if (!skipNode) return
+        if (!skipNode) {
+          return
+        }
 
         // If the call is a standalone `test.skip()` call, and not a test
         // annotation, we have to treat it a bit differently.

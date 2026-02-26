@@ -11,7 +11,9 @@ export default createRule({
     return {
       CallExpression(node) {
         const call = parseFnCall(context, node)
-        if (!call) return
+        if (!call) {
+          return
+        }
 
         if (call.type === 'hook' && !options.allow.includes(call.name)) {
           context.report({

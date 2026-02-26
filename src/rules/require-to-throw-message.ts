@@ -7,7 +7,9 @@ export default createRule({
     return {
       CallExpression(node) {
         const call = parseFnCall(context, node)
-        if (call?.type !== 'expect') return
+        if (call?.type !== 'expect') {
+          return
+        }
 
         if (
           call.matcherArgs.length === 0 &&

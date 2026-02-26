@@ -25,10 +25,14 @@ export default createRule({
     return {
       CallExpression(node) {
         const call = parseFnCall(context, node)
-        if (call?.type !== 'expect' || call.matcherArgs.length === 0) return
+        if (call?.type !== 'expect' || call.matcherArgs.length === 0) {
+          return
+        }
 
         const expect = (call.head.node as NodeWithParent).parent
-        if (expect?.type !== 'CallExpression') return
+        if (expect?.type !== 'CallExpression') {
+          return
+        }
 
         const [includesCall] = expect.arguments
         const { matcher } = call

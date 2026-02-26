@@ -20,8 +20,9 @@ export default createRule({
 
     return {
       CallExpression(node) {
-        if (node.callee.type !== 'MemberExpression' || node.arguments[0]?.type === 'Identifier')
+        if (node.callee.type !== 'MemberExpression' || node.arguments[0]?.type === 'Identifier') {
           return
+        }
         const method = getStringValue(node.callee.property)
         const arg = getStringValue(node.arguments[0])
         const isLocator = isPageMethod(node, 'locator') || method === 'locator'

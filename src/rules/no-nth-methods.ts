@@ -7,10 +7,14 @@ export default createRule({
   create(context) {
     return {
       CallExpression(node) {
-        if (node.callee.type !== 'MemberExpression') return
+        if (node.callee.type !== 'MemberExpression') {
+          return
+        }
 
         const method = getStringValue(node.callee.property)
-        if (!methods.has(method)) return
+        if (!methods.has(method)) {
+          return
+        }
 
         context.report({
           data: { method },

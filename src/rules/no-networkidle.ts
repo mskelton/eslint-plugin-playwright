@@ -17,10 +17,14 @@ export default createRule({
   create(context) {
     return {
       CallExpression(node) {
-        if (node.callee.type !== 'MemberExpression') return
+        if (node.callee.type !== 'MemberExpression') {
+          return
+        }
 
         const methodName = getStringValue(node.callee.property)
-        if (!methods.has(methodName)) return
+        if (!methods.has(methodName)) {
+          return
+        }
 
         // waitForLoadState has a single string argument
         if (methodName === 'waitForLoadState') {
@@ -36,7 +40,9 @@ export default createRule({
         // All other methods have an options object
         if (node.arguments.length >= 2) {
           const [_, arg] = node.arguments
-          if (arg.type !== 'ObjectExpression') return
+          if (arg.type !== 'ObjectExpression') {
+            return
+          }
 
           const property = arg.properties
             .filter((p): p is ESTree.Property => p.type === 'Property')

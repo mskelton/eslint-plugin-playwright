@@ -104,7 +104,9 @@ export default createRule({
 
         const [argument] = node.arguments
         const title = dereference(context, argument) ?? argument
-        if (!title) return
+        if (!title) {
+          return
+        }
 
         if (!isStringNode(title)) {
           if (title.type === 'BinaryExpression' && doesBinaryExpressionContainStringNode(title)) {

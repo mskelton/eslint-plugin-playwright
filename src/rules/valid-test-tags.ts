@@ -71,10 +71,14 @@ export default createRule({
     return {
       CallExpression(node) {
         const call = parseFnCall(context, node)
-        if (!call) return
+        if (!call) {
+          return
+        }
 
         const { type } = call
-        if (type !== 'test' && type !== 'describe' && type !== 'step') return
+        if (type !== 'test' && type !== 'describe' && type !== 'step') {
+          return
+        }
 
         // Check for tags in the title (first argument)
         if (node.arguments.length > 0) {
@@ -88,9 +92,13 @@ export default createRule({
         }
 
         // Check if there's an options object as the second argument
-        if (node.arguments.length < 2) return
+        if (node.arguments.length < 2) {
+          return
+        }
         const optionsArg = node.arguments[1]
-        if (!optionsArg || optionsArg.type !== 'ObjectExpression') return
+        if (!optionsArg || optionsArg.type !== 'ObjectExpression') {
+          return
+        }
 
         // Look for the tag property in the options object
         const tagProperty = optionsArg.properties.find(
@@ -101,7 +109,9 @@ export default createRule({
             prop.key.name === 'tag',
         ) as TSESTree.Property | undefined
 
-        if (!tagProperty) return
+        if (!tagProperty) {
+          return
+        }
 
         const tagValue = tagProperty.value
         if (tagValue.type === 'Literal') {
