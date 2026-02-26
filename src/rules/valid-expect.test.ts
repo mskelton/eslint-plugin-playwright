@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './valid-expect.js'
 
@@ -169,6 +170,20 @@ runRuleTester('valid-expect', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => { expect(foo) });
+      `,
+      errors: [{ column: 23, endColumn: 34, line: 2, messageId: 'matcherNotFound' }],
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(foo)
+      `,
+      errors: [{ column: 1, endColumn: 14, line: 2, messageId: 'matcherNotFound' }],
+    },
   ],
   valid: [
     { code: 'expectPayButtonToBeEnabled()' },
@@ -217,6 +232,18 @@ runRuleTester('valid-expect', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => { expect("something").toBe("else") });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(1).toBe(1);
+      `,
     },
   ],
 })

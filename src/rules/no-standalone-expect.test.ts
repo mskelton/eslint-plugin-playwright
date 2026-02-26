@@ -84,6 +84,20 @@ runRuleTester('no-standalone-expect', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.describe('a test', () => { expect(1).toBe(1); });
+      `,
+      errors: [{ column: 35, endColumn: 52, line: 2, messageId }],
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        test.describe('a test', () => { assuming(1).toBe(1); });
+      `,
+      errors: [{ column: 33, endColumn: 52, line: 2, messageId }],
+    },
   ],
   valid: [
     'expect.any(String)',
@@ -129,6 +143,12 @@ runRuleTester('no-standalone-expect', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom('an it', () => expect(1).toBe(1));
+      `,
+    },
     // Fixtures
     {
       code: dedent`
@@ -173,6 +193,12 @@ runRuleTester('no-standalone-expect', rule, {
         });
       `,
       name: 'Allows expect in fixture without await',
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        test('an it', () => assuming(1).toBe(1));
+      `,
     },
   ],
 })

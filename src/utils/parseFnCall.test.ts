@@ -1096,6 +1096,328 @@ runRuleTester('describe', rule, {
   ],
 })
 
+runRuleTester('test.extend', rule, {
+  invalid: [
+    {
+      code: dedent`
+        const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });
+        custom("a test", () => {});
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'test',
+            head: {
+              local: 'custom',
+              node: 'custom',
+              original: 'test',
+            },
+            members: [],
+            name: 'test',
+            type: 'test',
+          }),
+          line: 2,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: dedent`
+        const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });
+        custom.only("a test", () => {});
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'test',
+            head: {
+              local: 'custom',
+              node: 'custom',
+              original: 'test',
+            },
+            members: ['only'],
+            name: 'test',
+            type: 'test',
+          }),
+          line: 2,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: dedent`
+        const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });
+        custom.describe("a suite", () => {});
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'describe',
+            head: {
+              local: 'custom',
+              node: 'custom',
+              original: 'test',
+            },
+            members: ['describe'],
+            name: 'describe',
+            type: 'describe',
+          }),
+          line: 2,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        const custom2 = custom.extend({});
+        custom2("a test", () => {});
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'test',
+            head: {
+              local: 'custom2',
+              node: 'custom2',
+              original: 'test',
+            },
+            members: [],
+            name: 'test',
+            type: 'test',
+          }),
+          line: 3,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: dedent`
+        const custom = it.extend({});
+        custom("a test", () => {});
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'test',
+            head: {
+              local: 'custom',
+              node: 'custom',
+              original: 'test',
+            },
+            members: [],
+            name: 'test',
+            type: 'test',
+          }),
+          line: 2,
+          messageId: 'details',
+        },
+      ],
+      settings: { playwright: { globalAliases: { test: ['it'] } } },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.beforeEach(async ({ myFixture }) => {});
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'hook',
+            head: {
+              local: 'custom',
+              node: 'custom',
+              original: 'test',
+            },
+            members: ['beforeEach'],
+            name: 'beforeEach',
+            type: 'hook',
+          }),
+          line: 2,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.step("a step", async () => {});
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'step',
+            head: {
+              local: 'custom',
+              node: 'custom',
+              original: 'test',
+            },
+            members: ['step'],
+            name: 'step',
+            type: 'step',
+          }),
+          line: 2,
+          messageId: 'details',
+        },
+      ],
+    },
+  ],
+  valid: [
+    'const custom = test.extend({})',
+    'something.extend({})',
+    'unknown("not a test", () => {})',
+  ],
+})
+
+runTSRuleTester('import aliases', rule, {
+  invalid: [
+    {
+      code: dedent`
+        import { test as stuff } from '@playwright/test';
+
+        stuff('a test', () => {});
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'test',
+            head: {
+              local: 'stuff',
+              node: 'stuff',
+              original: 'test',
+            },
+            members: [],
+            name: 'test',
+            type: 'test',
+          }),
+          line: 3,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: dedent`
+        import { test as stuff } from '@playwright/test';
+
+        stuff.describe('a suite', () => {});
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'describe',
+            head: {
+              local: 'stuff',
+              node: 'stuff',
+              original: 'test',
+            },
+            members: ['describe'],
+            name: 'describe',
+            type: 'describe',
+          }),
+          line: 3,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: dedent`
+        import { test as base } from '@playwright/test';
+
+        const custom = base.extend({});
+        custom('a test', () => {});
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'test',
+            head: {
+              local: 'custom',
+              node: 'custom',
+              original: 'test',
+            },
+            members: [],
+            name: 'test',
+            type: 'test',
+          }),
+          line: 4,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: dedent`
+        import { expect as assert } from '@playwright/test';
+
+        assert(x).toBe(y);
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            args: ['x'],
+            group: 'expect',
+            head: {
+              local: 'assert',
+              node: 'assert',
+              original: 'expect',
+            },
+            matcher: 'toBe',
+            matcherArgs: ['y'],
+            matcherName: 'toBe',
+            members: ['toBe'],
+            modifiers: [],
+            name: 'expect',
+            type: 'expect',
+          }),
+          line: 3,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: dedent`
+        import { expect as e } from '@playwright/test';
+
+        e.soft(x).toBe(y);
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            args: ['x'],
+            group: 'expect',
+            head: {
+              local: 'e',
+              node: 'e',
+              original: 'expect',
+            },
+            matcher: 'toBe',
+            matcherArgs: ['y'],
+            matcherName: 'toBe',
+            members: ['soft', 'toBe'],
+            modifiers: ['soft'],
+            name: 'expect',
+            type: 'expect',
+          }),
+          line: 3,
+          messageId: 'details',
+        },
+      ],
+    },
+  ],
+  valid: [],
+})
+
 runTSRuleTester('typescript', rule, {
   invalid: [
     {

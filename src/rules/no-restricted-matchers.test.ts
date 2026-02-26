@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './no-restricted-matchers.js'
 
@@ -144,6 +145,40 @@ runRuleTester('no-restricted-matchers', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {
+          expect(a).toBe(b);
+        });
+      `,
+      errors: [
+        {
+          column: 13,
+          data: { message: '', restriction: 'toBe' },
+          endColumn: 17,
+          line: 3,
+          messageId: 'restricted',
+        },
+      ],
+      options: [{ toBe: null }],
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(a).toBe(b);
+      `,
+      errors: [
+        {
+          column: 13,
+          data: { message: '', restriction: 'toBe' },
+          endColumn: 17,
+          line: 2,
+          messageId: 'restricted',
+        },
+      ],
+      options: [{ toBe: null }],
+    },
   ],
   valid: [
     'expect(a)',
@@ -193,6 +228,20 @@ runRuleTester('no-restricted-matchers', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {
+          expect(a).toHaveText();
+        });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(something).toBe(something);
+      `,
     },
   ],
 })

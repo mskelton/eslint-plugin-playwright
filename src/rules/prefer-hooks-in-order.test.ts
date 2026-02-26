@@ -443,6 +443,36 @@ runRuleTester('prefer-hooks-in-order', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.afterAll(() => {});
+        custom.beforeAll(() => {});
+      `,
+      errors: [
+        {
+          column: 1,
+          data: { currentHook: 'beforeAll', previousHook: 'afterAll' },
+          line: 3,
+          messageId: 'reorderHooks',
+        },
+      ],
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom.afterAll(() => {});
+        custom.beforeAll(() => {});
+      `,
+      errors: [
+        {
+          column: 1,
+          data: { currentHook: 'beforeAll', previousHook: 'afterAll' },
+          line: 3,
+          messageId: 'reorderHooks',
+        },
+      ],
+    },
     // Custom messages
     // Note: This is one of the only test in the project to tests custom
     // messages since it's implementation is global in the `createRule` method.
@@ -685,6 +715,20 @@ runRuleTester('prefer-hooks-in-order', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.beforeAll(() => {});
+        custom.afterAll(() => {});
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom.beforeAll(() => {});
+        custom.afterAll(() => {});
+      `,
     },
   ],
 })

@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './no-focused-test.js'
 
@@ -165,6 +166,29 @@ runRuleTester('no-focused-test', rule, {
       },
     },
     {
+      code: dedent`
+        const custom = test.extend({});
+        custom.only("skip this test", () => {});
+      `,
+      errors: [
+        {
+          column: 8,
+          endColumn: 12,
+          line: 2,
+          messageId,
+          suggestions: [
+            {
+              messageId: 'suggestRemoveOnly',
+              output: dedent`
+                const custom = test.extend({});
+                custom("skip this test", () => {});
+              `,
+            },
+          ],
+        },
+      ],
+    },
+    {
       code: 'it.describe.only("skip this describe", () => {});',
       errors: [
         {
@@ -185,6 +209,29 @@ runRuleTester('no-focused-test', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom.only("skip this test", () => {});
+      `,
+      errors: [
+        {
+          column: 8,
+          endColumn: 12,
+          line: 2,
+          messageId,
+          suggestions: [
+            {
+              messageId: 'suggestRemoveOnly',
+              output: dedent`
+                import { test as custom } from '@playwright/test';
+                custom("skip this test", () => {});
+              `,
+            },
+          ],
+        },
+      ],
     },
   ],
   valid: [
@@ -216,6 +263,24 @@ runRuleTester('no-focused-test', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("a test", () => {});
+      `,
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.describe("a describe", () => {});
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom("a test", () => {});
+      `,
     },
   ],
 })

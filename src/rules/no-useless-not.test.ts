@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './no-useless-not.js'
 
@@ -268,6 +269,48 @@ runRuleTester('no-useless-not', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {
+          expect(locator).not.toBeVisible();
+        });
+      `,
+      errors: [
+        {
+          column: 19,
+          data: { new: 'toBeHidden', old: 'toBeVisible' },
+          endColumn: 34,
+          line: 3,
+          messageId: 'noUselessNot',
+        },
+      ],
+      output: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {
+          expect(locator).toBeHidden();
+        });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(locator).not.toBeVisible();
+      `,
+      errors: [
+        {
+          column: 19,
+          data: { new: 'toBeHidden', old: 'toBeVisible' },
+          endColumn: 34,
+          line: 2,
+          messageId: 'noUselessNot',
+        },
+      ],
+      output: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(locator).toBeHidden();
+      `,
+    },
   ],
   valid: [
     'expect(locator).toBeVisible()',
@@ -301,6 +344,20 @@ runRuleTester('no-useless-not', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {
+          expect(locator).toBeVisible();
+        });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(locator).toBeVisible();
+      `,
     },
   ],
 })

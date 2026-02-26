@@ -176,6 +176,26 @@ runRuleTester('basic describe block', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom.describe("foo", () => {
+          custom.beforeEach(() => {}),
+          custom.beforeEach(() => {}),
+          custom("bar", () => {
+            someFn();
+          })
+        })
+      `,
+      errors: [
+        {
+          column: 3,
+          data: { hook: 'beforeEach' },
+          line: 4,
+          messageId: 'noDuplicateHook',
+        },
+      ],
+    },
   ],
   valid: [
     dedent`
@@ -218,6 +238,28 @@ runRuleTester('basic describe block', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.describe("foo", () => {
+          custom.beforeEach(() => {})
+          custom("bar", () => {
+            someFn();
+          })
+        })
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom.describe("foo", () => {
+          custom.beforeEach(() => {})
+          custom("bar", () => {
+            someFn();
+          })
+        })
+      `,
     },
   ],
 })

@@ -1,10 +1,13 @@
+/* eslint-disable sort/object-properties */
 import type { Rule } from 'eslint'
 import type * as ESTree from 'estree'
 import {
+  dereference,
   findParent,
   getStringValue,
   isFunction,
   isIdentifier,
+  isPropertyAccessor,
   isStringNode,
   type StringNode,
 } from './ast.js'
@@ -138,18 +141,57 @@ class Chain {
   }
 }
 
-const resolvePossibleAliasedGlobal = (context: Rule.RuleContext, global: string) => {
+/**
+ * Determine if a given function name is defined as a Playwright function global.
+ */
+function resolvePossibleAliasedGlobal(context: Rule.RuleContext, name: string) {
   const settings = context.settings as unknown as Settings | undefined
   const globalAliases = settings?.playwright?.globalAliases ?? {}
 
-  const alias = Object.entries(globalAliases).find(([, aliases]) => aliases.includes(global))
+  // Find if this alias is defined by the user
+  const alias = Object.entries(globalAliases).find(([, aliases]) => aliases.includes(name))
 
+  // If we found an alias, return the alias type (e.g. "test" or "expect")
   return alias?.[0] ?? null
 }
 
 interface ResolvedFn {
   local: string
   original: string | null
+}
+
+/**
+ * Resolves import aliases like `import { expect as assuming } from '@playwright/test'`
+ * back to the original exported name (e.g. "expect").
+ */
+function resolveImportAlias(context: Rule.RuleContext, node: AccessorNode): string | null {
+  if (node.type !== 'Identifier') {
+    return null
+  }
+
+  // ESLint's scope analysis links each identifier usage back to its
+  // declaration, letting us check if it came from an import statement.
+  const scope = context.sourceCode.getScope(node)
+  const ref = scope.references.find((r) => r.identifier === node)
+
+  // Walk through all definitions for the resolved variable. A named import
+  // like `import { expect as e } from '...'` will have a definition with
+  // type "ImportBinding" and node type "ImportSpecifier".
+  for (const def of ref?.resolved?.defs ?? []) {
+    if (def.type === 'ImportBinding' && def.node.type === 'ImportSpecifier') {
+      // Extract the original exported name from the import specifier
+      // (e.g. "expect" from `import { expect as e }`).
+      const imported = getStringValue(def.node.imported)
+
+      // Only return if the imported name differs from the local name,
+      // meaning the user aliased the import.
+      if (imported !== node.name) {
+        return imported
+      }
+    }
+  }
+
+  return null
 }
 
 const resolveToPlaywrightFn = (
@@ -159,9 +201,14 @@ const resolveToPlaywrightFn = (
   const ident = getStringValue(accessor)
   const resolved = /(^expect|Expect)$/.test(ident) ? 'expect' : ident
 
+  // If the function is one of the defaults, bail early
+  if (resolved === 'test' || resolved === 'expect') {
+    return { original: null, local: resolved }
+  }
+
   return {
-    // eslint-disable-next-line sort/object-properties
-    original: resolvePossibleAliasedGlobal(context, resolved),
+    original:
+      resolvePossibleAliasedGlobal(context, resolved) ?? resolveImportAlias(context, accessor),
     local: resolved,
   }
 }
@@ -357,6 +404,42 @@ export const findTopMostCallExpression = (
   return top as ESTree.CallExpression & Rule.NodeParentExtension
 }
 
+/**
+ * Checks if a node is a call to `.extend()` on a known test function,
+ * supporting chained extends like `test.extend({}).extend({})` and variables
+ * assigned from `test.extend()`.
+ */
+function isTestExtendCall(context: Rule.RuleContext, node: ESTree.Node): boolean {
+  if (
+    node.type !== 'CallExpression' ||
+    node.callee.type !== 'MemberExpression' ||
+    !isPropertyAccessor(node.callee, 'extend')
+  ) {
+    return false
+  }
+
+  // The object to the left of `.extend()` — e.g. `test` in `test.extend({})`.
+  const object = node.callee.object
+
+  if (object.type === 'Identifier') {
+    // Base case: check if the identifier resolves to `test` directly
+    // (e.g. `test.extend({})` or an aliased global like `it.extend({})`).
+    const resolved = resolveToPlaywrightFn(context, object)
+    if ((resolved?.original ?? resolved?.local) === 'test') {
+      return true
+    }
+
+    // If it's a variable (e.g. `const myTest = test.extend({})`), follow
+    // the variable back to its assigned value and check that instead.
+    const dereferenced = dereference(context, object)
+    if (dereferenced) {
+      return isTestExtendCall(context, dereferenced)
+    }
+  }
+
+  return false
+}
+
 function parse(
   context: Rule.RuleContext,
   node: ESTree.CallExpression,
@@ -367,13 +450,24 @@ function parse(
   }
 
   const [first, ...rest] = chain.nodes
-  const resolved = resolveToPlaywrightFn(context, first)
+  let resolved = resolveToPlaywrightFn(context, first)
   if (!resolved) {
     return null
   }
 
   let name = resolved.original ?? resolved.local
   const links = [name, ...rest.map((link) => getStringValue(link))]
+
+  // If the head of the chain is not a known Playwright function, try to
+  // dereference it to see if it's a variable set by test.extend().
+  if (determinePlaywrightFnGroup(name) === 'unknown') {
+    const dereferenced = dereference(context, first)
+    if (dereferenced && isTestExtendCall(context, dereferenced)) {
+      name = 'test'
+      links[0] = 'test'
+      resolved = { local: resolved.local, original: 'test' }
+    }
+  }
 
   // To support Playwright's convention of `test.describe`, `test.beforeEach`,
   // etc. we need to test the second link in the chain to find the true type.

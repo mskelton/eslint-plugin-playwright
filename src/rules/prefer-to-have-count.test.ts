@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './prefer-to-have-count.js'
 
@@ -53,6 +54,17 @@ runRuleTester('prefer-to-have-count', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", async () => { expect(await files.count()).toBe(1); });
+      `,
+      errors: [{ column: 58, endColumn: 62, line: 2, messageId: 'useToHaveCount' }],
+      output: dedent`
+        const custom = test.extend({});
+        custom("test", async () => { await expect(files).toHaveCount(1); });
+      `,
     },
     {
       code: `
@@ -126,6 +138,17 @@ runRuleTester('prefer-to-have-count', rule, {
       errors: [{ column: 44, endColumn: 56, line: 1, messageId: 'useToHaveCount' }],
       output: "await expect(page.getByText('test')).toHaveCount(2)",
     },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(await files.count()).toBe(1);
+      `,
+      errors: [{ column: 31, endColumn: 35, line: 2, messageId: 'useToHaveCount' }],
+      output: dedent`
+        import { expect as assuming } from '@playwright/test';
+        await assuming(files).toHaveCount(1);
+      `,
+    },
   ],
   valid: [
     { code: 'await expect(files).toHaveCount(1)' },
@@ -151,6 +174,18 @@ runRuleTester('prefer-to-have-count', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", async () => { await expect(files).toHaveCount(1); });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        await assuming(files).toHaveCount(1);
+      `,
     },
   ],
 })

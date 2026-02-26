@@ -144,5 +144,17 @@ runRuleTester('no-commented-out-tests', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {});
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom("foo", () => {});
+      `,
+    },
   ],
 })

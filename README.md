@@ -79,8 +79,8 @@ can configure this plugin to be aware of these additional names.
   "settings": {
     "playwright": {
       "globalAliases": {
-        "test": ["myTest"],
-        "expect": ["myExpect"]
+        "test": ["it"],
+        "expect": ["assert"]
       }
     }
   }

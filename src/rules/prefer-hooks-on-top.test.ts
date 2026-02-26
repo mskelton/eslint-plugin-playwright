@@ -76,6 +76,29 @@ runRuleTester('basic describe block', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom.describe('foo', () => {
+          custom.beforeEach(() => {});
+          custom('bar', () => {
+            someFn();
+          });
+
+          custom.beforeAll(() => {});
+          custom('bar', () => {
+            someFn();
+          });
+        });
+      `,
+      errors: [
+        {
+          column: 3,
+          line: 8,
+          messageId: 'noHookOnTop',
+        },
+      ],
+    },
   ],
   valid: [
     dedent`
@@ -109,6 +132,34 @@ runRuleTester('basic describe block', rule, {
           it.afterEach(() => {});
 
           it('bar', () => {
+            someFn();
+          });
+        });
+      `,
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.describe('foo', () => {
+          custom.beforeEach(() => {});
+          someSetupFn();
+          custom.afterEach(() => {});
+
+          custom('bar', () => {
+            someFn();
+          });
+        });
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom.describe('foo', () => {
+          custom.beforeEach(() => {});
+          someSetupFn();
+          custom.afterEach(() => {});
+
+          custom('bar', () => {
             someFn();
           });
         });

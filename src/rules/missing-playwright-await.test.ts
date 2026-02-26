@@ -245,6 +245,44 @@ runRuleTester('missing-playwright-await', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom('test', async () => { expect(page).toBeChecked() })
+      `,
+      errors: [
+        {
+          column: 30,
+          endColumn: 36,
+          endLine: 2,
+          line: 2,
+          messageId: 'expect',
+        },
+      ],
+      output: dedent`
+        const custom = test.extend({});
+        custom('test', async () => { await expect(page).toBeChecked() })
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        test('test', async () => { assuming(page).toBeChecked() })
+      `,
+      errors: [
+        {
+          column: 28,
+          endColumn: 36,
+          endLine: 2,
+          line: 2,
+          messageId: 'expect',
+        },
+      ],
+      output: dedent`
+        import { expect as assuming } from '@playwright/test';
+        test('test', async () => { await assuming(page).toBeChecked() })
+      `,
+    },
 
     // waitFor methods
     {
@@ -412,6 +450,18 @@ runRuleTester('missing-playwright-await', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom('test', async () => { await expect(page).toBeChecked() })
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        test('test', async () => { await assuming(page).toBeChecked() })
+      `,
     },
     // Regression: variable passed to getByText (should not crash or false positive)
     {

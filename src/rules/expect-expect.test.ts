@@ -50,6 +50,20 @@ runRuleTester('expect-expect', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("should fail", () => {});
+      `,
+      errors: [{ column: 1, endColumn: 7, line: 2, messageId: 'noAssertions' }],
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom("should fail", () => {});
+      `,
+      errors: [{ column: 1, endColumn: 7, line: 2, messageId: 'noAssertions' }],
+    },
   ],
   valid: [
     'foo();',
@@ -165,6 +179,12 @@ runRuleTester('expect-expect', rule, {
       },
     },
     {
+      code: dedent`
+        const custom = test.extend({});
+        custom("should pass", () => expect(true).toBeDefined());
+      `,
+    },
+    {
       code: 'test("should pass", () => assert(true).toBeDefined())',
       name: 'Global alias - assert',
       settings: {
@@ -172,6 +192,12 @@ runRuleTester('expect-expect', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom("should pass", () => expect(true).toBeDefined());
+      `,
     },
   ],
 })

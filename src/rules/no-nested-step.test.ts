@@ -72,6 +72,19 @@ runRuleTester('max-nested-step', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom('foo', async () => {
+          await custom.step("step1", async () => {
+            await custom.step("nested step1", async () => {
+              await expect(true).toBe(true);
+            });
+          });
+        });
+      `,
+      errors: [{ column: 11, endColumn: 22, endLine: 4, line: 4, messageId }],
+    },
   ],
   valid: [
     'await test.step("step1", () => {});',
@@ -125,6 +138,32 @@ runRuleTester('max-nested-step', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom('foo', async () => {
+          await custom.step("step1", async () => {
+            await expect(true).toBe(true);
+          });
+        });
+      `,
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        await custom.step("step1", () => {});
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom('foo', async () => {
+          await custom.step("step1", async () => {
+            await expect(true).toBe(true);
+          });
+        });
+      `,
     },
   ],
 })

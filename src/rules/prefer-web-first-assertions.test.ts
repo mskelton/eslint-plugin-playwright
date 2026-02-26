@@ -1165,6 +1165,44 @@ runRuleTester('prefer-web-first-assertions', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom('test', async () => { expect(await page.locator(".tweet").isVisible()).toBe(true) })
+      `,
+      errors: [
+        {
+          column: 30,
+          data: { matcher: 'toBeVisible', method: 'isVisible' },
+          endColumn: 78,
+          line: 2,
+          messageId: 'useWebFirstAssertion',
+        },
+      ],
+      output: dedent`
+        const custom = test.extend({});
+        custom('test', async () => { await expect(page.locator(".tweet")).toBeVisible() })
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        test('test', async () => { assuming(await page.locator(".tweet").isVisible()).toBe(true) })
+      `,
+      errors: [
+        {
+          column: 28,
+          data: { matcher: 'toBeVisible', method: 'isVisible' },
+          endColumn: 78,
+          line: 2,
+          messageId: 'useWebFirstAssertion',
+        },
+      ],
+      output: dedent`
+        import { expect as assuming } from '@playwright/test';
+        test('test', async () => { await assuming(page.locator(".tweet")).toBeVisible() })
+      `,
+    },
     // Variable references
     {
       code: test(`
@@ -1235,6 +1273,18 @@ runRuleTester('prefer-web-first-assertions', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom('test', async () => { await expect(page.locator(".tweet")).toBeVisible() })
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        test('test', async () => { await assuming(page.locator(".tweet")).toBeVisible() })
+      `,
     },
     // Variable references
     {

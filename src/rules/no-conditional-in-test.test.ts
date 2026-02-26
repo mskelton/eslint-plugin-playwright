@@ -201,6 +201,20 @@ runRuleTester('no-conditional-in-test', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => { if (true) { expect(1).toBe(1); } });
+      `,
+      errors: [{ column: 23, endColumn: 55, endLine: 2, line: 2, messageId }],
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom("foo", () => { if (true) { expect(1).toBe(1); } });
+      `,
+      errors: [{ column: 23, endColumn: 55, endLine: 2, line: 2, messageId }],
+    },
   ],
   valid: [
     'test("foo", () => { expect(1).toBe(1); });',
@@ -311,6 +325,18 @@ runRuleTester('no-conditional-in-test', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => { expect(1).toBe(1); });
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom("foo", () => { expect(1).toBe(1); });
+      `,
     },
     // Issue 363: conditionals in test metadata should not trigger the rule
     `test('My Test', { tag: productType === 'XYZ' ? '@regression' : '@smoke' }, () => {

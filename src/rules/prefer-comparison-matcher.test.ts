@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { RuleTester } from 'eslint'
 import { equalityMatchers } from '../../src/utils/ast.js'
 import { runRuleTester } from '../utils/rule-tester.js'
@@ -296,6 +297,20 @@ runRuleTester('prefer-comparison-matcher', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {
+          expect(a === b).toBe(true);
+        });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(a).toBeGreaterThan(1);
+      `,
     },
   ],
 })
