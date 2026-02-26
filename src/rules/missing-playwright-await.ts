@@ -189,6 +189,11 @@ export default createRule({
         return checkValidity(parent, visited)
       }
 
+      // Inside a spread (e.g. ...[promise]); walk up
+      if (parent.type === 'SpreadElement') {
+        return checkValidity(parent, visited)
+      }
+
       // Inside Promise.all(...) — valid
       if (
         parent.type === 'CallExpression' &&

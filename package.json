@@ -31,7 +31,7 @@
     "lint": "eslint .",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
-    "test": "vitest --reporter dot --hideSkippedTests",
+    "test": "vitest --hideSkippedTests",
     "typecheck": "tsc --noEmit",
     "ci": "yarn format:check && yarn lint && yarn typecheck"
   },

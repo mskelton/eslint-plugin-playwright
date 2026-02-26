@@ -509,5 +509,24 @@ runRuleTester('missing-playwright-await', rule, {
     { code: test('await this.page.waitForResponse("https://example.com")') },
     { code: test('await page["waitForResponse"]("https://example.com")') },
     { code: test('await page[`waitForResponse`]("https://example.com")') },
+    {
+      code: dedent(
+        test(`
+          const requestPromise = page.waitForRequest("https://example.com/resource")
+          await page.getByText("trigger request").click()
+          const request = await requestPromise
+        `),
+      ),
+    },
+    {
+      code: dedent(
+        test(`
+          const results = await Promise.all([
+            expect(locator).toBeVisible(),
+            ...(someCondition ? [page.waitForResponse('https://example.com')] : []),
+          ])
+        `),
+      ),
+    },
   ],
 })
