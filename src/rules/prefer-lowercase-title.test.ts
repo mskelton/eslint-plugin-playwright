@@ -264,6 +264,63 @@ runRuleTester('prefer-lowercase-title', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom('Foo',  () => {});
+      `,
+      errors: [
+        {
+          column: 8,
+          data: { method: 'test' },
+          endColumn: 13,
+          line: 2,
+          messageId,
+        },
+      ],
+      output: dedent`
+        const custom = test.extend({});
+        custom('foo',  () => {});
+      `,
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.describe('Foo',  () => {});
+      `,
+      errors: [
+        {
+          column: 17,
+          data: { method: 'test.describe' },
+          endColumn: 22,
+          line: 2,
+          messageId,
+        },
+      ],
+      output: dedent`
+        const custom = test.extend({});
+        custom.describe('foo',  () => {});
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom('Foo',  () => {});
+      `,
+      errors: [
+        {
+          column: 8,
+          data: { method: 'test' },
+          endColumn: 13,
+          line: 2,
+          messageId,
+        },
+      ],
+      output: dedent`
+        import { test as custom } from '@playwright/test';
+        custom('foo',  () => {});
+      `,
+    },
   ],
   valid: [
     'randomFunction()',
@@ -301,6 +358,12 @@ runRuleTester('prefer-lowercase-title', rule, {
     "test.describe.serial.skip('foo', () => {})",
     "test.describe[`serial`].fixme('foo', () => {})",
     "test.describe['serial'].only('foo', () => {})",
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom("foo", () => {});
+      `,
+    },
   ],
 })
 
@@ -486,6 +549,26 @@ runRuleTester('prefer-lowercase-title with ignoreTopLevelDescribe', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("already lower", () => {});
+      `,
+      options: [{ ignoreTopLevelDescribe: true }],
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.describe("already lower", () => {});
+      `,
+      options: [{ ignoreTopLevelDescribe: true }],
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom("already lower", () => {});
+      `,
     },
   ],
 })

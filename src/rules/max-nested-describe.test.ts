@@ -168,6 +168,30 @@ runRuleTester('max-nested-describe', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.describe('qux', () => {
+          custom('should get something', () => {
+            expect(getSomething()).toBe('Something');
+          });
+        });
+      `,
+      errors: [{ column: 1, endColumn: 16, endLine: 2, line: 2, messageId }],
+      options: [{ max: 0 }],
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom.describe('qux', () => {
+          custom('should get something', () => {
+            expect(getSomething()).toBe('Something');
+          });
+        });
+      `,
+      errors: [{ column: 1, endColumn: 16, endLine: 2, line: 2, messageId }],
+      options: [{ max: 0 }],
+    },
   ],
   valid: [
     'test.describe("describe tests", () => {});',
@@ -273,6 +297,39 @@ runRuleTester('max-nested-describe', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.describe('foo', () => {
+          custom.describe.only('bar', () => {
+            custom.describe.skip('baz', () => {
+              custom('something', async () => {
+                expect('something').toBe('something');
+              });
+            });
+          });
+        });
+      `,
+      options: [{ max: 3 }],
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom('foo', function () {
+          expect(true).toBe(true);
+        });
+      `,
+      options: [{ max: 0 }],
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom('foo', function () {
+          expect(true).toBe(true);
+        });
+      `,
+      options: [{ max: 0 }],
     },
   ],
 })

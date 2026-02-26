@@ -117,6 +117,16 @@ runRuleTester('no-duplicate-slow', rule, {
       `,
       errors: [{ column: 5, line: 4, messageId: 'noDuplicateSlow' }],
     },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom('should do something', async ({ page }) => {
+          custom.slow();
+          custom.slow();
+        });
+      `,
+      errors: [{ column: 3, line: 4, messageId: 'noDuplicateSlow' }],
+    },
   ],
   valid: [
     // Single test.slow() is valid
@@ -175,6 +185,24 @@ runRuleTester('no-duplicate-slow', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom('should do something', async ({ page }) => {
+          custom.slow();
+          await doSomething();
+        });
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom('should do something', async ({ page }) => {
+          custom.slow();
+          await doSomething();
+        });
+      `,
     },
     // test.slow() in sibling describes is valid (separate scopes)
     dedent`

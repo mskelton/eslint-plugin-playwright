@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './prefer-to-have-length.js'
 
@@ -50,6 +51,28 @@ runRuleTester('prefer-to-have-length', rule, {
       },
     },
     {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(files.length).toBe(1); });
+      `,
+      errors: [{ column: 45, endColumn: 49, line: 2, messageId: 'useToHaveLength' }],
+      output: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(files).toHaveLength(1); });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(files.length).toBe(1)
+      `,
+      errors: [{ column: 24, endColumn: 28, line: 2, messageId: 'useToHaveLength' }],
+      output: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(files).toHaveLength(1)
+      `,
+    },
+    {
       code: 'expect((await table.rows.all()).length).toBe(5)',
       errors: [{ column: 41, endColumn: 45, line: 1, messageId: 'useToHaveLength' }],
       output: 'expect((await table.rows.all())).toHaveLength(5)',
@@ -71,6 +94,18 @@ runRuleTester('prefer-to-have-length', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(files).toHaveLength(1); });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(files).toHaveLength(1);
+      `,
     },
   ],
 })

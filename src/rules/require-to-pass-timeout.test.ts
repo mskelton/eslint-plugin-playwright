@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './require-to-pass-timeout.js'
 
@@ -38,6 +39,20 @@ runRuleTester('require-to-pass-timeout', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", async () => { await expect(async () => { await foo() }).toPass(); })
+      `,
+      errors: [{ column: 71, line: 2, messageId: 'addTimeoutOption' }],
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        test("foo", async () => { await assuming(async () => { await foo() }).toPass(); })
+      `,
+      errors: [{ column: 71, line: 2, messageId: 'addTimeoutOption' }],
+    },
   ],
   valid: [
     // With timeout
@@ -57,6 +72,18 @@ runRuleTester('require-to-pass-timeout', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", async () => { await expect(async () => { await foo() }).toPass({ timeout: 5000 }); })
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        test("foo", async () => { await assuming(async () => { await foo() }).toPass({ timeout: 5000 }); })
+      `,
     },
   ],
 })

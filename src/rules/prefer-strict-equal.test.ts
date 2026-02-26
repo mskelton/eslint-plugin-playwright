@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './prefer-strict-equal.js'
 
@@ -60,6 +61,56 @@ runRuleTester('prefer-strict-equal', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {
+          expect(something).toEqual(somethingElse);
+        });
+      `,
+      errors: [
+        {
+          column: 21,
+          endColumn: 28,
+          line: 3,
+          messageId: 'useToStrictEqual',
+          suggestions: [
+            {
+              messageId: 'suggestReplaceWithStrictEqual',
+              output: dedent`
+                const custom = test.extend({});
+                custom("foo", () => {
+                  expect(something).toStrictEqual(somethingElse);
+                });
+              `,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(something).toEqual(somethingElse);
+      `,
+      errors: [
+        {
+          column: 21,
+          endColumn: 28,
+          line: 2,
+          messageId: 'useToStrictEqual',
+          suggestions: [
+            {
+              messageId: 'suggestReplaceWithStrictEqual',
+              output: dedent`
+                import { expect as assuming } from '@playwright/test';
+                assuming(something).toStrictEqual(somethingElse);
+              `,
+            },
+          ],
+        },
+      ],
+    },
   ],
   valid: [
     'expect(something).toStrictEqual(somethingElse);',
@@ -73,6 +124,20 @@ runRuleTester('prefer-strict-equal', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {
+          expect(something).toStrictEqual(somethingElse);
+        });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(something).toStrictEqual(somethingElse);
+      `,
     },
   ],
 })

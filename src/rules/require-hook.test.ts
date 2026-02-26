@@ -139,6 +139,24 @@ runRuleTester('require-hook', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.describe('some tests', () => {
+          setup();
+        });
+      `,
+      errors: [{ column: 3, line: 3, messageId }],
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom.describe('some tests', () => {
+          setup();
+        });
+      `,
+      errors: [{ column: 3, line: 3, messageId }],
+    },
   ],
   valid: [
     'test.use({ locale: "en-US" })',
@@ -317,6 +335,34 @@ runRuleTester('require-hook', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.beforeEach(() => {
+          initializeCityDatabase();
+        });
+        custom.afterEach(() => {
+          clearCityDatabase();
+        });
+        custom('city database has Vienna', () => {
+          expect(isCity('Vienna')).toBeTruthy();
+        });
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom.beforeEach(() => {
+          initializeCityDatabase();
+        });
+        custom.afterEach(() => {
+          clearCityDatabase();
+        });
+        custom('city database has Vienna', () => {
+          expect(isCity('Vienna')).toBeTruthy();
+        });
+      `,
     },
   ],
 })

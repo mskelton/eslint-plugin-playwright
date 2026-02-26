@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './prefer-to-be.js'
 
@@ -69,6 +70,28 @@ runRuleTester('prefer-to-be', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(value).toEqual("my string"); });
+      `,
+      errors: [{ column: 38, endColumn: 45, line: 2, messageId: 'useToBe' }],
+      output: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(value).toBe("my string"); });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(value).toEqual("my string");
+      `,
+      errors: [{ column: 17, endColumn: 24, line: 2, messageId: 'useToBe' }],
+      output: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(value).toBe("my string");
+      `,
+    },
   ],
   valid: [
     'expect(null).toBeNull();',
@@ -93,6 +116,18 @@ runRuleTester('prefer-to-be', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(null).toBeNull(); });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(null).toBeNull();
+      `,
     },
   ],
 })
@@ -150,6 +185,28 @@ runRuleTester('prefer-to-be: null', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(null).toBe(null); });
+      `,
+      errors: [{ column: 37, endColumn: 41, line: 2, messageId: 'useToBeNull' }],
+      output: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(null).toBeNull(); });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(null).toBe(null);
+      `,
+      errors: [{ column: 16, endColumn: 20, line: 2, messageId: 'useToBeNull' }],
+      output: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(null).toBeNull();
+      `,
+    },
   ],
   valid: [
     'expect(null).toBeNull();',
@@ -175,6 +232,18 @@ runRuleTester('prefer-to-be: null', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(null).toBeNull(); });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(null).toBeNull();
+      `,
     },
   ],
 })
@@ -232,6 +301,28 @@ runRuleTester('prefer-to-be: undefined', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(undefined).toBe(undefined); });
+      `,
+      errors: [{ column: 42, endColumn: 46, line: 2, messageId: 'useToBeUndefined' }],
+      output: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(undefined).toBeUndefined(); });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(undefined).toBe(undefined);
+      `,
+      errors: [{ column: 21, endColumn: 25, line: 2, messageId: 'useToBeUndefined' }],
+      output: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(undefined).toBeUndefined();
+      `,
+    },
   ],
 
   valid: [
@@ -253,6 +344,18 @@ runRuleTester('prefer-to-be: undefined', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(undefined).toBeUndefined(); });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(undefined).toBeUndefined();
+      `,
     },
   ],
 })
@@ -310,6 +413,28 @@ runRuleTester('prefer-to-be: NaN', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(NaN).toBe(NaN); });
+      `,
+      errors: [{ column: 36, endColumn: 40, line: 2, messageId: 'useToBeNaN' }],
+      output: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(NaN).toBeNaN(); });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(NaN).toBe(NaN);
+      `,
+      errors: [{ column: 15, endColumn: 19, line: 2, messageId: 'useToBeNaN' }],
+      output: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(NaN).toBeNaN();
+      `,
+    },
   ],
   valid: [
     'expect(NaN).toBeNaN();',
@@ -330,6 +455,18 @@ runRuleTester('prefer-to-be: NaN', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(NaN).toBeNaN(); });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(NaN).toBeNaN();
+      `,
     },
   ],
 })
@@ -372,6 +509,28 @@ runRuleTester('prefer-to-be: undefined vs defined', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(undefined).not.toBeDefined(); });
+      `,
+      errors: [{ column: 46, endColumn: 57, line: 2, messageId: 'useToBeUndefined' }],
+      output: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(undefined).toBeUndefined(); });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(undefined).not.toBeDefined();
+      `,
+      errors: [{ column: 25, endColumn: 36, line: 2, messageId: 'useToBeUndefined' }],
+      output: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(undefined).toBeUndefined();
+      `,
+    },
   ],
   valid: [
     'expect(NaN).toBeNaN();',
@@ -392,6 +551,18 @@ runRuleTester('prefer-to-be: undefined vs defined', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(NaN).toBeNaN(); });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(NaN).toBeNaN();
+      `,
     },
   ],
 })

@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './require-soft-assertions.js'
 
@@ -31,6 +32,36 @@ runRuleTester('require-soft-assertions', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {
+          expect(page).toHaveTitle("baz");
+        });
+      `,
+      errors: [{ column: 3, endColumn: 9, line: 3, messageId }],
+      output: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {
+          expect.soft(page).toHaveTitle("baz");
+        });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        test("foo", () => {
+          assuming(page).toHaveTitle("baz");
+        });
+      `,
+      errors: [{ column: 3, endColumn: 11, line: 3, messageId }],
+      output: dedent`
+        import { expect as assuming } from '@playwright/test';
+        test("foo", () => {
+          assuming.soft(page).toHaveTitle("baz");
+        });
+      `,
+    },
   ],
   valid: [
     'expect.soft(page).toHaveTitle("baz")',
@@ -48,6 +79,22 @@ runRuleTester('require-soft-assertions', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {
+          expect.soft(page).toHaveTitle("baz");
+        });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        test("foo", () => {
+          assuming.soft(page).toHaveTitle("baz");
+        });
+      `,
     },
   ],
 })

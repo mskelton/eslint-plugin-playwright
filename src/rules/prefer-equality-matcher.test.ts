@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { equalityMatchers } from '../../src/utils/ast.js'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './prefer-equality-matcher.js'
@@ -153,6 +154,38 @@ runRuleTester('prefer-equality-matcher: ===', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(a === b).toBe(true); });
+      `,
+      errors: [
+        {
+          column: 40,
+          line: 2,
+          messageId: 'useEqualityMatcher',
+          suggestions: expectSuggestions(
+            (m) => `const custom = test.extend({});\ncustom("test", () => { expect(a).${m}(b); });`,
+          ),
+        },
+      ],
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(a === b).toBe(true);
+      `,
+      errors: [
+        {
+          column: 19,
+          line: 2,
+          messageId: 'useEqualityMatcher',
+          suggestions: expectSuggestions(
+            (m) => `import { expect as assuming } from '@playwright/test';\nassuming(a).${m}(b);`,
+          ),
+        },
+      ],
+    },
   ],
   valid: [
     'expect(true).toBe(...true)',
@@ -167,6 +200,18 @@ runRuleTester('prefer-equality-matcher: ===', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(a == 1).toBe(true); });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(a == 1).toBe(true);
+      `,
     },
   ],
 })

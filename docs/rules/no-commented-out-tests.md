@@ -49,6 +49,6 @@ catch more complex examples of commented out tests, such as:
 // const testSkip = test.skip;
 // testSkip('skipped test', () => {});
 
-// const myTest = test;
-// myTest('does not have function body');
+// const custom = test.extend({});
+// custom('does not have function body');
 ```

@@ -164,6 +164,46 @@ runRuleTester('max-expects', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom('should not pass', function () {
+          expect(true).toBeDefined();
+          expect(true).toBeDefined();
+          expect(true).toBeDefined();
+          expect(true).toBeDefined();
+          expect(true).toBeDefined();
+          expect(true).toBeDefined();
+        });
+      `,
+      errors: [
+        {
+          column: 3,
+          line: 8,
+          messageId: 'exceededMaxAssertion',
+        },
+      ],
+    },
+    {
+      code: dedent`
+        import { test as custom, expect as assuming } from '@playwright/test';
+        custom('should not pass', function () {
+          assuming(true).toBeDefined();
+          assuming(true).toBeDefined();
+          assuming(true).toBeDefined();
+          assuming(true).toBeDefined();
+          assuming(true).toBeDefined();
+          assuming(true).toBeDefined();
+        });
+      `,
+      errors: [
+        {
+          column: 3,
+          line: 8,
+          messageId: 'exceededMaxAssertion',
+        },
+      ],
+    },
   ],
   valid: [
     `test('should pass')`,
@@ -336,6 +376,32 @@ runRuleTester('max-expects', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom('should pass');
+      `,
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom('should pass', () => {
+          expect(true).toBeDefined();
+          expect(true).toBeDefined();
+          expect(true).toBeDefined();
+        });
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom, expect as assuming } from '@playwright/test';
+        custom('should pass', () => {
+          assuming(true).toBeDefined();
+          assuming(true).toBeDefined();
+          assuming(true).toBeDefined();
+        });
+      `,
     },
   ],
 })

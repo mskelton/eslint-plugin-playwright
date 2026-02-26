@@ -125,6 +125,24 @@ runRuleTester('logical conditions', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom('foo', () => {
+          something && expect(something).toHaveBeenCalled();
+        });
+      `,
+      errors: [{ messageId }],
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        test('foo', () => {
+          something && assuming(something).toHaveBeenCalled();
+        });
+      `,
+      errors: [{ messageId }],
+    },
   ],
   valid: [
     `
@@ -181,6 +199,26 @@ runRuleTester('logical conditions', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom('foo', () => {
+          process.env.FAIL && setNum(1);
+
+          expect(num).toBe(2);
+        });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        test('foo', () => {
+          process.env.FAIL && setNum(1);
+
+          assuming(num).toBe(2);
+        });
+      `,
     },
   ],
 })

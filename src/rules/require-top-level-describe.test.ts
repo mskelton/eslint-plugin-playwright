@@ -171,6 +171,20 @@ runRuleTester('require-top-level-describe', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.beforeAll(() => {})
+      `,
+      errors: [{ column: 1, endColumn: 17, line: 2, messageId: 'unexpectedHook' }],
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom("foo", () => {});
+      `,
+      errors: [{ column: 1, endColumn: 7, line: 2, messageId: 'unexpectedTest' }],
+    },
   ],
   valid: [
     'foo()',
@@ -232,6 +246,18 @@ runRuleTester('require-top-level-describe', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.describe("suite", () => { custom("foo") });
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom.describe("suite", () => { custom("foo") });
+      `,
     },
   ],
 })

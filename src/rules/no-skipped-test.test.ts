@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './no-skipped-test.js'
 
@@ -226,6 +227,29 @@ runRuleTester('no-skipped-test', rule, {
       },
     },
     {
+      code: dedent`
+        const custom = test.extend({});
+        custom.skip("skip this test", async ({ page }) => {});
+      `,
+      errors: [
+        {
+          column: 8,
+          endColumn: 12,
+          line: 2,
+          messageId: 'noSkippedTest',
+          suggestions: [
+            {
+              messageId,
+              output: dedent`
+                const custom = test.extend({});
+                custom("skip this test", async ({ page }) => {});
+              `,
+            },
+          ],
+        },
+      ],
+    },
+    {
       code: 'it.describe.skip("describe a test", async ({ page }) => {});',
       errors: [
         {
@@ -334,6 +358,29 @@ runRuleTester('no-skipped-test', rule, {
       ],
       options: [{ allowConditional: true }],
     },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom.skip("skip this test", async ({ page }) => {});
+      `,
+      errors: [
+        {
+          column: 8,
+          endColumn: 12,
+          line: 2,
+          messageId: 'noSkippedTest',
+          suggestions: [
+            {
+              messageId,
+              output: dedent`
+                import { test as custom } from '@playwright/test';
+                custom("skip this test", async ({ page }) => {});
+              `,
+            },
+          ],
+        },
+      ],
+    },
   ],
   valid: [
     'test("a test", () => {});',
@@ -381,6 +428,24 @@ runRuleTester('no-skipped-test', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("a test", () => {});
+      `,
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.describe("describe tests", () => {});
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom("a test", () => {});
+      `,
     },
   ],
 })

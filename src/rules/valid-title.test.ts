@@ -106,6 +106,51 @@ runRuleTester('valid-title', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });
+        custom("the correct way to do things", () => {});
+      `,
+      errors: [
+        {
+          column: 8,
+          data: { word: 'correct' },
+          line: 2,
+          messageId: 'disallowedWord',
+        },
+      ],
+      options: [{ disallowedWords: ['correct'] }],
+    },
+    {
+      code: dedent`
+        const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });
+        custom.describe("the correct way to do things", () => {});
+      `,
+      errors: [
+        {
+          column: 17,
+          data: { word: 'correct' },
+          line: 2,
+          messageId: 'disallowedWord',
+        },
+      ],
+      options: [{ disallowedWords: ['correct'] }],
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom("the correct way to do things", () => {});
+      `,
+      errors: [
+        {
+          column: 8,
+          data: { word: 'correct' },
+          line: 2,
+          messageId: 'disallowedWord',
+        },
+      ],
+      options: [{ disallowedWords: ['correct'] }],
+    },
   ],
   valid: [
     'test.describe("the correct way to properly handle all the things", () => {});',
@@ -148,6 +193,24 @@ runRuleTester('valid-title', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });
+        custom("that all is as it should be", () => {});
+      `,
+    },
+    {
+      code: dedent`
+        const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });
+        custom.describe("the correct way to properly handle all the things", () => {});
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom("that all is as it should be", () => {});
+      `,
     },
   ],
 })

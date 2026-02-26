@@ -70,6 +70,34 @@ runRuleTester('require-to-throw-message', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(() => { throw new Error('a'); }).toThrow(); });
+      `,
+      errors: [
+        {
+          column: 64,
+          data: { matcherName: 'toThrow' },
+          line: 2,
+          messageId: 'addErrorMessage',
+        },
+      ],
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(() => { throw new Error('a'); }).toThrow();
+      `,
+      errors: [
+        {
+          column: 43,
+          data: { matcherName: 'toThrow' },
+          line: 2,
+          messageId: 'addErrorMessage',
+        },
+      ],
+    },
   ],
   valid: [
     // String
@@ -138,6 +166,18 @@ runRuleTester('require-to-throw-message', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("test", () => { expect(() => { throw new Error('a'); }).toThrow('a'); });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(() => { throw new Error('a'); }).toThrow('a');
+      `,
     },
   ],
 })

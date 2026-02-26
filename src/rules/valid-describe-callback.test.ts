@@ -150,6 +150,20 @@ runRuleTester('valid-describe-callback', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.describe("foo", done => {})
+      `,
+      errors: [{ column: 24, line: 2, messageId: 'unexpectedDescribeArgument' }],
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom.describe("foo", done => {})
+      `,
+      errors: [{ column: 24, line: 2, messageId: 'unexpectedDescribeArgument' }],
+    },
   ],
   valid: [
     'describe(() => {})',
@@ -192,6 +206,18 @@ runRuleTester('valid-describe-callback', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.describe("foo", () => {})
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom.describe("foo", () => {})
+      `,
     },
   ],
 })

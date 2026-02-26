@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './no-slowed-test.js'
 
@@ -174,6 +175,29 @@ runRuleTester('no-slowed-test', rule, {
       },
     },
     {
+      code: dedent`
+        const custom = test.extend({});
+        custom.slow("slow this test", async ({ page }) => {});
+      `,
+      errors: [
+        {
+          column: 8,
+          endColumn: 12,
+          line: 2,
+          messageId: 'noSlowedTest',
+          suggestions: [
+            {
+              messageId,
+              output: dedent`
+                const custom = test.extend({});
+                custom("slow this test", async ({ page }) => {});
+              `,
+            },
+          ],
+        },
+      ],
+    },
+    {
       code: 'test("foo", ({}) => { test.slow(); })',
       errors: [
         {
@@ -185,6 +209,29 @@ runRuleTester('no-slowed-test', rule, {
         },
       ],
       options: [{ allowConditional: true }],
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom.slow("slow this test", async ({ page }) => {});
+      `,
+      errors: [
+        {
+          column: 8,
+          endColumn: 12,
+          line: 2,
+          messageId: 'noSlowedTest',
+          suggestions: [
+            {
+              messageId,
+              output: dedent`
+                import { test as custom } from '@playwright/test';
+                custom("slow this test", async ({ page }) => {});
+              `,
+            },
+          ],
+        },
+      ],
     },
   ],
   valid: [
@@ -221,6 +268,18 @@ runRuleTester('no-slowed-test', rule, {
           globalAliases: { test: ['it'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("a test", () => {});
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom("a test", () => {});
+      `,
     },
   ],
 })

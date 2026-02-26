@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './prefer-to-contain.js'
 
@@ -145,6 +146,32 @@ runRuleTester('prefer-to-contain', rule, {
       errors: [{ column: 37, line: 1, messageId }],
       output: 'expect([{a:1}]).toContain({a:1});',
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {
+          expect(a.includes(b)).toEqual(true);
+        });
+      `,
+      errors: [{ column: 25, line: 3, messageId }],
+      output: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {
+          expect(a).toContain(b);
+        });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(a.includes(b)).toEqual(true);
+      `,
+      errors: [{ column: 25, line: 2, messageId }],
+      output: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(a).toContain(b);
+      `,
+    },
   ],
   valid: [
     'expect().toBe(false);',
@@ -177,6 +204,20 @@ runRuleTester('prefer-to-contain', rule, {
           globalAliases: { expect: ['assert'] },
         },
       },
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {
+          expect(a).toContain(b);
+        });
+      `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming(a).toContain(b);
+      `,
     },
   ],
 })

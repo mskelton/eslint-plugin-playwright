@@ -732,6 +732,28 @@ runRuleTester('valid-expect-in-promise', rule, {
         },
       },
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom('foo', () => {
+          somePromise.then(() => {
+            expect(someThing).toEqual(true);
+          });
+        });
+      `,
+      errors: [{ column: 3, endColumn: 6, line: 3, messageId: 'expectInFloatingPromise' }],
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        custom('foo', () => {
+          somePromise.then(() => {
+            expect(someThing).toEqual(true);
+          });
+        });
+      `,
+      errors: [{ column: 3, endColumn: 6, line: 3, messageId: 'expectInFloatingPromise' }],
+    },
   ],
   valid: [
     "test('something', () => Promise.resolve().then(() => expect(1).toBe(2)));",
@@ -1538,6 +1560,22 @@ runRuleTester('valid-expect-in-promise', rule, {
         });
 
         return Promise.allSettled([onePromise, twoPromise]);
+      });
+    `,
+    dedent`
+      const custom = test.extend({});
+      custom('foo', () => {
+        return somePromise.then(() => {
+          expect(someThing).toEqual(true);
+        });
+      });
+    `,
+    dedent`
+      import { test as custom } from '@playwright/test';
+      custom('foo', () => {
+        return somePromise.then(() => {
+          expect(someThing).toEqual(true);
+        });
       });
     `,
   ],
