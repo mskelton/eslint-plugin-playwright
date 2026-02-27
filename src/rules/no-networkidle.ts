@@ -1,5 +1,5 @@
 import type * as ESTree from 'estree'
-import { getStringValue, isStringLiteral } from '../utils/ast.js'
+import { getStringValue, isStringNode } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 
 const messageId = 'noNetworkidle'
@@ -30,7 +30,7 @@ export default createRule({
         if (methodName === 'waitForLoadState') {
           const arg = node.arguments[0]
 
-          if (arg && isStringLiteral(arg, 'networkidle')) {
+          if (arg && isStringNode(arg, 'networkidle')) {
             context.report({ messageId, node: arg })
           }
 
@@ -46,7 +46,7 @@ export default createRule({
 
           const property = arg.properties
             .filter((p): p is ESTree.Property => p.type === 'Property')
-            .find((p) => isStringLiteral(p.value, 'networkidle'))
+            .find((p) => isStringNode(p.value, 'networkidle'))
 
           if (property) {
             context.report({ messageId, node: property.value })

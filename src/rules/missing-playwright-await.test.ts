@@ -330,6 +330,11 @@ runRuleTester('missing-playwright-await', rule, {
       code: test('page.waitForResponse("https://example.com").then(r => r).catch(() => null)'),
       errors: [{ column: 28, messageId: 'waitFor' }],
     },
+    {
+      code: test('page.waitForPopup()'),
+      errors: [{ column: 28, messageId: 'waitFor' }],
+      name: 'waitForPopup without await should be flagged',
+    },
   ],
   valid: [
     // Basic

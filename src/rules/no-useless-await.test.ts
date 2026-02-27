@@ -198,6 +198,12 @@ runRuleTester('no-useless-await', rule, {
       errors: [{ column: 1, endColumn: 6, line: 1, messageId }],
       output: 'expect(true).toEqual(true)',
     },
+    {
+      code: 'await expect.soft(true).toBe(true)',
+      errors: [{ column: 1, endColumn: 6, line: 1, messageId }],
+      name: 'expect.soft with non-async matcher',
+      output: 'expect.soft(true).toBe(true)',
+    },
   ],
   valid: [
     'await foo()',

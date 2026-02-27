@@ -184,6 +184,11 @@ runRuleTester('valid-expect', rule, {
       `,
       errors: [{ column: 1, endColumn: 14, line: 2, messageId: 'matcherNotFound' }],
     },
+    {
+      code: 'expect(foo).blah.toBe(1)',
+      errors: [{ column: 1, endColumn: 25, line: 1, messageId: 'modifierUnknown' }],
+      name: 'Unknown modifier should be flagged',
+    },
   ],
   valid: [
     { code: 'expectPayButtonToBeEnabled()' },

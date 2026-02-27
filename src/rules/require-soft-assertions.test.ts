@@ -62,6 +62,18 @@ runRuleTester('require-soft-assertions', rule, {
         });
       `,
     },
+    {
+      code: 'expect(foo).not.toBe(bar)',
+      errors: [{ column: 1, endColumn: 7, line: 1, messageId }],
+      name: 'expect with .not modifier should report',
+      output: 'expect.soft(foo).not.toBe(bar)',
+    },
+    {
+      code: 'await expect(promise).resolves.toBe(true)',
+      errors: [{ column: 7, endColumn: 13, line: 1, messageId }],
+      name: 'expect with .resolves should report',
+      output: 'await expect.soft(promise).resolves.toBe(true)',
+    },
   ],
   valid: [
     'expect.soft(page).toHaveTitle("baz")',

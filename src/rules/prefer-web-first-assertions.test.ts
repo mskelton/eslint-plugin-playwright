@@ -960,6 +960,34 @@ runRuleTester('prefer-web-first-assertions', rule, {
       ],
       output: test('await expect(page.locator(".input")).toBeDisabled()'),
     },
+    {
+      code: test('expect(await foo.isDisabled()).toBeTruthy()'),
+      errors: [
+        {
+          column: 28,
+          data: { matcher: 'toBeDisabled', method: 'isDisabled' },
+          endColumn: 58,
+          line: 1,
+          messageId: 'useWebFirstAssertion',
+        },
+      ],
+      name: 'isDisabled with toBeTruthy should suggest toBeDisabled',
+      output: test('await expect(foo).toBeDisabled()'),
+    },
+    {
+      code: test('expect(await foo.isDisabled()).toBeFalsy()'),
+      errors: [
+        {
+          column: 28,
+          data: { matcher: 'toBeEnabled', method: 'isDisabled' },
+          endColumn: 58,
+          line: 1,
+          messageId: 'useWebFirstAssertion',
+        },
+      ],
+      name: 'isDisabled with toBeFalsy should suggest toBeEnabled',
+      output: test('await expect(foo).toBeEnabled()'),
+    },
 
     // isEnabled
     {

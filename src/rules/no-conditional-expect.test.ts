@@ -349,6 +349,19 @@ runRuleTester('if conditions', rule, {
       `,
       errors: [{ messageId }],
     },
+    {
+      code: dedent`
+        test('foo', () => {
+          test.step('bar', () => {
+            if (true) {
+              expect(1).toBe(1)
+            }
+          })
+        })
+      `,
+      errors: [{ messageId }],
+      name: 'expect inside conditional in test.step',
+    },
   ],
   valid: [
     `
