@@ -1,4 +1,5 @@
 import type * as ESTree from 'estree'
+import { getStringValue } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall, parseFnCall } from '../utils/parseFnCall.js'
 
@@ -17,11 +18,12 @@ function hasTagInOptions(node: ESTree.CallExpression): boolean {
 
 function hasTagInTitle(node: ESTree.CallExpression): boolean {
   const title = node.arguments[0]
-  if (!title || title.type !== 'Literal' || typeof title.value !== 'string') {
+  if (!title) {
     return false
   }
 
-  return tagRegex.test(title.value)
+  const value = getStringValue(title)
+  return !!value && tagRegex.test(value)
 }
 
 function hasTags(node: ESTree.CallExpression): boolean {

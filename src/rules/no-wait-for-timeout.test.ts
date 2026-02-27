@@ -234,6 +234,24 @@ runRuleTester('no-wait-for-timeout', rule, {
         },
       ],
     },
+    {
+      code: 'const delay = page.waitForTimeout(1000);',
+      errors: [
+        {
+          column: 15,
+          endColumn: 40,
+          line: 1,
+          messageId,
+          suggestions: [
+            {
+              messageId: 'removeWaitForTimeout',
+              output: '',
+            },
+          ],
+        },
+      ],
+      name: 'const without await removes entire declaration',
+    },
   ],
   valid: [
     'function waitForTimeout() {}',

@@ -13,7 +13,9 @@ export default createRule({
               {
                 fix: (fixer) =>
                   fixer.remove(
-                    node.parent && node.parent.type !== 'AwaitExpression'
+                    node.parent &&
+                      node.parent.type !== 'AwaitExpression' &&
+                      node.parent.type !== 'VariableDeclarator'
                       ? node.parent
                       : node.parent.parent,
                   ),
