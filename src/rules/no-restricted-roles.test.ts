@@ -228,7 +228,34 @@ runRuleTester('no-restricted-roles', rule, {
       ],
       options: [['button']],
     },
-    // Nested locators
+    // Nested locators - variable-based
+    {
+      code: test('await dialog.getByRole("progressbar")'),
+      errors: [
+        {
+          column: 34,
+          data: { message: '', role: 'progressbar' },
+          endColumn: 65,
+          line: 1,
+          messageId: 'restricted',
+        },
+      ],
+      options: [['progressbar']],
+    },
+    {
+      code: test('await table.getByRole("progressbar", { name: "Loading" })'),
+      errors: [
+        {
+          column: 34,
+          data: { message: '', role: 'progressbar' },
+          endColumn: 85,
+          line: 1,
+          messageId: 'restricted',
+        },
+      ],
+      options: [['progressbar']],
+    },
+    // Nested locators - chained
     {
       code: test('await page.locator(".foo").getByRole("progressbar")'),
       errors: [
@@ -249,19 +276,6 @@ runRuleTester('no-restricted-roles', rule, {
           column: 34,
           data: { message: '', role: 'progressbar' },
           endColumn: 83,
-          line: 1,
-          messageId: 'restricted',
-        },
-      ],
-      options: [['progressbar']],
-    },
-    {
-      code: test('await locator.getByRole("progressbar", { name: "Loading" })'),
-      errors: [
-        {
-          column: 34,
-          data: { message: '', role: 'progressbar' },
-          endColumn: 87,
           line: 1,
           messageId: 'restricted',
         },
@@ -297,13 +311,18 @@ runRuleTester('no-restricted-roles', rule, {
     test('await page.locator("[role=progressbar]")'),
     // Chained calls
     test('const section = page.getByRole("region"); section.getByRole("button")'),
-    // Nested locators with non-restricted role
+    // Nested locators with non-restricted role - variable-based
     {
-      code: test('await page.locator(".foo").getByRole("button")'),
+      code: test('await dialog.getByRole("button")'),
       options: [['progressbar']],
     },
     {
-      code: test('await locator.getByRole("button", { name: "Submit" })'),
+      code: test('await table.getByRole("button", { name: "Submit" })'),
+      options: [['progressbar']],
+    },
+    // Nested locators with non-restricted role - chained
+    {
+      code: test('await page.locator(".foo").getByRole("button")'),
       options: [['progressbar']],
     },
     // Variable reference for role (not string literal - can't determine value)

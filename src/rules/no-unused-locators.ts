@@ -1,4 +1,4 @@
-import { isPageMethod } from '../utils/ast.js'
+import { isPropertyAccessor } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 
 const LOCATOR_REGEX = /locator|getBy(Role|Text|Label|Placeholder|AltText|Title|TestId)/
@@ -7,7 +7,10 @@ export default createRule({
   create(context) {
     return {
       CallExpression(node) {
-        if (!isPageMethod(node, LOCATOR_REGEX)) {
+        if (
+          node.callee.type !== 'MemberExpression' ||
+          !isPropertyAccessor(node.callee, LOCATOR_REGEX)
+        ) {
           return
         }
 

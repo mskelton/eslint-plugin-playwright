@@ -68,6 +68,60 @@ runRuleTester('no-unused-locators', rule, {
       ],
       name: 'Unused getByAltText should be flagged',
     },
+    // Nested locators - variable-based
+    {
+      code: "table.getByRole('row')",
+      errors: [
+        {
+          column: 1,
+          endColumn: 23,
+          endLine: 1,
+          line: 1,
+          messageId: 'noUnusedLocator',
+        },
+      ],
+      name: 'Unused variable-based nested getByRole should be flagged',
+    },
+    {
+      code: "sidebar.locator('.nav-item')",
+      errors: [
+        {
+          column: 1,
+          endColumn: 29,
+          endLine: 1,
+          line: 1,
+          messageId: 'noUnusedLocator',
+        },
+      ],
+      name: 'Unused variable-based nested locator should be flagged',
+    },
+    // Nested locators - chained
+    {
+      code: "page.locator('.container').getByRole('button')",
+      errors: [
+        {
+          column: 1,
+          endColumn: 47,
+          endLine: 1,
+          line: 1,
+          messageId: 'noUnusedLocator',
+        },
+      ],
+      name: 'Unused chained getByRole should be flagged',
+    },
+    {
+      code: "page.getByRole('region').locator('.btn')",
+      errors: [
+        {
+          column: 1,
+          endColumn: 41,
+          endLine: 1,
+          line: 1,
+          messageId: 'noUnusedLocator',
+        },
+      ],
+      name: 'Unused chained locator should be flagged',
+    },
     // getByTitle
     {
       code: "page.getByTitle('heading')",
@@ -103,5 +157,11 @@ runRuleTester('no-unused-locators', rule, {
       code: "expect(page.locator('.btn')).toBeVisible()",
       name: 'Locator as function argument is not unused',
     },
+    // Nested locators used correctly - variable-based
+    "await table.getByRole('row').click()",
+    "const item = sidebar.locator('.nav-item')",
+    // Nested locators used correctly - chained
+    "await page.locator('.container').getByRole('button').click()",
+    "const btn = page.getByRole('region').getByRole('button')",
   ],
 })

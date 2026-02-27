@@ -1,5 +1,5 @@
 import type { AST } from 'eslint'
-import { getStringValue, isPageMethod } from '../utils/ast.js'
+import { getStringValue, isPropertyAccessor } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 
 type Pattern = {
@@ -62,7 +62,7 @@ export default createRule({
           return
         }
         const query = getStringValue(node.arguments[0])
-        if (!isPageMethod(node, 'locator')) {
+        if (!isPropertyAccessor(node.callee, 'locator')) {
           return
         }
 

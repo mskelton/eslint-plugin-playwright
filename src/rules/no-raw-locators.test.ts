@@ -52,6 +52,27 @@ runRuleTester('no-raw-locators', rule, {
       errors: [{ column: 34, endColumn: 77, line: 1, messageId }],
       name: 'frameLocator().locator() chain should be flagged',
     },
+    // Nested locators - variable-based
+    {
+      code: test('table.locator(".btn")'),
+      errors: [{ column: 28, endColumn: 49, line: 1, messageId }],
+    },
+    {
+      code: test('dialog.locator("#close")'),
+      errors: [{ column: 28, endColumn: 52, line: 1, messageId }],
+    },
+    // Nested locators - chained
+    {
+      code: test('await page.getByRole("region").locator(".btn")'),
+      errors: [{ column: 34, endColumn: 74, line: 1, messageId }],
+    },
+    {
+      code: test('await page.locator(".container").locator(".btn")'),
+      errors: [
+        { column: 34, endColumn: 76, line: 1, messageId },
+        { column: 34, endColumn: 60, line: 1, messageId },
+      ],
+    },
     {
       code: test('let button = page.locator(); page.locator(button)'),
       errors: [{ column: 41, endColumn: 55, line: 1, messageId }],
@@ -102,6 +123,10 @@ runRuleTester('no-raw-locators', rule, {
     test(
       'const firstButton = page.getByRole("region", { name: "first" }).locator(button); const secondButton = page.getByRole("region", { name: "second" }).locator(button)',
     ),
+
+    // Nested locator with variable reference
+    test('const button = page.getByRole("button"); page.getByRole("region").locator(button)'),
+    test('table.locator(rowLocator)'),
 
     // bare calls
     test('() => page.locator'),

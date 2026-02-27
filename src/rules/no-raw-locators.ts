@@ -1,4 +1,4 @@
-import { getStringValue, isPageMethod } from '../utils/ast.js'
+import { getStringValue, isPropertyAccessor, isStringNode } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 
 /** Normalize data attribute locators */
@@ -20,15 +20,19 @@ export default createRule({
 
     return {
       CallExpression(node) {
-        if (node.callee.type !== 'MemberExpression' || node.arguments[0]?.type === 'Identifier') {
+        if (
+          node.callee.type !== 'MemberExpression' ||
+          !isPropertyAccessor(node.callee, 'locator')
+        ) {
           return
         }
-        const method = getStringValue(node.callee.property)
-        const arg = getStringValue(node.arguments[0])
-        const isLocator = isPageMethod(node, 'locator') || method === 'locator'
 
-        if (isLocator && !isAllowed(arg)) {
+        if (
+          (node.arguments.length === 0 || isStringNode(node.arguments[0])) &&
+          !isAllowed(getStringValue(node.arguments[0]))
+        ) {
           context.report({ messageId: 'noRawLocator', node })
+          return
         }
       },
     }

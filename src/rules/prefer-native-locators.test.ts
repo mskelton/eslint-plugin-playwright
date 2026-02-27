@@ -144,6 +144,32 @@ runRuleTester('prefer-native-locators', rule, {
       name: 'frameLocator().locator() chain should be flagged',
       output: 'page.frameLocator("#frame").getByRole("button")',
     },
+    // Nested locators - variable-based
+    {
+      code: `table.locator('[role="row"]')`,
+      errors: [{ column: 1, line: 1, messageId: 'unexpectedRoleQuery' }],
+      name: 'Variable-based nested locator with role selector should be flagged',
+      output: 'table.getByRole("row")',
+    },
+    {
+      code: `sidebar.locator('[data-testid="nav-item"]')`,
+      errors: [{ column: 1, line: 1, messageId: 'unexpectedTestIdQuery' }],
+      name: 'Variable-based nested locator with testid selector should be flagged',
+      output: 'sidebar.getByTestId("nav-item")',
+    },
+    // Nested locators - chained
+    {
+      code: `page.getByRole("region").locator('[role="button"]')`,
+      errors: [{ column: 1, line: 1, messageId: 'unexpectedRoleQuery' }],
+      name: 'Chained locator with role selector should be flagged',
+      output: 'page.getByRole("region").getByRole("button")',
+    },
+    {
+      code: `page.locator(".container").locator('[data-testid="input"]')`,
+      errors: [{ column: 1, line: 1, messageId: 'unexpectedTestIdQuery' }],
+      name: 'Chained locator with testid selector should be flagged',
+      output: 'page.locator(".container").getByTestId("input")',
+    },
   ],
   valid: [
     { code: 'page.getByLabel("View more")' },
