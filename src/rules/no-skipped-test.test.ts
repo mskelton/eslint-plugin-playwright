@@ -381,6 +381,42 @@ runRuleTester('no-skipped-test', rule, {
         },
       ],
     },
+    {
+      code: 'test.describe.serial.skip("foo", () => {})',
+      errors: [
+        {
+          column: 22,
+          endColumn: 26,
+          line: 1,
+          messageId: 'noSkippedTest',
+          suggestions: [
+            {
+              messageId,
+              output: 'test.describe.serial("foo", () => {})',
+            },
+          ],
+        },
+      ],
+      name: 'describe.serial.skip should be flagged',
+    },
+    {
+      code: 'test.describe.parallel.skip("foo", () => {})',
+      errors: [
+        {
+          column: 24,
+          endColumn: 28,
+          line: 1,
+          messageId: 'noSkippedTest',
+          suggestions: [
+            {
+              messageId,
+              output: 'test.describe.parallel("foo", () => {})',
+            },
+          ],
+        },
+      ],
+      name: 'describe.parallel.skip should be flagged',
+    },
   ],
   valid: [
     'test("a test", () => {});',

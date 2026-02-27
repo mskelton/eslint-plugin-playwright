@@ -49,6 +49,12 @@ runRuleTester('require-tags', requireTags, {
       errors: [{ data: { title: 'my test' }, messageId: 'missingTag' }],
       name: 'Nested describes - test with no tags and no parent tags',
     },
+    {
+      code: "it('my test', async ({ page }) => {})",
+      errors: [{ messageId: 'missingTag' }],
+      name: 'globalAliases: it should require tags',
+      settings: { playwright: { globalAliases: { test: ['it'] } } },
+    },
   ],
   valid: [
     {

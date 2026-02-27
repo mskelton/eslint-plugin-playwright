@@ -476,6 +476,18 @@ runRuleTester('no-unsafe-references', rule, {
         }, [x, y]);
       `,
     },
+    {
+      code: dedent`
+        const x = 10
+        await page.evaluate(async () => x)
+      `,
+      errors: [{ column: 33, line: 2, messageId }],
+      name: 'async arrow function in page.evaluate',
+      output: dedent`
+        const x = 10
+        await page.evaluate(async ([x]) => x, [x])
+      `,
+    },
   ],
   valid: [
     { code: 'page.pause()' },

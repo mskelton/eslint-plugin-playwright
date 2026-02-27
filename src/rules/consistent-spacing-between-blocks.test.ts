@@ -302,6 +302,136 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
   ],
 })
 
+runRuleTester('consistent-spacing-between-blocks - globalAliases', rule, {
+  invalid: [
+    {
+      code: dedent`
+        it('first test', () => {});
+        it('second test', () => {});
+      `,
+      errors: [{ line: 2, messageId: 'missingWhitespace' }],
+      name: 'globalAliases: it should require spacing',
+      output: dedent`
+        it('first test', () => {});
+
+        it('second test', () => {});
+      `,
+      settings: { playwright: { globalAliases: { test: ['it'] } } },
+    },
+    {
+      code: dedent`
+        it.describe('suite', () => {
+          it.beforeEach(() => {});
+          it('does something', () => {});
+        });
+      `,
+      errors: [{ line: 3, messageId: 'missingWhitespace' }],
+      name: 'globalAliases: it.describe/beforeEach/it require spacing',
+      output: dedent`
+        it.describe('suite', () => {
+          it.beforeEach(() => {});
+
+          it('does something', () => {});
+        });
+      `,
+      settings: { playwright: { globalAliases: { test: ['it'] } } },
+    },
+  ],
+  valid: [],
+})
+
+runRuleTester('consistent-spacing-between-blocks - import alias', rule, {
+  invalid: [
+    {
+      code: dedent`
+        import { test as base } from '@playwright/test';
+        base('first test', () => {});
+        base('second test', () => {});
+      `,
+      errors: [
+        { line: 2, messageId: 'missingWhitespace' },
+        { line: 3, messageId: 'missingWhitespace' },
+      ],
+      name: 'import alias: base should require spacing',
+      output: dedent`
+        import { test as base } from '@playwright/test';
+
+        base('first test', () => {});
+
+        base('second test', () => {});
+      `,
+    },
+    {
+      code: dedent`
+        import { test as base } from '@playwright/test';
+        base.describe('suite', () => {
+          base.beforeEach(() => {});
+          base('does something', () => {});
+        });
+      `,
+      errors: [
+        { line: 2, messageId: 'missingWhitespace' },
+        { line: 4, messageId: 'missingWhitespace' },
+      ],
+      name: 'import alias: base.describe/beforeEach require spacing',
+      output: dedent`
+        import { test as base } from '@playwright/test';
+
+        base.describe('suite', () => {
+          base.beforeEach(() => {});
+
+          base('does something', () => {});
+        });
+      `,
+    },
+  ],
+  valid: [],
+})
+
+runRuleTester('consistent-spacing-between-blocks - test.extend', rule, {
+  invalid: [
+    {
+      code: dedent`
+        const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });
+        custom('first test', () => {});
+        custom('second test', () => {});
+      `,
+      errors: [
+        { line: 2, messageId: 'missingWhitespace' },
+        { line: 3, messageId: 'missingWhitespace' },
+      ],
+      name: 'test.extend: custom fixture tests require spacing',
+      output: dedent`
+        const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });
+
+        custom('first test', () => {});
+
+        custom('second test', () => {});
+      `,
+    },
+    {
+      code: dedent`
+        const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });
+        custom.describe('suite', () => {
+          custom.beforeEach(() => {});
+          custom('does something', () => {});
+        });
+      `,
+      errors: [{ line: 2, messageId: 'missingWhitespace' }],
+      name: 'test.extend: custom.describe requires spacing after const',
+      output: dedent`
+        const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });
+
+        custom.describe('suite', () => {
+          custom.beforeEach(() => {});
+          custom('does something', () => {});
+        });
+      `,
+    },
+  ],
+  valid: [],
+})
+
 runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
   invalid: [
     {

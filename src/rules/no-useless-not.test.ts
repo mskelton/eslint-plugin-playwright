@@ -311,6 +311,30 @@ runRuleTester('no-useless-not', rule, {
         assuming(locator).toBeHidden();
       `,
     },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {
+          expect(locator).not.toBeDisabled();
+        });
+      `,
+      errors: [
+        {
+          column: 19,
+          data: { new: 'toBeEnabled', old: 'toBeDisabled' },
+          endColumn: 35,
+          line: 3,
+          messageId: 'noUselessNot',
+        },
+      ],
+      name: 'not.toBeDisabled in multiline should be flagged',
+      output: dedent`
+        const custom = test.extend({});
+        custom("foo", () => {
+          expect(locator).toBeEnabled();
+        });
+      `,
+    },
   ],
   valid: [
     'expect(locator).toBeVisible()',

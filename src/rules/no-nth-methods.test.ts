@@ -58,6 +58,19 @@ runRuleTester('no-nth-methods', rule, {
       code: 'foo.nth(32)',
       errors: [{ column: 5, endColumn: 12, line: 1, messageId }],
     },
+    {
+      code: 'page.locator("button")["first"]()',
+      errors: [{ column: 24, endColumn: 34, line: 1, messageId }],
+      name: 'Bracket notation first()',
+    },
+    {
+      code: 'page.locator("button").first().last()',
+      errors: [
+        { column: 24, endColumn: 31, line: 1, messageId },
+        { column: 32, endColumn: 38, line: 1, messageId },
+      ],
+      name: 'Chained nth methods',
+    },
   ],
   valid: [
     'page',

@@ -107,9 +107,8 @@ export default createRule({
         const top = callStack.at(-1)
 
         if (
-          (top === 'test' &&
-            isTypeOfFnCall(context, node, ['test']) &&
-            node.callee.type !== 'MemberExpression') ||
+          (top === 'test' && isTypeOfFnCall(context, node, ['test'])) ||
+          (top === 'hook' && isTypeOfFnCall(context, node, ['hook'])) ||
           (top === 'template' && node.callee.type === 'TaggedTemplateExpression') ||
           (top === 'fixture' &&
             node.callee.type === 'MemberExpression' &&

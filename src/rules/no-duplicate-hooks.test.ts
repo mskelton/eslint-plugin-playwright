@@ -196,6 +196,16 @@ runRuleTester('basic describe block', rule, {
         },
       ],
     },
+    {
+      code: dedent`
+        test.describe("foo", () => {
+          test.beforeEach(() => {})
+          test["beforeEach"](() => {})
+        })
+      `,
+      errors: [{ column: 3, line: 3, messageId: 'noDuplicateHook' }],
+      name: 'Bracket notation duplicate hook',
+    },
   ],
   valid: [
     dedent`

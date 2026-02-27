@@ -98,6 +98,14 @@ runRuleTester('no-standalone-expect', rule, {
       `,
       errors: [{ column: 33, endColumn: 52, line: 2, messageId }],
     },
+    {
+      code: dedent`
+        test.only('foo', () => { expect(1).toBe(1) })
+        expect(2).toBe(2)
+      `,
+      errors: [{ column: 1, line: 2, messageId }],
+      name: 'expect after test.only should be flagged',
+    },
   ],
   valid: [
     'expect.any(String)',

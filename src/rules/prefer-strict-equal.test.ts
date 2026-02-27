@@ -111,6 +111,24 @@ runRuleTester('prefer-strict-equal', rule, {
         },
       ],
     },
+    {
+      code: 'expect(a).not.toEqual(b)',
+      errors: [
+        {
+          column: 15,
+          endColumn: 22,
+          line: 1,
+          messageId: 'useToStrictEqual',
+          suggestions: [
+            {
+              messageId: 'suggestReplaceWithStrictEqual',
+              output: 'expect(a).not.toStrictEqual(b)',
+            },
+          ],
+        },
+      ],
+      name: 'not.toEqual should still suggest toStrictEqual',
+    },
   ],
   valid: [
     'expect(something).toStrictEqual(somethingElse);',

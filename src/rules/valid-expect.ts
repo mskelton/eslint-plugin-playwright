@@ -133,6 +133,7 @@ export default createRule({
     messages: {
       matcherNotCalled: 'Matchers must be called to assert.',
       matcherNotFound: 'Expect must have a corresponding matcher call.',
+      modifierUnknown: 'Expect has an unknown modifier.',
       notEnoughArgs: 'Expect requires at least {{amount}} argument{{s}}.',
       tooManyArgs: 'Expect takes at most {{amount}} argument{{s}}.',
     },

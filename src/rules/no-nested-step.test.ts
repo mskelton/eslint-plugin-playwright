@@ -85,6 +85,17 @@ runRuleTester('max-nested-step', rule, {
       `,
       errors: [{ column: 11, endColumn: 22, endLine: 4, line: 4, messageId }],
     },
+    {
+      code: dedent`
+        test('test', async () => {
+          await test.step("step1", async function() {
+            await test.step("nested", async function() {})
+          })
+        })
+      `,
+      errors: [{ column: 11, endColumn: 20, endLine: 3, line: 3, messageId }],
+      name: 'Regular function expression callbacks should also be flagged',
+    },
   ],
   valid: [
     'await test.step("step1", () => {});',
