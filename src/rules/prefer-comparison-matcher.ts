@@ -18,6 +18,8 @@ const isComparingToString = (expression: ESTree.BinaryExpression) => {
   return isString(expression.left) || isString(expression.right)
 }
 
+const skipModifiers = new Set(['not', 'soft', 'poll'])
+
 const invertedOperators: Record<string, string | undefined> = {
   '<': '>=',
   '<=': '>',
@@ -46,7 +48,10 @@ export default createRule({
           return
         }
 
-        const expect = (call.head.node as NodeWithParent).parent
+        let expect: ESTree.Node | undefined = (call.head.node as NodeWithParent).parent
+        while (expect?.type === 'MemberExpression') {
+          expect = (expect as NodeWithParent).parent
+        }
         if (expect?.type !== 'CallExpression') {
           return
         }
@@ -81,7 +86,9 @@ export default createRule({
             // Preserve the existing modifier if it's not a negation
             const [modifier] = call.modifiers
             const modifierText =
-              modifier && getStringValue(modifier) !== 'not' ? `.${getStringValue(modifier)}` : ''
+              modifier && !skipModifiers.has(getStringValue(modifier))
+                ? `.${getStringValue(modifier)}`
+                : ''
 
             return [
               // Replace the comparison argument with the left-hand side of the comparison

@@ -186,6 +186,18 @@ runRuleTester('prefer-equality-matcher: ===', rule, {
         },
       ],
     },
+    {
+      code: 'expect(a === b).toStrictEqual(true)',
+      errors: [
+        {
+          column: 17,
+          line: 1,
+          messageId: 'useEqualityMatcher',
+          suggestions: expectSuggestions((m) => `expect(a).${m}(b)`),
+        },
+      ],
+      name: '=== with toStrictEqual should be flagged',
+    },
   ],
   valid: [
     'expect(true).toBe(...true)',

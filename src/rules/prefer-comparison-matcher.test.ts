@@ -277,7 +277,21 @@ testComparisonOperator('>=', 'toBeGreaterThanOrEqual', 'toBeLessThan')
 testComparisonOperator('<=', 'toBeLessThanOrEqual', 'toBeGreaterThan')
 
 runRuleTester('prefer-comparison-matcher', rule, {
-  invalid: [],
+  invalid: [
+    {
+      code: 'expect.soft(value > 1).toBe(true)',
+      errors: [
+        {
+          column: 24,
+          data: { preferredMatcher: 'toBeGreaterThan' },
+          line: 1,
+          messageId: 'useToBeComparison',
+        },
+      ],
+      name: 'expect.soft with comparison should be flagged',
+      output: 'expect.soft(value).toBeGreaterThan(1)',
+    },
+  ],
   valid: [
     'expect(true).toBe(...true)',
     'expect()',

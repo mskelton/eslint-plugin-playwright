@@ -228,6 +228,20 @@ runRuleTester('no-restricted-locators', rule, {
       ],
       options: [['getByText']],
     },
+    {
+      code: test('page.getByRole("section").getByTestId("btn")'),
+      errors: [
+        {
+          column: 28,
+          data: { message: '', method: 'getByTestId' },
+          endColumn: 72,
+          line: 1,
+          messageId: restrictedMessageId,
+        },
+      ],
+      name: 'Restricting getByTestId even when chained',
+      options: [['getByTestId']],
+    },
   ],
   valid: [
     // No restrictions configured

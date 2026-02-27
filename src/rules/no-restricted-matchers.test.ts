@@ -179,6 +179,23 @@ runRuleTester('no-restricted-matchers', rule, {
       ],
       options: [{ toBe: null }],
     },
+    {
+      code: 'expect(a).resolves.toBe(b)',
+      errors: [
+        {
+          column: 11,
+          data: {
+            message: 'Use a different approach',
+            restriction: 'resolves.toBe',
+          },
+          endColumn: 24,
+          line: 1,
+          messageId: 'restrictedWithMessage',
+        },
+      ],
+      name: 'Restricting resolves.toBe chain',
+      options: [{ 'resolves.toBe': 'Use a different approach' }],
+    },
   ],
   valid: [
     'expect(a)',

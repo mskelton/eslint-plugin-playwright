@@ -215,6 +215,20 @@ runRuleTester('no-restricted-roles', rule, {
       ],
       options: [['progressbar']],
     },
+    {
+      code: test('page.getByRole(`button`)'),
+      errors: [
+        {
+          column: 28,
+          data: { message: '', role: 'button' },
+          endColumn: 52,
+          line: 1,
+          messageId: 'restricted',
+        },
+      ],
+      name: 'Template literal role should be caught',
+      options: [['button']],
+    },
   ],
   valid: [
     // No restrictions configured

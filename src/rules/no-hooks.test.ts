@@ -1,3 +1,4 @@
+import dedent from 'dedent'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './no-hooks.js'
 
@@ -35,6 +36,17 @@ runRuleTester('no-hooks', rule, {
         },
       ],
       options: [{ allow: ['afterEach'] }],
+    },
+    {
+      code: dedent`
+        test.describe("outer", () => {
+          test.describe("inner", () => {
+            test.beforeEach(() => {})
+          })
+        })
+      `,
+      errors: [{ data: { hookName: 'beforeEach' }, messageId }],
+      name: 'Hooks in nested describe should be flagged',
     },
   ],
   valid: [
