@@ -287,27 +287,27 @@ runRuleTester('missing-playwright-await', rule, {
     // waitFor methods
     {
       code: test('page.waitForResponse("https://example.com")'),
-      errors: [{ column: 28, messageId: 'waitFor' }],
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
     },
     {
       code: test('page.waitForRequest("https://example.com")'),
-      errors: [{ column: 28, messageId: 'waitFor' }],
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
     },
     {
       code: test('page.waitForEvent("download")'),
-      errors: [{ column: 28, messageId: 'waitFor' }],
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
     },
     {
       code: test('page["waitForResponse"]("https://example.com")'),
-      errors: [{ column: 28, messageId: 'waitFor' }],
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
     },
     {
       code: test('page[`waitForResponse`]("https://example.com")'),
-      errors: [{ column: 28, messageId: 'waitFor' }],
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
     },
     {
       code: test('this.page.waitForResponse("https://example.com")'),
-      errors: [{ column: 28, messageId: 'waitFor' }],
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
     },
     {
       code: dedent(
@@ -315,50 +315,76 @@ runRuleTester('missing-playwright-await', rule, {
           const promise = page.waitForResponse("https://example.com")
         `),
       ),
-      errors: [{ line: 2, messageId: 'waitFor' }],
+      errors: [{ line: 2, messageId: 'playwrightMethod' }],
     },
     // .then() / .catch() without await on the chain is still invalid
     {
       code: test('page.waitForResponse("https://example.com").then(res => res.json())'),
-      errors: [{ column: 28, messageId: 'waitFor' }],
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
     },
     {
       code: test('page.waitForResponse("https://example.com").catch(() => null)'),
-      errors: [{ column: 28, messageId: 'waitFor' }],
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
     },
     {
       code: test('page.waitForResponse("https://example.com").then(r => r).catch(() => null)'),
-      errors: [{ column: 28, messageId: 'waitFor' }],
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
     },
     {
       code: test('page.waitForPopup()'),
-      errors: [{ column: 28, messageId: 'waitFor' }],
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
       name: 'waitForPopup without await should be flagged',
     },
     {
       code: test('page.waitForConsoleMessage()'),
-      errors: [{ column: 28, messageId: 'waitFor' }],
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
       name: 'waitForConsoleMessage without await should be flagged',
     },
     {
       code: test('page.waitForDownload()'),
-      errors: [{ column: 28, messageId: 'waitFor' }],
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
       name: 'waitForDownload without await should be flagged',
     },
     {
       code: test('page.waitForFileChooser()'),
-      errors: [{ column: 28, messageId: 'waitFor' }],
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
       name: 'waitForFileChooser without await should be flagged',
     },
     {
       code: test('page.waitForFunction(() => true)'),
-      errors: [{ column: 28, messageId: 'waitFor' }],
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
       name: 'waitForFunction without await should be flagged',
     },
     {
       code: test('page.waitForWebSocket("wss://example.com")'),
-      errors: [{ column: 28, messageId: 'waitFor' }],
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
       name: 'waitForWebSocket without await should be flagged',
+    },
+    // Missing await on page and locator actions
+    {
+      code: test('page.click("foo")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+    },
+    {
+      code: test('page.fill("foo", "bar")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+    },
+    {
+      code: test('page.locator("foo").click()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+    },
+    {
+      code: dedent(
+        test(`
+          const foo = page.locator("foo")
+          foo.click()
+        `)
+      ),
+      errors: [{ line: 3, messageId: 'playwrightMethod' }],
+    },
+    {
+      code: test('page.locator("foo").hover()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
     },
   ],
   valid: [
