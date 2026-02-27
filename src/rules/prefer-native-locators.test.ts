@@ -138,6 +138,12 @@ runRuleTester('prefer-native-locators', rule, {
       name: 'Template literal role selector should be flagged',
       output: 'page.getByRole("button")',
     },
+    {
+      code: `page.frameLocator("#frame").locator('[role="button"]')`,
+      errors: [{ column: 1, line: 1, messageId: 'unexpectedRoleQuery' }],
+      name: 'frameLocator().locator() chain should be flagged',
+      output: 'page.frameLocator("#frame").getByRole("button")',
+    },
   ],
   valid: [
     { code: 'page.getByLabel("View more")' },

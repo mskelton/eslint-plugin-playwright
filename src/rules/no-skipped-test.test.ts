@@ -448,6 +448,19 @@ runRuleTester('no-skipped-test', rule, {
       code: 'test("foo", ({ browserName }) => { if (browserName === "firefox") { test.skip() } })',
       options: [{ allowConditional: true }],
     },
+    {
+      code: dedent`
+        test("foo", ({ browserName }) => {
+          switch (browserName) {
+            case "firefox":
+              test.skip();
+              break;
+          }
+        })
+      `,
+      name: 'allowConditional with switch statement',
+      options: [{ allowConditional: true }],
+    },
     // Global aliases
     {
       code: 'it("a test", () => {});',
