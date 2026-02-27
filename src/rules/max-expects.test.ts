@@ -204,6 +204,20 @@ runRuleTester('max-expects', rule, {
         },
       ],
     },
+    {
+      code: dedent`
+        test('test', () => {
+          expect.soft(1).toBe(1)
+          expect.soft(2).toBe(2)
+          expect.soft(3).toBe(3)
+          expect.soft(4).toBe(4)
+          expect.soft(5).toBe(5)
+          expect.soft(6).toBe(6)
+        })
+      `,
+      errors: [{ messageId: 'exceededMaxAssertion' }],
+      name: 'expect.soft counts toward max expects',
+    },
   ],
   valid: [
     `test('should pass')`,

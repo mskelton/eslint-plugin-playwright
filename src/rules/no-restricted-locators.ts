@@ -1,4 +1,4 @@
-import { isPageMethod } from '../utils/ast.js'
+import { getStringValue } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 
 type RestrictedMethodConfig = string | { message?: string; type: string }
@@ -38,7 +38,7 @@ export default createRule({
 
         // Check if this method is restricted
         for (const [restrictedType, message] of restrictionMap.entries()) {
-          if (isPageMethod(node, restrictedType)) {
+          if (getStringValue(node.callee.property) === restrictedType) {
             context.report({
               data: {
                 message: message ?? '',

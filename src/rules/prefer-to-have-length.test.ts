@@ -77,6 +77,12 @@ runRuleTester('prefer-to-have-length', rule, {
       errors: [{ column: 41, endColumn: 45, line: 1, messageId: 'useToHaveLength' }],
       output: 'expect((await table.rows.all())).toHaveLength(5)',
     },
+    {
+      code: 'expect(foo.bar.length).toBe(3)',
+      errors: [{ column: 24, endColumn: 28, line: 1, messageId: 'useToHaveLength' }],
+      name: 'Nested member expression .length should be flagged',
+      output: 'expect(foo.bar).toHaveLength(3)',
+    },
   ],
   valid: [
     'expect(files).toHaveLength(1)',

@@ -98,6 +98,18 @@ runRuleTester('require-to-throw-message', rule, {
         },
       ],
     },
+    {
+      code: 'expect.soft(() => { throw new Error("a") }).toThrow()',
+      errors: [
+        {
+          column: 45,
+          data: { matcherName: 'toThrow' },
+          line: 1,
+          messageId: 'addErrorMessage',
+        },
+      ],
+      name: 'expect.soft with empty toThrow should be flagged',
+    },
   ],
   valid: [
     // String

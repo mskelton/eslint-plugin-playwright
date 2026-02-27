@@ -132,6 +132,12 @@ runRuleTester('prefer-native-locators', rule, {
         }
       }`,
     },
+    {
+      code: 'page.locator(`[role="button"]`)',
+      errors: [{ column: 1, line: 1, messageId: 'unexpectedRoleQuery' }],
+      name: 'Template literal role selector should be flagged',
+      output: 'page.getByRole("button")',
+    },
   ],
   valid: [
     { code: 'page.getByLabel("View more")' },

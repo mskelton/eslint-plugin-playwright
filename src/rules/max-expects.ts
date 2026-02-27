@@ -28,10 +28,7 @@ export default createRule({
       'CallExpression'(node) {
         const call = parseFnCall(context, node)
 
-        if (
-          call?.type !== 'expect' ||
-          (call.head.node as NodeWithParent).parent?.type === 'MemberExpression'
-        ) {
+        if (call?.type !== 'expect') {
           return
         }
 
