@@ -50,6 +50,11 @@ runRuleTester('require-tags', requireTags, {
       name: 'Nested describes - test with no tags and no parent tags',
     },
     {
+      code: 'test(`my test`, async ({ page }) => {})',
+      errors: [{ messageId: 'missingTag' }],
+      name: 'Template literal title without tag is flagged',
+    },
+    {
       code: "it('my test', async ({ page }) => {})",
       errors: [{ messageId: 'missingTag' }],
       name: 'globalAliases: it should require tags',

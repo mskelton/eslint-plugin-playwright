@@ -29,7 +29,8 @@ export default createRule({
           isStandalone &&
           allowConditional &&
           (node.arguments.length !== 0 ||
-            findParent(node, 'BlockStatement')?.parent?.type === 'IfStatement')
+            findParent(node, 'BlockStatement')?.parent?.type === 'IfStatement' ||
+            findParent(node, 'SwitchCase') !== undefined)
         ) {
           return
         }

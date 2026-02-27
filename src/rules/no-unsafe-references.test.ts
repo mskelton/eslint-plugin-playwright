@@ -488,6 +488,30 @@ runRuleTester('no-unsafe-references', rule, {
         await page.evaluate(async ([x]) => x, [x])
       `,
     },
+    {
+      code: dedent`
+        const x = 10
+        await page["evaluate"](() => x)
+      `,
+      errors: [{ column: 30, line: 2, messageId }],
+      name: 'Bracket notation page["evaluate"]',
+      output: dedent`
+        const x = 10
+        await page["evaluate"](([x]) => x, [x])
+      `,
+    },
+    {
+      code: dedent`
+        const x = 10
+        await page[\`evaluate\`](() => x)
+      `,
+      errors: [{ column: 30, line: 2, messageId }],
+      name: 'Template literal page[`evaluate`]',
+      output: dedent`
+        const x = 10
+        await page[\`evaluate\`](([x]) => x, [x])
+      `,
+    },
   ],
   valid: [
     { code: 'page.pause()' },

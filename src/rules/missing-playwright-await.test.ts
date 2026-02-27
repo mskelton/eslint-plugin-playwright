@@ -335,6 +335,31 @@ runRuleTester('missing-playwright-await', rule, {
       errors: [{ column: 28, messageId: 'waitFor' }],
       name: 'waitForPopup without await should be flagged',
     },
+    {
+      code: test('page.waitForConsoleMessage()'),
+      errors: [{ column: 28, messageId: 'waitFor' }],
+      name: 'waitForConsoleMessage without await should be flagged',
+    },
+    {
+      code: test('page.waitForDownload()'),
+      errors: [{ column: 28, messageId: 'waitFor' }],
+      name: 'waitForDownload without await should be flagged',
+    },
+    {
+      code: test('page.waitForFileChooser()'),
+      errors: [{ column: 28, messageId: 'waitFor' }],
+      name: 'waitForFileChooser without await should be flagged',
+    },
+    {
+      code: test('page.waitForFunction(() => true)'),
+      errors: [{ column: 28, messageId: 'waitFor' }],
+      name: 'waitForFunction without await should be flagged',
+    },
+    {
+      code: test('page.waitForWebSocket("wss://example.com")'),
+      errors: [{ column: 28, messageId: 'waitFor' }],
+      name: 'waitForWebSocket without await should be flagged',
+    },
   ],
   valid: [
     // Basic

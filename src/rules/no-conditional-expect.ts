@@ -86,6 +86,17 @@ export default createRule({
           inTestCase = true
         }
       },
+      'FunctionDeclaration:exit'(node: ESTree.FunctionDeclaration) {
+        const declaredVariables = context.sourceCode.getDeclaredVariables(node)
+        const testCallExpressions = getTestCallExpressionsFromDeclaredVariables(
+          context,
+          declaredVariables,
+        )
+
+        if (testCallExpressions.length > 0) {
+          inTestCase = false
+        }
+      },
       'IfStatement': increaseConditionalDepth,
       'IfStatement:exit': decreaseConditionalDepth,
       'LogicalExpression': increaseConditionalDepth,

@@ -658,29 +658,28 @@ runRuleTester('valid-expect-in-promise', rule, {
         },
       ],
     },
-    // TODO:
-    // {
-    //   code: dedent`
-    //     import { test as promiseThatThis } from '@playwright/test';
-    //
-    //     promiseThatThis('is valid', async () => {
-    //       const promise = loadNumber().then(number => {
-    //         expect(typeof number).toBe('number');
-    //
-    //         return number + 1;
-    //       });
-    //
-    //       expect(anotherPromise).resolves.toBe(1);
-    //     });
-    //   `,
-    //   errors: [
-    //     {
-    //       column: 9,
-    //       line: 4,
-    //       messageId: 'expectInFloatingPromise',
-    //     },
-    //   ],
-    // },
+    {
+      code: dedent`
+        import { test as promiseThatThis } from '@playwright/test';
+
+        promiseThatThis('is valid', async () => {
+          const promise = loadNumber().then(number => {
+            expect(typeof number).toBe('number');
+
+            return number + 1;
+          });
+
+          expect(anotherPromise).resolves.toBe(1);
+        });
+      `,
+      errors: [
+        {
+          column: 9,
+          line: 4,
+          messageId: 'expectInFloatingPromise',
+        },
+      ],
+    },
     // Global aliases
     {
       code: dedent`

@@ -357,6 +357,42 @@ runRuleTester('no-element-handle', rule, {
         },
       ],
     },
+    {
+      code: test('const handle = await frame.$("text=Submit");'),
+      errors: [
+        {
+          column: 49,
+          endColumn: 56,
+          line: 1,
+          messageId: 'noElementHandle',
+          suggestions: [
+            {
+              messageId: 'replaceElementHandleWithLocator',
+              output: test('const handle = frame.locator("text=Submit");'),
+            },
+          ],
+        },
+      ],
+      name: 'frame.$ should be flagged',
+    },
+    {
+      code: test('const handles = await frame.$$("text=Submit");'),
+      errors: [
+        {
+          column: 50,
+          endColumn: 58,
+          line: 1,
+          messageId: 'noElementHandle',
+          suggestions: [
+            {
+              messageId: 'replaceElementHandlesWithLocator',
+              output: test('const handles = frame.locator("text=Submit");'),
+            },
+          ],
+        },
+      ],
+      name: 'frame.$$ should be flagged',
+    },
   ],
   valid: [
     test('page.locator("a")'),

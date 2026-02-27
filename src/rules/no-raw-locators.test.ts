@@ -48,6 +48,11 @@ runRuleTester('no-raw-locators', rule, {
       errors: [{ column: 43, endColumn: 57, line: 1, messageId }],
     },
     {
+      code: test('await page.frameLocator("#frame").locator(".btn")'),
+      errors: [{ column: 34, endColumn: 77, line: 1, messageId }],
+      name: 'frameLocator().locator() chain should be flagged',
+    },
+    {
       code: test('let button = page.locator(); page.locator(button)'),
       errors: [{ column: 41, endColumn: 55, line: 1, messageId }],
     },

@@ -127,6 +127,26 @@ runRuleTester('no-duplicate-slow', rule, {
       `,
       errors: [{ column: 3, line: 4, messageId: 'noDuplicateSlow' }],
     },
+    {
+      code: dedent`
+        test('should do something', async ({ page }) => {
+          test["slow"]();
+          test["slow"]();
+        });
+      `,
+      errors: [{ column: 3, line: 3, messageId: 'noDuplicateSlow' }],
+      name: 'bracket notation test["slow"]',
+    },
+    {
+      code: dedent`
+        test('should do something', async ({ page }) => {
+          test[\`slow\`]();
+          test[\`slow\`]();
+        });
+      `,
+      errors: [{ column: 3, line: 3, messageId: 'noDuplicateSlow' }],
+      name: 'template literal test[`slow`]',
+    },
   ],
   valid: [
     // Single test.slow() is valid

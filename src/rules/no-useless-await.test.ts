@@ -204,6 +204,12 @@ runRuleTester('no-useless-await', rule, {
       name: 'expect.soft with non-async matcher',
       output: 'expect.soft(true).toBe(true)',
     },
+    {
+      code: 'await this.page.isClosed()',
+      errors: [{ column: 1, endColumn: 6, line: 1, messageId }],
+      name: 'this.page sync method should not need await',
+      output: 'this.page.isClosed()',
+    },
   ],
   valid: [
     'await foo()',

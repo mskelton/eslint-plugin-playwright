@@ -57,6 +57,17 @@ runRuleTester('no-eval', rule, {
       errors: [{ column: 52, endColumn: 63, line: 1, messageId: 'noEvalAll' }],
     },
 
+    {
+      code: test('await frame.$eval("#search", el => el.value);'),
+      errors: [{ column: 34, endColumn: 45, line: 1, messageId: 'noEval' }],
+      name: 'frame.$eval should be flagged',
+    },
+    {
+      code: test('await frame.$$eval("#search", el => el.value);'),
+      errors: [{ column: 34, endColumn: 46, line: 1, messageId: 'noEvalAll' }],
+      name: 'frame.$$eval should be flagged',
+    },
+
     // Custom messages
     // Note: This is one of the only test in the project to tests custom
     // messages since it's implementation is global in the `createRule` method.
