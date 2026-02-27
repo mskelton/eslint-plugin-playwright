@@ -49,7 +49,6 @@ runRuleTester('prefer-equality-matcher: ===', rule, {
         },
       ],
     },
-    
     {
       code: 'expect(a === b).resolves.toBe(true);',
       errors: [

@@ -1,31 +1,11 @@
-import type { Rule, Scope } from 'eslint'
 import type * as ESTree from 'estree'
 import { isPropertyAccessor } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall, parseFnCall } from '../utils/parseFnCall.js'
-import type { KnownCallExpression, NodeWithParent } from '../utils/types.js'
+import type { KnownCallExpression } from '../utils/types.js'
 
 const isCatchCall = (node: ESTree.CallExpression): node is KnownCallExpression =>
   node.callee.type === 'MemberExpression' && isPropertyAccessor(node.callee, 'catch')
-
-const getTestCallExpressionsFromDeclaredVariables = (
-  context: Rule.RuleContext,
-  declaredVariables: readonly Scope.Variable[],
-): ESTree.CallExpression[] => {
-  return declaredVariables.reduce(
-    (acc, { references }) => [
-      ...acc,
-      ...references
-        .map(({ identifier }) => (identifier as NodeWithParent).parent)
-        .filter(
-          // ESLint types are infurating
-          (node): node is any =>
-            node?.type === 'CallExpression' && isTypeOfFnCall(context, node, ['test']),
-        ),
-    ],
-    [] as ESTree.CallExpression[],
-  )
-}
 
 export default createRule({
   create(context) {
@@ -75,28 +55,6 @@ export default createRule({
       'CatchClause:exit': decreaseConditionalDepth,
       'ConditionalExpression': increaseConditionalDepth,
       'ConditionalExpression:exit': decreaseConditionalDepth,
-      'FunctionDeclaration'(node) {
-        const declaredVariables = context.sourceCode.getDeclaredVariables(node)
-        const testCallExpressions = getTestCallExpressionsFromDeclaredVariables(
-          context,
-          declaredVariables,
-        )
-
-        if (testCallExpressions.length > 0) {
-          inTestCase = true
-        }
-      },
-      'FunctionDeclaration:exit'(node: ESTree.FunctionDeclaration) {
-        const declaredVariables = context.sourceCode.getDeclaredVariables(node)
-        const testCallExpressions = getTestCallExpressionsFromDeclaredVariables(
-          context,
-          declaredVariables,
-        )
-
-        if (testCallExpressions.length > 0) {
-          inTestCase = false
-        }
-      },
       'IfStatement': increaseConditionalDepth,
       'IfStatement:exit': decreaseConditionalDepth,
       'LogicalExpression': increaseConditionalDepth,
