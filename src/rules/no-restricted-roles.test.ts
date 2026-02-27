@@ -226,8 +226,47 @@ runRuleTester('no-restricted-roles', rule, {
           messageId: 'restricted',
         },
       ],
-      name: 'Template literal role should be caught',
       options: [['button']],
+    },
+    // Nested locators
+    {
+      code: test('await page.locator(".foo").getByRole("progressbar")'),
+      errors: [
+        {
+          column: 34,
+          data: { message: '', role: 'progressbar' },
+          endColumn: 79,
+          line: 1,
+          messageId: 'restricted',
+        },
+      ],
+      options: [['progressbar']],
+    },
+    {
+      code: test('await page.getByRole("region").getByRole("progressbar")'),
+      errors: [
+        {
+          column: 34,
+          data: { message: '', role: 'progressbar' },
+          endColumn: 83,
+          line: 1,
+          messageId: 'restricted',
+        },
+      ],
+      options: [['progressbar']],
+    },
+    {
+      code: test('await locator.getByRole("progressbar", { name: "Loading" })'),
+      errors: [
+        {
+          column: 34,
+          data: { message: '', role: 'progressbar' },
+          endColumn: 87,
+          line: 1,
+          messageId: 'restricted',
+        },
+      ],
+      options: [['progressbar']],
     },
   ],
   valid: [
@@ -258,6 +297,15 @@ runRuleTester('no-restricted-roles', rule, {
     test('await page.locator("[role=progressbar]")'),
     // Chained calls
     test('const section = page.getByRole("region"); section.getByRole("button")'),
+    // Nested locators with non-restricted role
+    {
+      code: test('await page.locator(".foo").getByRole("button")'),
+      options: [['progressbar']],
+    },
+    {
+      code: test('await locator.getByRole("button", { name: "Submit" })'),
+      options: [['progressbar']],
+    },
     // Variable reference for role (not string literal - can't determine value)
     test('const role = "progressbar"; await page.getByRole(role)'),
   ],

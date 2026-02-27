@@ -1,4 +1,4 @@
-import { getStringValue, isPageMethod } from '../utils/ast.js'
+import { getStringValue, isPropertyAccessor } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 
 type RestrictionOption = string | { message?: string; role: string }
@@ -32,7 +32,10 @@ export default createRule({
 
     return {
       CallExpression(node) {
-        if (!isPageMethod(node, 'getByRole')) {
+        if (
+          node.callee.type !== 'MemberExpression' ||
+          !isPropertyAccessor(node.callee, 'getByRole')
+        ) {
           return
         }
 
