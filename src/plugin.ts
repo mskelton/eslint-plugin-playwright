@@ -149,6 +149,7 @@ const sharedConfig = {
     'playwright/no-wait-for-navigation': 'error',
     'playwright/no-wait-for-selector': 'warn',
     'playwright/no-wait-for-timeout': 'warn',
+    'playwright/prefer-to-have-count': 'warn',
     'playwright/prefer-web-first-assertions': 'error',
     'playwright/valid-describe-callback': 'error',
     'playwright/valid-expect': 'error',
