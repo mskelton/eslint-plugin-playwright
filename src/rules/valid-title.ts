@@ -178,15 +178,18 @@ export default createRule({
           })
         }
 
-        const [firstWord] = titleString.split(' ')
+        const [firstWord, ...rest] = titleString.split(' ')
         if (firstWord.toLowerCase() === functionName) {
           context.report({
-            fix: (fixer) => [
-              fixer.replaceTextRange(
-                title.range!,
-                quoteStringValue(title).replace(/^([`'"]).+? /u, '$1'),
-              ),
-            ],
+            fix:
+              rest.length > 0
+                ? (fixer) => [
+                    fixer.replaceTextRange(
+                      title.range!,
+                      quoteStringValue(title).replace(/^([`'"]).+? /u, '$1'),
+                    ),
+                  ]
+                : undefined,
             messageId: 'duplicatePrefix',
             node: title,
           })

@@ -1,11 +1,14 @@
-import { isPageMethod } from '../utils/ast.js'
+import { getStringValue } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 
 export default createRule({
   create(context) {
     return {
       CallExpression(node) {
-        if (isPageMethod(node, 'getByTitle')) {
+        if (
+          node.callee.type === 'MemberExpression' &&
+          getStringValue(node.callee.property) === 'getByTitle'
+        ) {
           context.report({ messageId: 'noGetByTitle', node })
         }
       },

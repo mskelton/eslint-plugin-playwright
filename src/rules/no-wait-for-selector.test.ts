@@ -234,6 +234,24 @@ runRuleTester('no-wait-for-selector', rule, {
         },
       ],
     },
+    {
+      code: 'const el = page.waitForSelector(".bar");',
+      errors: [
+        {
+          column: 12,
+          endColumn: 40,
+          line: 1,
+          messageId,
+          suggestions: [
+            {
+              messageId: 'removeWaitForSelector',
+              output: '',
+            },
+          ],
+        },
+      ],
+      name: 'const without await removes entire declaration',
+    },
   ],
   valid: [
     'function waitForSelector() {}',

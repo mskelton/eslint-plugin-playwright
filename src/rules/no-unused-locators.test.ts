@@ -27,6 +27,61 @@ runRuleTester('no-unused-locators', rule, {
         },
       ],
     },
+    // page.locator() - the rule's primary target
+    {
+      code: "page.locator('.btn')",
+      errors: [
+        {
+          column: 1,
+          endColumn: 21,
+          endLine: 1,
+          line: 1,
+          messageId: 'noUnusedLocator',
+        },
+      ],
+      name: 'Unused page.locator() should be flagged',
+    },
+    {
+      code: "await page.locator('.btn')",
+      errors: [
+        {
+          column: 7,
+          endColumn: 27,
+          endLine: 1,
+          line: 1,
+          messageId: 'noUnusedLocator',
+        },
+      ],
+      name: 'Unused awaited page.locator() should be flagged',
+    },
+    // getByAltText
+    {
+      code: "page.getByAltText('logo')",
+      errors: [
+        {
+          column: 1,
+          endColumn: 26,
+          endLine: 1,
+          line: 1,
+          messageId: 'noUnusedLocator',
+        },
+      ],
+      name: 'Unused getByAltText should be flagged',
+    },
+    // getByTitle
+    {
+      code: "page.getByTitle('heading')",
+      errors: [
+        {
+          column: 1,
+          endColumn: 27,
+          endLine: 1,
+          line: 1,
+          messageId: 'noUnusedLocator',
+        },
+      ],
+      name: 'Unused getByTitle should be flagged',
+    },
   ],
   valid: [
     `await page.getByRole('button', { name: 'Sign in' }).all()`,
@@ -35,5 +90,18 @@ runRuleTester('no-unused-locators', rule, {
     "await page.getByRole('button', { name: 'Sign in' }).click()",
     "expect(page.getByTestId('User Name')).toBeVisible()",
     "expect(page.getByRole('User Name').first()).toBeVisible()",
+    // page.locator() used correctly
+    "const el = page.locator('.btn')",
+    "await page.locator('.btn').click()",
+    // Locator in return statement should not be flagged
+    {
+      code: "function fn() { return page.getByRole('button') }",
+      name: 'Locator in return statement is not unused',
+    },
+    // Locator as function argument should not be flagged
+    {
+      code: "expect(page.locator('.btn')).toBeVisible()",
+      name: 'Locator as function argument is not unused',
+    },
   ],
 })
