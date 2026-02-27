@@ -6,19 +6,115 @@ import type { NodeWithParent } from '../utils/types.js'
 
 const validTypes = new Set(['AwaitExpression', 'ReturnStatement', 'ArrowFunctionExpression'])
 
-const waitForMethods = [
+const pageMethods = new Set([
+  'addInitScript',
+  'addScriptTag',
+  'addStyleTag',
+  'bringToFront',
+  'check',
+  'click',
+  'close',
+  'dblclick',
+  'dispatchEvent',
+  'dragAndDrop',
+  'emulateMedia',
+  'evaluate',
+  'evaluateHandle',
+  'exposeBinding',
+  'exposeFunction',
+  'fill',
+  'focus',
+  'getAttribute',
+  'goBack',
+  'goForward',
+  'goto',
+  'hover',
+  'innerHTML',
+  'innerText',
+  'inputValue',
+  'isChecked',
+  'isDisabled',
+  'isEditable',
+  'isEnabled',
+  'isHidden',
+  'isVisible',
+  'pdf',
+  'press',
+  'reload',
+  'route',
+  'routeFromHAR',
+  'screenshot',
+  'selectOption',
+  'setBypassCSP',
+  'setContent',
+  'setChecked',
+  'setExtraHTTPHeaders',
+  'setInputFiles',
+  'setViewportSize',
+  'tap',
+  'textContent',
+  'title',
+  'type',
+  'uncheck',
+  'unroute',
+  'unrouteAll',
   'waitForConsoleMessage',
   'waitForDownload',
   'waitForEvent',
   'waitForFileChooser',
   'waitForFunction',
+  'waitForLoadState',
   'waitForPopup',
   'waitForRequest',
   'waitForResponse',
+  'waitForTimeout',
+  'waitForURL',
   'waitForWebSocket',
-]
+])
 
-const waitForMethodsRegex = new RegExp(`^(${waitForMethods.join('|')})$`)
+const locatorMethods = new Set([
+  'all',
+  'allInnerTexts',
+  'allTextContents',
+  'blur',
+  'boundingBox',
+  'check',
+  'clear',
+  'click',
+  'count',
+  'dblclick',
+  'dispatchEvent',
+  'dragTo',
+  'evaluate',
+  'evaluateAll',
+  'evaluateHandle',
+  'fill',
+  'focus',
+  'getAttribute',
+  'hover',
+  'innerHTML',
+  'innerText',
+  'inputValue',
+  'isChecked',
+  'isDisabled',
+  'isEditable',
+  'isEnabled',
+  'isHidden',
+  'isVisible',
+  'press',
+  'pressSequentially',
+  'screenshot',
+  'scrollIntoViewIfNeeded',
+  'selectOption',
+  'selectText',
+  'setChecked',
+  'setInputFiles',
+  'tap',
+  'textContent',
+  'type',
+  'uncheck',
+  'waitFor',
+])
 
 const expectPlaywrightMatchers = [
   'toBeChecked',
@@ -218,16 +314,21 @@ export default createRule({
 
     return {
       CallExpression(node) {
-        if (isPageMethod(node, waitForMethodsRegex)) {
-          if (!checkValidity(node, new Set())) {
-            const methodName = getStringValue((node.callee as ESTree.MemberExpression).property)
-            context.report({
-              data: { methodName },
-              messageId: 'waitFor',
-              node,
-            })
+        if (node.callee.type === 'MemberExpression') {
+          const methodName = getStringValue(node.callee.property)
+          const isPlaywrightMethod =
+            locatorMethods.has(methodName) || (pageMethods.has(methodName) && isPageMethod(node, methodName))
+
+          if (isPlaywrightMethod) {
+            if (!checkValidity(node, new Set())) {
+              context.report({
+                data: { methodName },
+                messageId: 'playwrightMethod',
+                node,
+              })
+            }
+            return
           }
-          return
         }
 
         const call = parseFnCall(context, node)
@@ -260,7 +361,7 @@ export default createRule({
       expect: "'{{matcherName}}' must be awaited or returned.",
       expectPoll: "'expect.poll' matchers must be awaited or returned.",
       testStep: "'test.step' must be awaited or returned.",
-      waitFor: "'{{methodName}}' must be awaited or returned.",
+      playwrightMethod: "'{{methodName}}' must be awaited or returned.",
     },
     schema: [
       {
