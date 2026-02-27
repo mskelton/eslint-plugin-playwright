@@ -131,6 +131,7 @@ const sharedConfig = {
     'playwright/missing-playwright-await': 'error',
     'playwright/no-conditional-expect': 'warn',
     'playwright/no-conditional-in-test': 'warn',
+    'playwright/no-duplicate-hooks': 'warn',
     'playwright/no-duplicate-slow': 'warn',
     'playwright/no-element-handle': 'warn',
     'playwright/no-eval': 'warn',
