@@ -150,6 +150,7 @@ const sharedConfig = {
     'playwright/no-wait-for-selector': 'warn',
     'playwright/no-wait-for-timeout': 'warn',
     'playwright/prefer-hooks-in-order': 'warn',
+    'playwright/prefer-hooks-on-top': 'warn',
     'playwright/prefer-locator': 'warn',
     'playwright/prefer-to-have-count': 'warn',
     'playwright/prefer-to-have-length': 'warn',
