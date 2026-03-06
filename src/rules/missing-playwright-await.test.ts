@@ -586,6 +586,18 @@ runRuleTester('missing-playwright-await', rule, {
         `),
       ),
     },
+    {
+      code: dedent(
+        test(`
+          const downloadPromise = this.hcPage.waitForEvent('download')
+          await button.click()
+          return downloadPromise
+            .then((download) => download.createReadStream())
+            .then((stream) => getStream(stream))
+            .then((contents) => JSON.parse(contents))
+        `),
+      ),
+    },
     { code: test('await this.page.waitForResponse("https://example.com")') },
     { code: test('await page["waitForResponse"]("https://example.com")') },
     { code: test('await page[`waitForResponse`]("https://example.com")') },
