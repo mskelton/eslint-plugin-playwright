@@ -198,12 +198,12 @@ export default createRule({
         return checkValidity(parent, visited)
       }
 
-      // Inside Promise.all(...) — valid
+      // Inside Promise.all/allSettled/race/any(...) — valid
       if (
         parent.type === 'CallExpression' &&
         parent.callee.type === 'MemberExpression' &&
         isIdentifier(parent.callee.object, 'Promise') &&
-        isIdentifier(parent.callee.property, 'all')
+        isIdentifier(parent.callee.property, /^(all|allSettled|race|any)$/)
       ) {
         return true
       }

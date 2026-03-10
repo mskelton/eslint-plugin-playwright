@@ -403,6 +403,31 @@ runRuleTester('missing-playwright-await', rule, {
         ])
       `),
     },
+    // Promise.race / Promise.any / Promise.allSettled
+    {
+      code: test(`
+        await Promise.race([
+          expect(page.locator("foo")).toHaveText("bar"),
+          page.waitForSelector("baz"),
+        ])
+      `),
+    },
+    {
+      code: test(`
+        await Promise.any([
+          expect(page.locator("foo")).toHaveText("bar"),
+          expect(page).toHaveTitle("baz"),
+        ])
+      `),
+    },
+    {
+      code: test(`
+        await Promise.allSettled([
+          expect(page.locator("foo")).toHaveText("bar"),
+          page.waitForResponse("https://example.com"),
+        ])
+      `),
+    },
 
     // Variable references
     {

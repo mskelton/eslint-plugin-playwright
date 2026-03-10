@@ -1562,6 +1562,30 @@ runRuleTester('valid-expect-in-promise', rule, {
       });
     `,
     dedent`
+      test('later return', async () => {
+        const onePromise = something().then(value => {
+          expect(value).toBe('red');
+        });
+        const twoPromise = something().then(value => {
+          console.log(value);
+        });
+
+        return Promise.race([onePromise, twoPromise]);
+      });
+    `,
+    dedent`
+      test('later return', async () => {
+        const onePromise = something().then(value => {
+          expect(value).toBe('red');
+        });
+        const twoPromise = something().then(value => {
+          console.log(value);
+        });
+
+        return Promise.any([onePromise, twoPromise]);
+      });
+    `,
+    dedent`
       const custom = test.extend({});
       custom('foo', () => {
         return somePromise.then(() => {

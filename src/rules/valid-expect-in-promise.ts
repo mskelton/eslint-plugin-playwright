@@ -72,7 +72,7 @@ const isPromiseMethodThatUsesValue = (
   if (node.argument.type === 'CallExpression' && node.argument.arguments.length > 0) {
     const nodeName = getNodeName(node.argument)
 
-    if (['Promise.all', 'Promise.allSettled'].includes(nodeName as string)) {
+    if (/^Promise\.(all|allSettled|race|any)$/.test(nodeName as string)) {
       const [firstArg] = node.argument.arguments
 
       if (
