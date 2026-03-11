@@ -8,13 +8,18 @@ export default createRule({
       CallExpression(node) {
         const options = context.options[0] || {}
         const allowConditional = !!options.allowConditional
+        const disallowFixme = !!options.disallowFixme
 
         const call = parseFnCall(context, node)
         if (call?.group !== 'test' && call?.group !== 'describe' && call?.group !== 'step') {
           return
         }
 
-        const skipNode = call.members.find((s) => getStringValue(s) === 'skip')
+        const skipNode = call.members.find((member) => {
+          const value = getStringValue(member)
+          return value === 'skip' || (disallowFixme && value === 'fixme')
+        })
+
         if (!skipNode) {
           return
         }
@@ -35,11 +40,15 @@ export default createRule({
           return
         }
 
+        const annotation = getStringValue(skipNode)
+
         context.report({
+          data: { annotation },
           messageId: 'noSkippedTest',
           node: isStandalone ? node : skipNode,
           suggest: [
             {
+              data: { annotation: getStringValue(skipNode) },
               fix: (fixer) => {
                 return isStandalone
                   ? fixer.remove(node.parent)
@@ -48,7 +57,7 @@ export default createRule({
                       skipNode.range![1] + Number(skipNode.type !== 'Identifier'),
                     ])
               },
-              messageId: 'removeSkippedTestAnnotation',
+              messageId: 'removeAnnotation',
             },
           ],
         })
@@ -63,14 +72,18 @@ export default createRule({
     },
     hasSuggestions: true,
     messages: {
-      noSkippedTest: 'Unexpected use of the `.skip()` annotation.',
-      removeSkippedTestAnnotation: 'Remove the `.skip()` annotation.',
+      noSkippedTest: 'Unexpected use of the `.{{annotation}}()` annotation.',
+      removeAnnotation: 'Remove the `.{{annotation}}()` annotation.',
     },
     schema: [
       {
         additionalProperties: false,
         properties: {
           allowConditional: {
+            default: false,
+            type: 'boolean',
+          },
+          disallowFixme: {
             default: false,
             type: 'boolean',
           },

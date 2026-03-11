@@ -2,7 +2,7 @@ import dedent from 'dedent'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './no-skipped-test.js'
 
-const messageId = 'removeSkippedTestAnnotation'
+const messageId = 'removeAnnotation'
 
 runRuleTester('no-skipped-test', rule, {
   invalid: [
@@ -11,11 +11,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 6,
+          data: { annotation: 'skip' },
           endColumn: 10,
           line: 1,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: 'test("skip this test", async ({ page }) => {});',
             },
@@ -28,11 +30,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 6,
+          data: { annotation: 'skip' },
           endColumn: 12,
           line: 1,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: 'test("skip this test", async ({ page }) => {});',
             },
@@ -45,11 +49,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 6,
+          data: { annotation: 'skip' },
           endColumn: 12,
           line: 1,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: 'test("skip this test", async ({ page }) => {});',
             },
@@ -62,11 +68,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 6,
+          data: { annotation: 'skip' },
           endColumn: 10,
           line: 1,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: 'test("a test", { tag: ["@fast", "@login"] }, () => {})',
             },
@@ -79,11 +87,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 15,
+          data: { annotation: 'skip' },
           endColumn: 19,
           line: 1,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: 'test.describe("skip this describe", () => {});',
             },
@@ -96,11 +106,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 15,
+          data: { annotation: 'skip' },
           endColumn: 21,
           line: 1,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: 'test.describe("skip this describe", () => {});',
             },
@@ -113,11 +125,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 15,
+          data: { annotation: 'skip' },
           endColumn: 21,
           line: 1,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: 'test.describe("skip this describe", () => {});',
             },
@@ -130,10 +144,11 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 1,
+          data: { annotation: 'skip' },
           endColumn: 37,
           line: 1,
           messageId: 'noSkippedTest',
-          suggestions: [{ messageId, output: '' }],
+          suggestions: [{ data: { annotation: 'skip' }, messageId, output: '' }],
         },
       ],
     },
@@ -142,10 +157,11 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 1,
+          data: { annotation: 'skip' },
           endColumn: 60,
           line: 1,
           messageId: 'noSkippedTest',
-          suggestions: [{ messageId, output: '' }],
+          suggestions: [{ data: { annotation: 'skip' }, messageId, output: '' }],
         },
       ],
     },
@@ -154,11 +170,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 51,
+          data: { annotation: 'skip' },
           endColumn: 62,
           line: 1,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output:
                 'test.describe.parallel("run in parallel", () => {  expect(true).toBe(true); })',
@@ -172,10 +190,11 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 1,
+          data: { annotation: 'skip' },
           endColumn: 12,
           line: 1,
           messageId: 'noSkippedTest',
-          suggestions: [{ messageId, output: '' }],
+          suggestions: [{ data: { annotation: 'skip' }, messageId, output: '' }],
         },
       ],
     },
@@ -184,10 +203,11 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 1,
+          data: { annotation: 'skip' },
           endColumn: 15,
           line: 1,
           messageId: 'noSkippedTest',
-          suggestions: [{ messageId, output: '' }],
+          suggestions: [{ data: { annotation: 'skip' }, messageId, output: '' }],
         },
       ],
     },
@@ -196,10 +216,11 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 1,
+          data: { annotation: 'skip' },
           endColumn: 15,
           line: 1,
           messageId: 'noSkippedTest',
-          suggestions: [{ messageId, output: '' }],
+          suggestions: [{ data: { annotation: 'skip' }, messageId, output: '' }],
         },
       ],
     },
@@ -209,11 +230,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 4,
+          data: { annotation: 'skip' },
           endColumn: 8,
           line: 1,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: 'it("skip this test", async ({ page }) => {});',
             },
@@ -234,11 +257,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 8,
+          data: { annotation: 'skip' },
           endColumn: 12,
           line: 2,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: dedent`
                 const custom = test.extend({});
@@ -254,11 +279,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 13,
+          data: { annotation: 'skip' },
           endColumn: 17,
           line: 1,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: 'it.describe("describe a test", async ({ page }) => {});',
             },
@@ -276,11 +303,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 11,
+          data: { annotation: 'skip' },
           endColumn: 15,
           line: 1,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: 'test.step("a step", async () => {});',
             },
@@ -293,11 +322,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 11,
+          data: { annotation: 'skip' },
           endColumn: 15,
           line: 1,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: 'test.step("a step", async () => {}, { timeout: 1000 });',
             },
@@ -310,11 +341,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 9,
+          data: { annotation: 'skip' },
           endColumn: 13,
           line: 1,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: 'it.step("a step", async () => {});',
             },
@@ -332,10 +365,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 23,
+          data: { annotation: 'skip' },
           endColumn: 34,
           line: 1,
           messageId: 'noSkippedTest',
-          suggestions: [{ messageId, output: 'test("foo", ({}) => {  })' }],
+          suggestions: [
+            { data: { annotation: 'skip' }, messageId, output: 'test("foo", ({}) => {  })' },
+          ],
         },
       ],
       options: [{ allowConditional: true }],
@@ -345,11 +381,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 6,
+          data: { annotation: 'skip' },
           endColumn: 10,
           line: 1,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: 'test("foo", ({}) => { expect(1).toBe(1) })',
             },
@@ -366,11 +404,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 8,
+          data: { annotation: 'skip' },
           endColumn: 12,
           line: 2,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: dedent`
                 import { test as custom } from '@playwright/test';
@@ -386,11 +426,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 22,
+          data: { annotation: 'skip' },
           endColumn: 26,
           line: 1,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: 'test.describe.serial("foo", () => {})',
             },
@@ -404,11 +446,13 @@ runRuleTester('no-skipped-test', rule, {
       errors: [
         {
           column: 24,
+          data: { annotation: 'skip' },
           endColumn: 28,
           line: 1,
           messageId: 'noSkippedTest',
           suggestions: [
             {
+              data: { annotation: 'skip' },
               messageId,
               output: 'test.describe.parallel("foo", () => {})',
             },
@@ -416,6 +460,107 @@ runRuleTester('no-skipped-test', rule, {
         },
       ],
       name: 'describe.parallel.skip should be flagged',
+    },
+    // fixme (only when disallowFixme: true)
+    {
+      code: "test.fixme('temporarily disabled', async ({ page }) => {});",
+      errors: [
+        {
+          column: 6,
+          data: { annotation: 'fixme' },
+          endColumn: 11,
+          line: 1,
+          messageId: 'noSkippedTest',
+          suggestions: [
+            {
+              data: { annotation: 'fixme' },
+              messageId: 'removeAnnotation',
+              output: "test('temporarily disabled', async ({ page }) => {});",
+            },
+          ],
+        },
+      ],
+      options: [{ disallowFixme: true }],
+    },
+    {
+      code: 'test.fixme();',
+      errors: [
+        {
+          column: 1,
+          data: { annotation: 'fixme' },
+          endColumn: 13,
+          line: 1,
+          messageId: 'noSkippedTest',
+          suggestions: [
+            { data: { annotation: 'fixme' }, messageId: 'removeAnnotation', output: '' },
+          ],
+        },
+      ],
+      options: [{ disallowFixme: true }],
+    },
+    {
+      code: dedent`
+        test.describe('group', () => {
+          test.fixme('case', async () => {});
+        });
+      `,
+      errors: [
+        {
+          column: 8,
+          data: { annotation: 'fixme' },
+          endColumn: 13,
+          line: 2,
+          messageId: 'noSkippedTest',
+          suggestions: [
+            {
+              data: { annotation: 'fixme' },
+              messageId: 'removeAnnotation',
+              output: dedent`
+                test.describe('group', () => {
+                  test('case', async () => {});
+                });
+              `,
+            },
+          ],
+        },
+      ],
+      options: [{ disallowFixme: true }],
+    },
+    {
+      code: 'test.describe.fixme("skip this describe", () => {});',
+      errors: [
+        {
+          column: 15,
+          data: { annotation: 'fixme' },
+          endColumn: 20,
+          line: 1,
+          messageId: 'noSkippedTest',
+          suggestions: [
+            {
+              data: { annotation: 'fixme' },
+              messageId: 'removeAnnotation',
+              output: 'test.describe("skip this describe", () => {});',
+            },
+          ],
+        },
+      ],
+      options: [{ disallowFixme: true }],
+    },
+    {
+      code: 'test.fixme(isMobile, "Settings page does not work in mobile yet");',
+      errors: [
+        {
+          column: 1,
+          data: { annotation: 'fixme' },
+          endColumn: 66,
+          line: 1,
+          messageId: 'noSkippedTest',
+          suggestions: [
+            { data: { annotation: 'fixme' }, messageId: 'removeAnnotation', output: '' },
+          ],
+        },
+      ],
+      options: [{ disallowFixme: true }],
     },
   ],
   valid: [
@@ -431,6 +576,9 @@ runRuleTester('no-skipped-test', rule, {
     'test.slow();',
     'test["slow"]();',
     'test[`slow`]();',
+    'test.fixme(isMobile, "Settings page does not work in mobile yet");',
+    'test["fixme"](isMobile, "Settings page does not work in mobile yet");',
+    'test[`fixme`](isMobile, "Settings page does not work in mobile yet");',
     'const skip = true;',
     'function skip() { return null };',
     'this.skip();',
