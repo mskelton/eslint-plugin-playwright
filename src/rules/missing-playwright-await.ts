@@ -208,6 +208,25 @@ export default createRule({
         return true
       }
 
+      // expect(promise).resolves.* — the promise is awaited via .resolves
+      if (
+        parent.type === 'MemberExpression' &&
+        parent.object === node &&
+        getStringValue(parent.property) === 'resolves' &&
+        node.type === 'CallExpression' &&
+        isIdentifier(node.callee, 'expect')
+      ) {
+        return checkValidity(parent, visited)
+      }
+
+      // Part of a chain (e.g. expect(x).resolves.toBeTruthy()); walk up
+      if (parent.type === 'MemberExpression' && parent.object === node) {
+        return checkValidity(parent, visited)
+      }
+      if (parent.type === 'CallExpression' && parent.callee === node) {
+        return checkValidity(parent, visited)
+      }
+
       // Assigned to a variable — valid only if that variable is consumed (see above)
       if (parent.type === 'VariableDeclarator') {
         return isVariableConsumed(parent, checkValidity, validTypes, visited)

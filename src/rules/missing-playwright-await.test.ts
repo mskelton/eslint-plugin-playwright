@@ -333,32 +333,44 @@ runRuleTester('missing-playwright-await', rule, {
     {
       code: test('page.waitForPopup()'),
       errors: [{ column: 28, messageId: 'waitFor' }],
-      name: 'waitForPopup without await should be flagged',
     },
     {
       code: test('page.waitForConsoleMessage()'),
       errors: [{ column: 28, messageId: 'waitFor' }],
-      name: 'waitForConsoleMessage without await should be flagged',
     },
     {
       code: test('page.waitForDownload()'),
       errors: [{ column: 28, messageId: 'waitFor' }],
-      name: 'waitForDownload without await should be flagged',
     },
     {
       code: test('page.waitForFileChooser()'),
       errors: [{ column: 28, messageId: 'waitFor' }],
-      name: 'waitForFileChooser without await should be flagged',
     },
     {
       code: test('page.waitForFunction(() => true)'),
       errors: [{ column: 28, messageId: 'waitFor' }],
-      name: 'waitForFunction without await should be flagged',
     },
     {
       code: test('page.waitForWebSocket("wss://example.com")'),
       errors: [{ column: 28, messageId: 'waitFor' }],
-      name: 'waitForWebSocket without await should be flagged',
+    },
+    {
+      code: dedent(
+        test(`
+          const response = page.waitForResponse("https://example.com")
+          expect(response).resolves.toBeTruthy()
+        `),
+      ),
+      errors: [{ line: 2, messageId: 'waitFor' }],
+    },
+    {
+      code: dedent(
+        test(`
+          const downloadPromise = page.waitForEvent('download')
+          expect(downloadPromise).resolves.toBeTruthy()
+        `),
+      ),
+      errors: [{ line: 2, messageId: 'waitFor' }],
     },
   ],
   valid: [
@@ -608,6 +620,71 @@ runRuleTester('missing-playwright-await', rule, {
           if (response) {
             await response
           }
+        `),
+      ),
+    },
+    {
+      code: dedent(
+        test(`
+          const response = page.waitForResponse("https://example.com")
+          await expect(response).resolves.toBeTruthy()
+        `),
+      ),
+    },
+    {
+      code: dedent(
+        test(`
+          const response = page.waitForResponse('**/page')
+          await expect(response).resolves.toBeTruthy()
+        `),
+      ),
+    },
+    {
+      code: dedent(
+        test(`
+          const responsePromise = page.waitForResponse("https://example.com")
+          return expect(responsePromise).resolves.toBeTruthy()
+        `),
+      ),
+    },
+    {
+      code: dedent(
+        test(`
+          const response = page.waitForResponse("https://example.com")
+          await expect(response).resolves.not.toBeNull()
+        `),
+      ),
+    },
+    {
+      code: dedent(
+        test(`
+          const downloadPromise = page.waitForEvent('download')
+          await expect(downloadPromise).resolves.toBeTruthy()
+        `),
+      ),
+    },
+    {
+      code: dedent(
+        test(`
+          const requestPromise = page.waitForRequest("https://example.com/resource")
+          await expect(requestPromise).resolves.toBeTruthy()
+        `),
+      ),
+    },
+    {
+      code: dedent(
+        test(`
+          const response = page.waitForResponse("https://example.com")
+          await expect(response)["resolves"].toBeTruthy()
+        `),
+      ),
+    },
+    {
+      code: dedent(
+        test(`
+          const response = page.waitForResponse("https://example.com")
+          await page.locator("button").click()
+          await expect(response).resolves.toBeTruthy()
         `),
       ),
     },
