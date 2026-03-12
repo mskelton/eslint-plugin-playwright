@@ -80,7 +80,6 @@ runRuleTester('prefer-to-have-length', rule, {
     {
       code: 'expect(foo.bar.length).toBe(3)',
       errors: [{ column: 24, endColumn: 28, line: 1, messageId: 'useToHaveLength' }],
-      name: 'Nested member expression .length should be flagged',
       output: 'expect(foo.bar).toHaveLength(3)',
     },
   ],

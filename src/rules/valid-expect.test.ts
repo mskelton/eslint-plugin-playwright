@@ -187,7 +187,6 @@ runRuleTester('valid-expect', rule, {
     {
       code: 'expect(foo).blah.toBe(1)',
       errors: [{ column: 1, endColumn: 25, line: 1, messageId: 'modifierUnknown' }],
-      name: 'Unknown modifier should be flagged',
     },
   ],
   valid: [

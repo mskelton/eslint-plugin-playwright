@@ -39,7 +39,6 @@ runRuleTester('no-unused-locators', rule, {
           messageId: 'noUnusedLocator',
         },
       ],
-      name: 'Unused page.locator() should be flagged',
     },
     {
       code: "await page.locator('.btn')",
@@ -52,7 +51,6 @@ runRuleTester('no-unused-locators', rule, {
           messageId: 'noUnusedLocator',
         },
       ],
-      name: 'Unused awaited page.locator() should be flagged',
     },
     // getByAltText
     {
@@ -66,7 +64,6 @@ runRuleTester('no-unused-locators', rule, {
           messageId: 'noUnusedLocator',
         },
       ],
-      name: 'Unused getByAltText should be flagged',
     },
     // Nested locators - variable-based
     {
@@ -80,7 +77,6 @@ runRuleTester('no-unused-locators', rule, {
           messageId: 'noUnusedLocator',
         },
       ],
-      name: 'Unused variable-based nested getByRole should be flagged',
     },
     {
       code: "sidebar.locator('.nav-item')",
@@ -93,7 +89,6 @@ runRuleTester('no-unused-locators', rule, {
           messageId: 'noUnusedLocator',
         },
       ],
-      name: 'Unused variable-based nested locator should be flagged',
     },
     // Nested locators - chained
     {
@@ -107,7 +102,6 @@ runRuleTester('no-unused-locators', rule, {
           messageId: 'noUnusedLocator',
         },
       ],
-      name: 'Unused chained getByRole should be flagged',
     },
     {
       code: "page.getByRole('region').locator('.btn')",
@@ -120,7 +114,6 @@ runRuleTester('no-unused-locators', rule, {
           messageId: 'noUnusedLocator',
         },
       ],
-      name: 'Unused chained locator should be flagged',
     },
     // getByTitle
     {
@@ -134,7 +127,6 @@ runRuleTester('no-unused-locators', rule, {
           messageId: 'noUnusedLocator',
         },
       ],
-      name: 'Unused getByTitle should be flagged',
     },
   ],
   valid: [
@@ -150,12 +142,10 @@ runRuleTester('no-unused-locators', rule, {
     // Locator in return statement should not be flagged
     {
       code: "function fn() { return page.getByRole('button') }",
-      name: 'Locator in return statement is not unused',
     },
     // Locator as function argument should not be flagged
     {
       code: "expect(page.locator('.btn')).toBeVisible()",
-      name: 'Locator as function argument is not unused',
     },
     // Nested locators used correctly - variable-based
     "await table.getByRole('row').click()",

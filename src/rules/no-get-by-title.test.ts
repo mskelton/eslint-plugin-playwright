@@ -16,7 +16,6 @@ runRuleTester('no-get-by-title', rule, {
     {
       code: test('await page.locator("div").getByTitle("lorem ipsum")'),
       errors: [{ column: 34, endColumn: 79, line: 1, messageId }],
-      name: 'getByTitle on locator receiver is also flagged',
     },
   ],
   valid: [

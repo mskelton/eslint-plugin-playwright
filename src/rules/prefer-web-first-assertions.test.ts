@@ -971,7 +971,6 @@ runRuleTester('prefer-web-first-assertions', rule, {
           messageId: 'useWebFirstAssertion',
         },
       ],
-      name: 'isDisabled with toBeTruthy should suggest toBeDisabled',
       output: test('await expect(foo).toBeDisabled()'),
     },
     {
@@ -985,7 +984,6 @@ runRuleTester('prefer-web-first-assertions', rule, {
           messageId: 'useWebFirstAssertion',
         },
       ],
-      name: 'isDisabled with toBeFalsy should suggest toBeEnabled',
       output: test('await expect(foo).toBeEnabled()'),
     },
 

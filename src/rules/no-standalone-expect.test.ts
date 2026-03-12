@@ -104,7 +104,6 @@ runRuleTester('no-standalone-expect', rule, {
         expect(2).toBe(2)
       `,
       errors: [{ column: 1, line: 2, messageId }],
-      name: 'expect after test.only should be flagged',
     },
     {
       code: dedent`
@@ -112,7 +111,6 @@ runRuleTester('no-standalone-expect', rule, {
         expect(2).toBe(2)
       `,
       errors: [{ column: 1, line: 2, messageId }],
-      name: 'expect after test.skip should be flagged',
     },
   ],
   valid: [
@@ -141,7 +139,6 @@ runRuleTester('no-standalone-expect', rule, {
           });
         });
       `,
-      name: 'Allows expect in hooks',
     },
     // Global aliases
     {
@@ -181,7 +178,6 @@ runRuleTester('no-standalone-expect', rule, {
 
         export { expect } from '@playwright/test';
       `,
-      name: 'Allows expect in fixture definitions',
     },
     {
       code: dedent`
@@ -194,7 +190,6 @@ runRuleTester('no-standalone-expect', rule, {
           }
         });
       `,
-      name: 'Allows expect in test.extend fixtures',
     },
     {
       code: dedent`
@@ -208,7 +203,6 @@ runRuleTester('no-standalone-expect', rule, {
           }
         });
       `,
-      name: 'Allows expect in fixture without await',
     },
     {
       code: dedent`

@@ -27,7 +27,6 @@ runRuleTester('expect-expect', rule, {
         })
       `,
       errors: [{ column: 1, endColumn: 5, line: 1, messageId: 'noAssertions' }],
-      name: 'Custom assert function',
       options: [{ assertFunctionNames: ['wayComplexCustomCondition'] }],
     },
     {
@@ -37,13 +36,11 @@ runRuleTester('expect-expect', rule, {
         })
       `,
       errors: [{ column: 1, endColumn: 5, line: 1, messageId: 'noAssertions' }],
-      name: 'Custom assert function pattern mismatch',
       options: [{ assertFunctionPatterns: ['^verify.*', '^check.*'] }],
     },
     {
       code: 'it("should pass", () => hi(true).toBeDefined())',
       errors: [{ column: 1, endColumn: 3, line: 1, messageId: 'noAssertions' }],
-      name: 'Global aliases',
       settings: {
         playwright: {
           globalAliases: { test: ['it'] },
@@ -123,7 +120,6 @@ runRuleTester('expect-expect', rule, {
           await assertCustomCondition(page)
         })
       `,
-      name: 'Custom assert function',
       options: [{ assertFunctionNames: ['assertCustomCondition'] }],
     },
     {
@@ -132,7 +128,6 @@ runRuleTester('expect-expect', rule, {
           await myPage.assertCustomCondition(page)
         })
       `,
-      name: 'Custom assert class method',
       options: [{ assertFunctionNames: ['assertCustomCondition'] }],
     },
     {
@@ -141,7 +136,6 @@ runRuleTester('expect-expect', rule, {
           await verifyElementVisible(page.locator('button'))
         })
       `,
-      name: 'Custom assert function matching regex pattern',
       options: [{ assertFunctionPatterns: ['^verify.*'] }],
     },
     {
@@ -151,7 +145,6 @@ runRuleTester('expect-expect', rule, {
           await validateUserLoggedIn(page)
         })
       `,
-      name: 'Multiple custom assert functions matching different regex patterns',
       options: [{ assertFunctionPatterns: ['^check.*', '^validate.*'] }],
     },
     {
@@ -161,7 +154,6 @@ runRuleTester('expect-expect', rule, {
           await anotherAssertion(true)
         })
       `,
-      name: 'Mixed string and regex pattern matching',
       options: [
         {
           assertFunctionNames: ['myCustomAssert'],
@@ -171,7 +163,6 @@ runRuleTester('expect-expect', rule, {
     },
     {
       code: 'it("should pass", () => expect(true).toBeDefined())',
-      name: 'Global alias - test',
       settings: {
         playwright: {
           globalAliases: { test: ['it'] },
@@ -186,7 +177,6 @@ runRuleTester('expect-expect', rule, {
     },
     {
       code: 'test("should pass", () => assert(true).toBeDefined())',
-      name: 'Global alias - assert',
       settings: {
         playwright: {
           globalAliases: { expect: ['assert'] },

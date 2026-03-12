@@ -94,7 +94,6 @@ runRuleTester('max-nested-step', rule, {
         })
       `,
       errors: [{ column: 11, endColumn: 20, endLine: 3, line: 3, messageId }],
-      name: 'Regular function expression callbacks should also be flagged',
     },
     {
       code: dedent`
@@ -107,7 +106,6 @@ runRuleTester('max-nested-step', rule, {
         })
       `,
       errors: [{ messageId }, { messageId }],
-      name: 'Triple nesting should produce 2 errors',
     },
   ],
   valid: [

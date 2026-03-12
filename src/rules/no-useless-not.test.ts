@@ -327,7 +327,6 @@ runRuleTester('no-useless-not', rule, {
           messageId: 'noUselessNot',
         },
       ],
-      name: 'not.toBeDisabled in multiline should be flagged',
       output: dedent`
         const custom = test.extend({});
         custom("foo", () => {

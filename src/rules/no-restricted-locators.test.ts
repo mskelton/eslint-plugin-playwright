@@ -239,7 +239,6 @@ runRuleTester('no-restricted-locators', rule, {
           messageId: restrictedMessageId,
         },
       ],
-      name: 'Restricting getByTestId even when chained',
       options: [['getByTestId']],
     },
   ],

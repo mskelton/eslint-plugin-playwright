@@ -50,7 +50,6 @@ runRuleTester('no-raw-locators', rule, {
     {
       code: test('await page.frameLocator("#frame").locator(".btn")'),
       errors: [{ column: 34, endColumn: 77, line: 1, messageId }],
-      name: 'frameLocator().locator() chain should be flagged',
     },
     // Nested locators - variable-based
     {

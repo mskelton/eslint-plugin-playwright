@@ -127,7 +127,6 @@ runRuleTester('prefer-strict-equal', rule, {
           ],
         },
       ],
-      name: 'not.toEqual should still suggest toStrictEqual',
     },
     {
       code: 'expect(a).resolves.toEqual(b)',
@@ -145,7 +144,6 @@ runRuleTester('prefer-strict-equal', rule, {
           ],
         },
       ],
-      name: 'resolves.toEqual should still suggest toStrictEqual',
     },
     {
       code: 'expect.soft(a).toEqual(b)',

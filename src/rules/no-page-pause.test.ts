@@ -24,17 +24,14 @@ runRuleTester('no-page-pause', rule, {
     {
       code: test('page.pause()'),
       errors: [{ column: 28, endColumn: 40, line: 1, messageId }],
-      name: 'page.pause() without await',
     },
     {
       code: test('this.page.pause()'),
       errors: [{ column: 28, endColumn: 45, line: 1, messageId }],
-      name: 'this.page.pause() without await',
     },
     {
       code: test('await frame.pause()'),
       errors: [{ column: 34, endColumn: 47, line: 1, messageId }],
-      name: 'frame.pause() is also caught',
     },
   ],
   valid: [

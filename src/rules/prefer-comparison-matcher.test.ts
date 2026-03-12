@@ -288,7 +288,6 @@ runRuleTester('prefer-comparison-matcher', rule, {
           messageId: 'useToBeComparison',
         },
       ],
-      name: 'expect.soft with comparison should be flagged',
       output: 'expect.soft(value).toBeGreaterThan(1)',
     },
   ],

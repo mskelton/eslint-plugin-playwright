@@ -108,7 +108,6 @@ runRuleTester('require-to-throw-message', rule, {
           messageId: 'addErrorMessage',
         },
       ],
-      name: 'expect.soft with empty toThrow should be flagged',
     },
   ],
   valid: [

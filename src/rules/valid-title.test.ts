@@ -1246,7 +1246,6 @@ runRuleTester('no-duplicate-prefix test', rule, {
     {
       code: 'test("test", function () {})',
       errors: [{ column: 6, line: 1, messageId: 'duplicatePrefix' }],
-      name: 'Single-word duplicate prefix reports but does not autofix',
       output: null,
     },
     {

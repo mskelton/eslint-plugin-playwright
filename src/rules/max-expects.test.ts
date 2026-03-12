@@ -216,7 +216,6 @@ runRuleTester('max-expects', rule, {
         })
       `,
       errors: [{ messageId: 'exceededMaxAssertion' }],
-      name: 'expect.soft counts toward max expects',
     },
   ],
   valid: [

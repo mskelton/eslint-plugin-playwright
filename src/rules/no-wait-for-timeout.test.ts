@@ -250,7 +250,6 @@ runRuleTester('no-wait-for-timeout', rule, {
           ],
         },
       ],
-      name: 'const without await removes entire declaration',
     },
   ],
   valid: [

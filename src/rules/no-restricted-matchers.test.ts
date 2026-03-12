@@ -193,7 +193,6 @@ runRuleTester('no-restricted-matchers', rule, {
           messageId: 'restrictedWithMessage',
         },
       ],
-      name: 'Restricting resolves.toBe chain',
       options: [{ 'resolves.toBe': 'Use a different approach' }],
     },
   ],

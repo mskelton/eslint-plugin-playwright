@@ -28,7 +28,6 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
         { line: 8, messageId: 'missingWhitespace' },
         { line: 13, messageId: 'missingWhitespace' },
       ],
-      name: 'missing blank lines before test blocks',
       output: dedent`
         test.beforeEach('should pass', () => {});
 
@@ -81,7 +80,6 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
         { line: 10, messageId: 'missingWhitespace' },
         { line: 17, messageId: 'missingWhitespace' },
       ],
-      name: 'padding around test blocks with describe blocks',
       output: dedent`
         const someText = 'abc';
 
@@ -116,7 +114,6 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
         const someVariable = 'value';
       `,
       errors: [{ line: 2, messageId: 'missingWhitespace' }],
-      name: 'Missing padding after test block followed by variable declaration',
       output: dedent`
         test('does something', () => {});
 
@@ -131,7 +128,6 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
         }
       `,
       errors: [{ line: 2, messageId: 'missingWhitespace' }],
-      name: 'Missing padding after test block followed by function declaration',
       output: dedent`
         test('does something', () => {});
 
@@ -147,7 +143,6 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
         const x = 1;
       `,
       errors: [{ line: 3, messageId: 'missingWhitespace' }],
-      name: 'Missing padding after test block followed by comment',
       output: dedent`
         test('does something', () => {});
 
@@ -163,7 +158,6 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
         });
       `,
       errors: [{ line: 3, messageId: 'missingWhitespace' }],
-      name: 'Missing padding after test block followed by variable in describe',
       output: dedent`
         test.describe('My Test', () => {
           test('does something', () => {});
@@ -178,7 +172,6 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
         export const config = { timeout: 5000 };
       `,
       errors: [{ line: 2, messageId: 'missingWhitespace' }],
-      name: 'Missing padding after test block followed by export statement',
       output: dedent`
         test('first test', () => {});
 
@@ -195,7 +188,6 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
         { line: 2, messageId: 'missingWhitespace' },
         { line: 3, messageId: 'missingWhitespace' },
       ],
-      name: 'Missing padding before and after test blocks',
       output: dedent`
         test.beforeEach(() => {});
 
@@ -214,7 +206,6 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
         { line: 2, messageId: 'missingWhitespace' },
         { line: 2, messageId: 'missingWhitespace' },
       ],
-      name: 'Same line test calls',
       output: dedent`
         test("first", () => {});
 
@@ -242,7 +233,6 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
           doSomething('does something', () => {});
         }
       `,
-      name: 'Non test blocks',
     },
     {
       code: dedent`
@@ -250,7 +240,6 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
 
         const someVariable = 'value';
       `,
-      name: 'Test block followed by variable declaration with proper padding',
     },
     {
       code: dedent`
@@ -260,7 +249,6 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
           return true;
         }
       `,
-      name: 'Test block followed by function declaration with proper padding',
     },
     {
       code: dedent`
@@ -269,7 +257,6 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
         // A comment after test
         const x = 1;
       `,
-      name: 'Test block followed by comment and code with proper padding',
     },
     {
       code: dedent`
@@ -279,7 +266,6 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
           const helper = 'value';
         });
       `,
-      name: 'Test block followed by variable in describe with proper padding',
     },
     {
       code: dedent`
@@ -287,7 +273,6 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
 
         export const config = { timeout: 5000 };
       `,
-      name: 'Test block followed by export statement with proper padding',
     },
     {
       code: dedent`
@@ -297,7 +282,6 @@ runRuleTester('consistent-spacing-between-blocks', rule, {
 
         test('does something', () => {});
       `,
-      name: 'Test blocks with proper padding before and after',
     },
   ],
 })
@@ -310,7 +294,6 @@ runRuleTester('consistent-spacing-between-blocks - globalAliases', rule, {
         it('second test', () => {});
       `,
       errors: [{ line: 2, messageId: 'missingWhitespace' }],
-      name: 'globalAliases: it should require spacing',
       output: dedent`
         it('first test', () => {});
 
@@ -326,7 +309,6 @@ runRuleTester('consistent-spacing-between-blocks - globalAliases', rule, {
         });
       `,
       errors: [{ line: 3, messageId: 'missingWhitespace' }],
-      name: 'globalAliases: it.describe/beforeEach/it require spacing',
       output: dedent`
         it.describe('suite', () => {
           it.beforeEach(() => {});
@@ -352,7 +334,6 @@ runRuleTester('consistent-spacing-between-blocks - import alias', rule, {
         { line: 2, messageId: 'missingWhitespace' },
         { line: 3, messageId: 'missingWhitespace' },
       ],
-      name: 'import alias: base should require spacing',
       output: dedent`
         import { test as base } from '@playwright/test';
 
@@ -373,7 +354,6 @@ runRuleTester('consistent-spacing-between-blocks - import alias', rule, {
         { line: 2, messageId: 'missingWhitespace' },
         { line: 4, messageId: 'missingWhitespace' },
       ],
-      name: 'import alias: base.describe/beforeEach require spacing',
       output: dedent`
         import { test as base } from '@playwright/test';
 
@@ -400,7 +380,6 @@ runRuleTester('consistent-spacing-between-blocks - test.extend', rule, {
         { line: 2, messageId: 'missingWhitespace' },
         { line: 3, messageId: 'missingWhitespace' },
       ],
-      name: 'test.extend: custom fixture tests require spacing',
       output: dedent`
         const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });
 
@@ -418,7 +397,6 @@ runRuleTester('consistent-spacing-between-blocks - test.extend', rule, {
         });
       `,
       errors: [{ line: 2, messageId: 'missingWhitespace' }],
-      name: 'test.extend: custom.describe requires spacing after const',
       output: dedent`
         const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });
 
@@ -442,7 +420,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
         });
       `,
       errors: [{ line: 3, messageId: 'missingWhitespace' }],
-      name: 'Missing line break between test and afterEach',
       output: dedent`
         test.describe('My Test', function () {
           test('does something', () => {});
@@ -459,7 +436,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
         });
       `,
       errors: [{ line: 3, messageId: 'missingWhitespace' }],
-      name: 'Missing line break between beforeEach and test',
       output: dedent`
         test.describe('My Test', () => {
           test.beforeEach(() => {});
@@ -476,7 +452,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
         });
       `,
       errors: [{ line: 3, messageId: 'missingWhitespace' }],
-      name: 'Missing line break after a variable declaration',
       output: dedent`
         test.describe('Variable declaration', () => {
           const a = 1;
@@ -493,7 +468,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
         });
       `,
       errors: [{ line: 3, messageId: 'missingWhitespace' }],
-      name: 'Blocks on the same line',
       output: dedent`
         test.describe('Same line blocks', () => {
           test('block one', () => {});
@@ -511,7 +485,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
         });
       `,
       errors: [{ line: 4, messageId: 'missingWhitespace' }],
-      name: 'Chained method calls',
       output: dedent`
         test.describe('Same line blocks', () => {
           test('block one', () => {})
@@ -527,7 +500,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
         test.describe("", () => {});
       `,
       errors: [{ line: 2, messageId: 'missingWhitespace' }],
-      name: 'Missing line break between describe calls',
       output: dedent`
         test.describe("", () => {});
 
@@ -540,7 +512,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
         test.describe('two', () => {});
       `,
       errors: [{ line: 2, messageId: 'missingWhitespace' }],
-      name: 'Missing line break between describe calls',
       output: dedent`
         test.describe('one', () => {});
 
@@ -555,7 +526,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
 
         test.describe('two', () => {});
       `,
-      name: 'Proper line break between describe calls',
     },
     {
       code: dedent`
@@ -563,7 +533,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
           test('does something', () => {});
         });
       `,
-      name: 'Single test block in describe',
     },
     {
       code: dedent`
@@ -573,7 +542,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
           test('performs action two', () => {});
         });
       `,
-      name: 'Proper line break before each block within describe',
     },
     {
       code: dedent`
@@ -585,7 +553,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
           test.afterEach(() => {});
         });
       `,
-      name: 'Nested describe blocks with proper spacing',
     },
     {
       code: dedent`
@@ -596,7 +563,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
           test.afterEach(() => {});
         });
       `,
-      name: 'Describe block with comments',
     },
     {
       code: dedent`
@@ -604,7 +570,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
 
         test.afterEach(() => {});
       `,
-      name: 'Test blocks outside describe with proper spacing',
     },
     {
       code: dedent`
@@ -612,7 +577,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
           test('bar', () => {}).timeout(42);
         });
       `,
-      name: 'Single test with chained timeout',
     },
     {
       code: dedent`
@@ -622,7 +586,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
           test('baz', () => {}).timeout(42);
         });
       `,
-      name: 'Multiple tests with chained timeout and proper spacing',
     },
     {
       code: dedent`
@@ -634,7 +597,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
             .timeout(42);
         });
       `,
-      name: 'Multiple tests with multiline chained timeout',
     },
     {
       code: dedent`
@@ -647,7 +609,6 @@ runRuleTester('consistent-spacing-between-blocks - Mocha tests', rule, {
           });
         });
       `,
-      name: 'Tests created via forEach loop',
     },
   ],
 })
@@ -684,7 +645,6 @@ runRuleTester('consistent-spacing-between-blocks - Jest tests', rule, {
         { column: 3, line: 10, messageId: 'missingWhitespace' },
         { column: 3, line: 17, messageId: 'missingWhitespace' },
       ],
-      name: 'Missing padding around test blocks with describe blocks',
       output: dedent`
         const someText = 'abc';
 
@@ -725,7 +685,6 @@ runRuleTester('consistent-spacing-between-blocks - Jest tests', rule, {
           messageId: 'missingWhitespace',
         },
       ],
-      name: 'Missing padding after variable with semicolon',
       output: dedent`
         const someText = 'abc'
 
@@ -745,7 +704,6 @@ runRuleTester('consistent-spacing-between-blocks - Jest tests', rule, {
           messageId: 'missingWhitespace',
         },
       ],
-      name: 'Missing padding after variable with label',
       output: dedent`
         const someText = 'abc';
 
@@ -811,7 +769,6 @@ runRuleTester('consistent-spacing-between-blocks - Jest tests', rule, {
           messageId: 'missingWhitespace',
         },
       ],
-      name: 'Missing padding in switch statement with test blocks',
       output: dedent`
         const expr = 'Papayas';
 
@@ -845,7 +802,6 @@ runRuleTester('consistent-spacing-between-blocks - Jest tests', rule, {
         xyz:
         test.afterEach(() => {});
       `,
-      name: 'Label before test block',
     },
     {
       code: dedent`
@@ -875,7 +831,6 @@ runRuleTester('consistent-spacing-between-blocks - Jest tests', rule, {
           });
         });
       `,
-      name: 'Proper padding around test blocks with describe blocks',
     },
   ],
 })

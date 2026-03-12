@@ -488,7 +488,6 @@ runRuleTester('prefer-hooks-in-order', rule, {
         };
       `,
       errors: [{ column: 3, line: 5, message: 'afterAll should be after beforeAll' }],
-      name: 'Custom messages',
       settings: {
         playwright: {
           messages: {

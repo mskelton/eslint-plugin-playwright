@@ -439,7 +439,6 @@ runRuleTester('no-skipped-test', rule, {
           ],
         },
       ],
-      name: 'describe.serial.skip should be flagged',
     },
     {
       code: 'test.describe.parallel.skip("foo", () => {})',
@@ -459,7 +458,6 @@ runRuleTester('no-skipped-test', rule, {
           ],
         },
       ],
-      name: 'describe.parallel.skip should be flagged',
     },
     // fixme (only when disallowFixme: true)
     {
@@ -606,7 +604,6 @@ runRuleTester('no-skipped-test', rule, {
           }
         })
       `,
-      name: 'allowConditional with switch statement',
       options: [{ allowConditional: true }],
     },
     // Global aliases

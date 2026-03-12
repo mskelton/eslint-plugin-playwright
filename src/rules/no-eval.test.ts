@@ -60,12 +60,10 @@ runRuleTester('no-eval', rule, {
     {
       code: test('await frame.$eval("#search", el => el.value);'),
       errors: [{ column: 34, endColumn: 45, line: 1, messageId: 'noEval' }],
-      name: 'frame.$eval should be flagged',
     },
     {
       code: test('await frame.$$eval("#search", el => el.value);'),
       errors: [{ column: 34, endColumn: 46, line: 1, messageId: 'noEvalAll' }],
-      name: 'frame.$$eval should be flagged',
     },
 
     // Custom messages
@@ -80,7 +78,6 @@ runRuleTester('no-eval', rule, {
         { column: 1, endColumn: 11, line: 1, message: 'no eval' },
         { column: 1, endColumn: 12, line: 2, message: 'no eval all' },
       ],
-      name: 'Custom messages',
       settings: {
         playwright: {
           messages: {

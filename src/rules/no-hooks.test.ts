@@ -46,7 +46,6 @@ runRuleTester('no-hooks', rule, {
         })
       `,
       errors: [{ data: { hookName: 'beforeEach' }, messageId }],
-      name: 'Hooks in nested describe should be flagged',
     },
   ],
   valid: [

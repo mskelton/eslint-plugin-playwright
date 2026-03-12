@@ -360,7 +360,6 @@ runRuleTester('if conditions', rule, {
         })
       `,
       errors: [{ messageId }],
-      name: 'expect inside conditional in test.step',
     },
   ],
   valid: [

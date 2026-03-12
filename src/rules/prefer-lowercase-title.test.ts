@@ -465,7 +465,6 @@ runRuleTester('prefer-lowercase-title with allowedPrefixes', rule, {
     },
     {
       code: 'test("TODO: implement", () => {})',
-      name: 'Combined allowedPrefixes with ignore',
       options: [{ allowedPrefixes: ['TODO'] }],
     },
   ],

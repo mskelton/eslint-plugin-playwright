@@ -204,7 +204,6 @@ runRuleTester('basic describe block', rule, {
         })
       `,
       errors: [{ column: 3, line: 3, messageId: 'noDuplicateHook' }],
-      name: 'Bracket notation duplicate hook',
     },
   ],
   valid: [

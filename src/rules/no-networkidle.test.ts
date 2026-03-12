@@ -44,12 +44,10 @@ runRuleTester('no-networkidle', rule, {
     {
       code: 'page.waitForLoadState(`networkidle`)',
       errors: [{ column: 23, endColumn: 36, line: 1, messageId }],
-      name: 'Template literal in waitForLoadState',
     },
     {
       code: 'page.goto(url, { waitUntil: `networkidle` })',
       errors: [{ column: 29, endColumn: 42, line: 1, messageId }],
-      name: 'Template literal in goto options',
     },
   ],
   valid: [

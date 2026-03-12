@@ -107,7 +107,6 @@ runRuleTester('basic describe block', rule, {
         });
       `,
       errors: [{ column: 3, line: 3, messageId: 'noHookOnTop' }],
-      name: 'afterEach after test should be flagged',
     },
   ],
   valid: [

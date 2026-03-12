@@ -196,7 +196,6 @@ runRuleTester('prefer-equality-matcher: ===', rule, {
           suggestions: expectSuggestions((m) => `expect(a).${m}(b)`),
         },
       ],
-      name: '=== with toStrictEqual should be flagged',
     },
   ],
   valid: [

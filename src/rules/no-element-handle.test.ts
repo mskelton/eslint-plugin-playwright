@@ -373,7 +373,6 @@ runRuleTester('no-element-handle', rule, {
           ],
         },
       ],
-      name: 'frame.$ should be flagged',
     },
     {
       code: test('const handles = await frame.$$("text=Submit");'),
@@ -391,7 +390,6 @@ runRuleTester('no-element-handle', rule, {
           ],
         },
       ],
-      name: 'frame.$$ should be flagged',
     },
   ],
   valid: [
