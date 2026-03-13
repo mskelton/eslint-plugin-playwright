@@ -372,6 +372,42 @@ runRuleTester('missing-playwright-await', rule, {
       ),
       errors: [{ line: 2, messageId: 'waitFor' }],
     },
+    // page / locator methods behind a flag
+    {
+      code: test('page.click("foo")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.fill("foo", "bar")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.goto("https://example.com")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("foo").click()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: dedent(
+        test(`
+          const foo = page.locator("foo")
+          foo.click()
+        `),
+      ),
+      errors: [{ line: 3, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("foo").hover()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
   ],
   valid: [
     // Basic
@@ -721,6 +757,31 @@ runRuleTester('missing-playwright-await', rule, {
           ])
         `),
       ),
+    },
+    // page / locator methods are not checked by default
+    { code: test('page.click("foo")') },
+    { code: test('customThing.click()') },
+    // page / locator methods behind a flag
+    {
+      code: test('await page.click("foo")'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('return page.goto("https://example.com")'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await page.locator("foo").click()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: dedent(
+        test(`
+          const foo = page.locator("foo")
+          await foo.click()
+        `),
+      ),
+      options: [{ includePageLocatorMethods: true }],
     },
   ],
 })

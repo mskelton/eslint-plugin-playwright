@@ -20,6 +20,107 @@ const waitForMethods = [
 
 const waitForMethodsRegex = new RegExp(`^(${waitForMethods.join('|')})$`)
 
+const pageMethods = new Set([
+  'addInitScript',
+  'addScriptTag',
+  'addStyleTag',
+  'bringToFront',
+  'check',
+  'click',
+  'close',
+  'dblclick',
+  'dispatchEvent',
+  'dragAndDrop',
+  'emulateMedia',
+  'evaluate',
+  'evaluateHandle',
+  'exposeBinding',
+  'exposeFunction',
+  'fill',
+  'focus',
+  'getAttribute',
+  'goBack',
+  'goForward',
+  'goto',
+  'hover',
+  'innerHTML',
+  'innerText',
+  'inputValue',
+  'isChecked',
+  'isDisabled',
+  'isEditable',
+  'isEnabled',
+  'isHidden',
+  'isVisible',
+  'pdf',
+  'press',
+  'reload',
+  'route',
+  'routeFromHAR',
+  'screenshot',
+  'selectOption',
+  'setBypassCSP',
+  'setContent',
+  'setChecked',
+  'setExtraHTTPHeaders',
+  'setInputFiles',
+  'setViewportSize',
+  'tap',
+  'textContent',
+  'title',
+  'type',
+  'uncheck',
+  'unroute',
+  'unrouteAll',
+  'waitForLoadState',
+  'waitForTimeout',
+  'waitForURL',
+])
+
+const locatorMethods = new Set([
+  'all',
+  'allInnerTexts',
+  'allTextContents',
+  'blur',
+  'boundingBox',
+  'check',
+  'clear',
+  'click',
+  'count',
+  'dblclick',
+  'dispatchEvent',
+  'dragTo',
+  'evaluate',
+  'evaluateAll',
+  'evaluateHandle',
+  'fill',
+  'focus',
+  'getAttribute',
+  'hover',
+  'innerHTML',
+  'innerText',
+  'inputValue',
+  'isChecked',
+  'isDisabled',
+  'isEditable',
+  'isEnabled',
+  'isHidden',
+  'isVisible',
+  'press',
+  'pressSequentially',
+  'screenshot',
+  'scrollIntoViewIfNeeded',
+  'selectOption',
+  'selectText',
+  'setChecked',
+  'setInputFiles',
+  'tap',
+  'textContent',
+  'type',
+  'uncheck',
+  'waitFor',
+])
+
 const expectPlaywrightMatchers = [
   'toBeChecked',
   'toBeDisabled',
@@ -98,6 +199,7 @@ function getCallType(call: ParsedFnCall, awaitableMatchers: Set<string>) {
 export default createRule({
   create(context) {
     const options = context.options[0] || {}
+    const includePageLocatorMethods = !!options.includePageLocatorMethods
     const awaitableMatchers = new Set([
       ...expectPlaywrightMatchers,
       ...playwrightTestMatchers,
@@ -249,6 +351,23 @@ export default createRule({
           return
         }
 
+        if (includePageLocatorMethods && node.callee.type === 'MemberExpression') {
+          const methodName = getStringValue(node.callee.property)
+          const isPlaywrightMethod =
+            locatorMethods.has(methodName) || (pageMethods.has(methodName) && isPageMethod(node, methodName))
+
+          if (isPlaywrightMethod) {
+            if (!checkValidity(node, new Set())) {
+              context.report({
+                data: { methodName },
+                messageId: 'playwrightMethod',
+                node,
+              })
+            }
+            return
+          }
+        }
+
         const call = parseFnCall(context, node)
         if (call?.type !== 'step' && call?.type !== 'expect') {
           return
@@ -278,6 +397,7 @@ export default createRule({
     messages: {
       expect: "'{{matcherName}}' must be awaited or returned.",
       expectPoll: "'expect.poll' matchers must be awaited or returned.",
+      playwrightMethod: "'{{methodName}}' must be awaited or returned.",
       testStep: "'test.step' must be awaited or returned.",
       waitFor: "'{{methodName}}' must be awaited or returned.",
     },
@@ -288,6 +408,9 @@ export default createRule({
           customMatchers: {
             items: { type: 'string' },
             type: 'array',
+          },
+          includePageLocatorMethods: {
+            type: 'boolean',
           },
         },
         type: 'object',
