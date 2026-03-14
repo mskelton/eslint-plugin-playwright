@@ -1317,11 +1317,11 @@ runRuleTester('missing-playwright-await', rule, {
     // Option combined with customMatchers
     {
       code: test('await page.click("foo")'),
-      options: [{ includePageLocatorMethods: true, customMatchers: ['toBeCustomThing'] }],
+      options: [{ customMatchers: ['toBeCustomThing'], includePageLocatorMethods: true }],
     },
     {
       code: test('await expect(page).toBeCustomThing(true)'),
-      options: [{ includePageLocatorMethods: true, customMatchers: ['toBeCustomThing'] }],
+      options: [{ customMatchers: ['toBeCustomThing'], includePageLocatorMethods: true }],
     },
   ],
 })
