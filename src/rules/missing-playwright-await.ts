@@ -178,7 +178,11 @@ function getReportNode(node: ESTree.Node) {
 
 function getCallType(call: ParsedFnCall, awaitableMatchers: Set<string>) {
   if (call.type === 'step') {
-    return { messageId: 'testStep', node: call.head.node }
+    return {
+      data: { name: 'test.step' },
+      messageId: 'missingAwait',
+      node: call.head.node,
+    }
   }
 
   if (call.type === 'expect') {
@@ -188,8 +192,8 @@ function getCallType(call: ParsedFnCall, awaitableMatchers: Set<string>) {
     // awaitable matcher.
     if (isPoll || awaitableMatchers.has(call.matcherName)) {
       return {
-        data: { matcherName: call.matcherName },
-        messageId: isPoll ? 'expectPoll' : 'expect',
+        data: { name: isPoll ? 'expect.poll' : call.matcherName },
+        messageId: 'missingAwait',
         node: call.head.node,
       }
     }
@@ -343,8 +347,8 @@ export default createRule({
           if (!checkValidity(node, new Set())) {
             const methodName = getStringValue((node.callee as ESTree.MemberExpression).property)
             context.report({
-              data: { methodName },
-              messageId: 'waitFor',
+              data: { name: methodName },
+              messageId: 'missingAwait',
               node,
             })
           }
@@ -354,13 +358,14 @@ export default createRule({
         if (includePageLocatorMethods && node.callee.type === 'MemberExpression') {
           const methodName = getStringValue(node.callee.property)
           const isPlaywrightMethod =
-            locatorMethods.has(methodName) || (pageMethods.has(methodName) && isPageMethod(node, methodName))
+            locatorMethods.has(methodName) ||
+            (pageMethods.has(methodName) && isPageMethod(node, methodName))
 
           if (isPlaywrightMethod) {
             if (!checkValidity(node, new Set())) {
               context.report({
-                data: { methodName },
-                messageId: 'playwrightMethod',
+                data: { name: methodName },
+                messageId: 'missingAwait',
                 node,
               })
             }
@@ -395,11 +400,7 @@ export default createRule({
     },
     fixable: 'code',
     messages: {
-      expect: "'{{matcherName}}' must be awaited or returned.",
-      expectPoll: "'expect.poll' matchers must be awaited or returned.",
-      playwrightMethod: "'{{methodName}}' must be awaited or returned.",
-      testStep: "'test.step' must be awaited or returned.",
-      waitFor: "'{{methodName}}' must be awaited or returned.",
+      missingAwait: "'{{name}}' must be awaited or returned.",
     },
     schema: [
       {
