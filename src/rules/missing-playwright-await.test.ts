@@ -408,6 +408,348 @@ runRuleTester('missing-playwright-await', rule, {
       errors: [{ column: 28, messageId: 'playwrightMethod' }],
       options: [{ includePageLocatorMethods: true }],
     },
+    // More page methods (includePageLocatorMethods)
+    {
+      code: test('page.reload()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.press("body", "Enter")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.check("input")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.uncheck("input")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.screenshot()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.goBack()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.goForward()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.setContent("<html></html>")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.waitForLoadState("domcontentloaded")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.evaluate(() => document.title)'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.getAttribute("body", "id")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    // Locator-only methods (not on Page)
+    {
+      code: test('page.locator("foo").waitFor()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("foo").count()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("input").clear()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("foo").dragTo(page.locator("bar"))'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("foo").scrollIntoViewIfNeeded()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("input").pressSequentially("hello")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("li").allTextContents()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("foo").textContent()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("foo").getAttribute("href")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("foo").selectOption("bar")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("foo").setChecked(true)'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("foo").dblclick()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("foo").focus()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("foo").blur()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    // Bracket notation for page/locator methods
+    {
+      code: test('page["click"]("foo")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page[\'goto\']("https://example.com")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("foo")["fill"]("bar")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    // context.page and this.page (isPageMethod accepts these)
+    {
+      code: dedent(
+        test(`
+          context.page.click("foo")
+        `),
+      ),
+      errors: [{ line: 2, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: dedent(
+        test(`
+          context.page.goto("https://example.com")
+        `),
+      ),
+      errors: [{ line: 2, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: dedent(
+        test(`
+          this.page.click("foo")
+        `),
+      ),
+      errors: [{ line: 2, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: dedent(
+        test(`
+          this.page.goto("https://example.com")
+        `),
+      ),
+      errors: [{ line: 2, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    // Chained locator
+    {
+      code: test('page.locator("a").locator("b").click()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    // .then() / .catch() without awaiting the outer call
+    {
+      code: test('page.click("foo").then(() => {})'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('page.locator("foo").click().catch(() => {})'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    // Variable assigned but not consumed
+    {
+      code: dedent(
+        test(`
+          const p = page.goto("https://example.com")
+        `),
+      ),
+      errors: [{ line: 2, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: dedent(
+        test(`
+          const p = page.locator("foo").click()
+        `),
+      ),
+      errors: [{ line: 2, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    // Non-page/non-locator objects calling locator methods (reported when flag on: method name matches)
+    {
+      code: test('foo.click()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('customThing.click()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('bar.fill("selector", "value")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('element.hover()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('widget.press("Enter")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('node.focus()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('control.blur()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('item.check()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('input.uncheck()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('el.dblclick()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('selector.clear()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('list.count()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('elem.getAttribute("href")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('node.textContent()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('loc.waitFor()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('btn.setChecked(true)'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('dropdown.selectOption("x")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('el.scrollIntoViewIfNeeded()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('field.pressSequentially("text")'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('items.allTextContents()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('row.dragTo(target)'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('component.screenshot()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('elem["click"]()'),
+      errors: [{ column: 28, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: dedent(
+        test(`
+          const button = getButton()
+          button.click()
+        `),
+      ),
+      errors: [{ line: 3, messageId: 'playwrightMethod' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
   ],
   valid: [
     // Basic
@@ -761,6 +1103,66 @@ runRuleTester('missing-playwright-await', rule, {
     // page / locator methods are not checked by default
     { code: test('page.click("foo")') },
     { code: test('customThing.click()') },
+    // Non-page objects calling page-only methods (no report: method not in locatorMethods, isPageMethod false)
+    {
+      code: test('something.goto("https://example.com")'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('other.reload()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('obj.goBack()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('nav.goForward()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('p.setContent("<html></html>")'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('view.waitForLoadState("load")'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    // Non-page objects: when awaited/returned the rule is satisfied
+    {
+      code: test('await foo.click()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('return customThing.click()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await bar.fill("sel", "val")'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await element.hover()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: dedent(
+        test(`
+          const button = getButton()
+          await button.click()
+        `),
+      ),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: dedent(
+        test(`
+          const el = getElement()
+          return el.click()
+        `),
+      ),
+      options: [{ includePageLocatorMethods: true }],
+    },
     // page / locator methods behind a flag
     {
       code: test('await page.click("foo")'),
@@ -782,6 +1184,144 @@ runRuleTester('missing-playwright-await', rule, {
         `),
       ),
       options: [{ includePageLocatorMethods: true }],
+    },
+    // More valid page/locator patterns with flag
+    {
+      code: test('await page.reload()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await page.press("body", "Enter")'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await page.screenshot()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await page.goBack()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await page.setContent("<html></html>")'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await page.locator("foo").waitFor()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await page.locator("foo").count()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await page.locator("input").clear()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await page.locator("foo").textContent()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await page.locator("foo").getAttribute("href")'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await page["click"]("foo")'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await page[\'goto\']("https://example.com")'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: dedent(
+        test(`
+          await context.page.click("foo")
+        `),
+      ),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: dedent(
+        test(`
+          await this.page.goto("https://example.com")
+        `),
+      ),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await page.locator("a").locator("b").click()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    // Promise.all with page/locator methods
+    {
+      code: test(`
+        await Promise.all([
+          page.click("foo"),
+          page.locator("bar").click(),
+        ])
+      `),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test(`
+        await Promise.all([
+          page.goto("https://a.com"),
+          page.goto("https://b.com"),
+        ])
+      `),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    // .then() chain awaited
+    {
+      code: test('await page.click("foo").then(() => {})'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await page.locator("foo").click().catch(() => {})'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('return page.click("foo").then(() => {})'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    // Variable assigned and later awaited/returned
+    {
+      code: dedent(
+        test(`
+          const p = page.goto("https://example.com")
+          await p
+        `),
+      ),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: dedent(
+        test(`
+          const p = page.locator("foo").click()
+          await p
+        `),
+      ),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: dedent(
+        test(`
+          const p = page.goto("https://example.com")
+          return p
+        `),
+      ),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    // Option combined with customMatchers
+    {
+      code: test('await page.click("foo")'),
+      options: [{ includePageLocatorMethods: true, customMatchers: ['toBeCustomThing'] }],
+    },
+    {
+      code: test('await expect(page).toBeCustomThing(true)'),
+      options: [{ includePageLocatorMethods: true, customMatchers: ['toBeCustomThing'] }],
     },
   ],
 })
