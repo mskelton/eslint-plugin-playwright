@@ -54,3 +54,13 @@ your own async `expect` matchers.
   "playwright/missing-playwright-await": ["error", { "customMatchers": ["toBeCustomThing"] }]
 }
 ```
+
+You can also enable broader page and locator method detection behind a flag.
+This keeps the current behavior as the default while allowing additional checks
+for calls such as `page.goto()`, `page.click()`, and `locator.click()`.
+
+```json
+{
+  "playwright/missing-playwright-await": ["error", { "includePageLocatorMethods": true }]
+}
+```

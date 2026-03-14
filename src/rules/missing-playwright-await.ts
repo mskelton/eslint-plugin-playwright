@@ -20,6 +20,107 @@ const waitForMethods = [
 
 const waitForMethodsRegex = new RegExp(`^(${waitForMethods.join('|')})$`)
 
+const pageMethods = new Set([
+  'addInitScript',
+  'addScriptTag',
+  'addStyleTag',
+  'bringToFront',
+  'check',
+  'click',
+  'close',
+  'dblclick',
+  'dispatchEvent',
+  'dragAndDrop',
+  'emulateMedia',
+  'evaluate',
+  'evaluateHandle',
+  'exposeBinding',
+  'exposeFunction',
+  'fill',
+  'focus',
+  'getAttribute',
+  'goBack',
+  'goForward',
+  'goto',
+  'hover',
+  'innerHTML',
+  'innerText',
+  'inputValue',
+  'isChecked',
+  'isDisabled',
+  'isEditable',
+  'isEnabled',
+  'isHidden',
+  'isVisible',
+  'pdf',
+  'press',
+  'reload',
+  'route',
+  'routeFromHAR',
+  'screenshot',
+  'selectOption',
+  'setBypassCSP',
+  'setContent',
+  'setChecked',
+  'setExtraHTTPHeaders',
+  'setInputFiles',
+  'setViewportSize',
+  'tap',
+  'textContent',
+  'title',
+  'type',
+  'uncheck',
+  'unroute',
+  'unrouteAll',
+  'waitForLoadState',
+  'waitForTimeout',
+  'waitForURL',
+])
+
+const locatorMethods = new Set([
+  'all',
+  'allInnerTexts',
+  'allTextContents',
+  'blur',
+  'boundingBox',
+  'check',
+  'clear',
+  'click',
+  'count',
+  'dblclick',
+  'dispatchEvent',
+  'dragTo',
+  'evaluate',
+  'evaluateAll',
+  'evaluateHandle',
+  'fill',
+  'focus',
+  'getAttribute',
+  'hover',
+  'innerHTML',
+  'innerText',
+  'inputValue',
+  'isChecked',
+  'isDisabled',
+  'isEditable',
+  'isEnabled',
+  'isHidden',
+  'isVisible',
+  'press',
+  'pressSequentially',
+  'screenshot',
+  'scrollIntoViewIfNeeded',
+  'selectOption',
+  'selectText',
+  'setChecked',
+  'setInputFiles',
+  'tap',
+  'textContent',
+  'type',
+  'uncheck',
+  'waitFor',
+])
+
 const expectPlaywrightMatchers = [
   'toBeChecked',
   'toBeDisabled',
@@ -77,7 +178,11 @@ function getReportNode(node: ESTree.Node) {
 
 function getCallType(call: ParsedFnCall, awaitableMatchers: Set<string>) {
   if (call.type === 'step') {
-    return { messageId: 'testStep', node: call.head.node }
+    return {
+      data: { name: 'test.step' },
+      messageId: 'missingAwait',
+      node: call.head.node,
+    }
   }
 
   if (call.type === 'expect') {
@@ -87,8 +192,8 @@ function getCallType(call: ParsedFnCall, awaitableMatchers: Set<string>) {
     // awaitable matcher.
     if (isPoll || awaitableMatchers.has(call.matcherName)) {
       return {
-        data: { matcherName: call.matcherName },
-        messageId: isPoll ? 'expectPoll' : 'expect',
+        data: { name: isPoll ? 'expect.poll' : call.matcherName },
+        messageId: 'missingAwait',
         node: call.head.node,
       }
     }
@@ -98,6 +203,7 @@ function getCallType(call: ParsedFnCall, awaitableMatchers: Set<string>) {
 export default createRule({
   create(context) {
     const options = context.options[0] || {}
+    const includePageLocatorMethods = !!options.includePageLocatorMethods
     const awaitableMatchers = new Set([
       ...expectPlaywrightMatchers,
       ...playwrightTestMatchers,
@@ -241,12 +347,30 @@ export default createRule({
           if (!checkValidity(node, new Set())) {
             const methodName = getStringValue((node.callee as ESTree.MemberExpression).property)
             context.report({
-              data: { methodName },
-              messageId: 'waitFor',
+              data: { name: methodName },
+              messageId: 'missingAwait',
               node,
             })
           }
           return
+        }
+
+        if (includePageLocatorMethods && node.callee.type === 'MemberExpression') {
+          const methodName = getStringValue(node.callee.property)
+          const isPlaywrightMethod =
+            locatorMethods.has(methodName) ||
+            (pageMethods.has(methodName) && isPageMethod(node, methodName))
+
+          if (isPlaywrightMethod) {
+            if (!checkValidity(node, new Set())) {
+              context.report({
+                data: { name: methodName },
+                messageId: 'missingAwait',
+                node,
+              })
+            }
+            return
+          }
         }
 
         const call = parseFnCall(context, node)
@@ -276,10 +400,7 @@ export default createRule({
     },
     fixable: 'code',
     messages: {
-      expect: "'{{matcherName}}' must be awaited or returned.",
-      expectPoll: "'expect.poll' matchers must be awaited or returned.",
-      testStep: "'test.step' must be awaited or returned.",
-      waitFor: "'{{methodName}}' must be awaited or returned.",
+      missingAwait: "'{{name}}' must be awaited or returned.",
     },
     schema: [
       {
@@ -288,6 +409,9 @@ export default createRule({
           customMatchers: {
             items: { type: 'string' },
             type: 'array',
+          },
+          includePageLocatorMethods: {
+            type: 'boolean',
           },
         },
         type: 'object',
