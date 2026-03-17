@@ -261,5 +261,6 @@ runRuleTester('no-wait-for-timeout', rule, {
     'page["waitForSelector"]("#foo");',
     'rampage.waitForTimeout(2000);',
     'myPage2.waitForTimeout(2000);',
+    'table.nextPage.waitForTimeout(2000);',
   ],
 })

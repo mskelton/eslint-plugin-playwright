@@ -1105,6 +1105,10 @@ runRuleTester('missing-playwright-await', rule, {
     { code: test('customThing.click()') },
     // Non-page objects calling page-only methods (no report: method not in locatorMethods, isPageMethod false)
     {
+      code: test('table.nextPage.goto("https://example.com")'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
       code: test('something.goto("https://example.com")'),
       options: [{ includePageLocatorMethods: true }],
     },

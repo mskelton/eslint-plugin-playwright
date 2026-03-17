@@ -281,6 +281,7 @@ runRuleTester('no-wait-for-navigation', rule, {
     'page["waitForTimeout"](2000);',
     'rampage.waitForNavigation();',
     'myPage2.waitForNavigation();',
+    'table.nextPage.waitForNavigation();',
     'page.waitForLoadState("load");',
     'page.waitForLoadState("domcontentloaded");',
     'page.waitForLoadState("networkidle");',

@@ -94,6 +94,7 @@ runRuleTester('no-eval', rule, {
     test('await page.locator(".tweet")["evaluate"](node => node.innerText)'),
     test('await page.locator(".tweet")[`evaluate`](node => node.innerText)'),
     test('await (await page.$(".tweet")).$eval(".like", node => node.innerText)'),
+    test('await table.nextPage.$eval(".foo", node => node.innerText)'),
     test('await (await page.$(".tweet"))["$eval"](".like", node => node.innerText)'),
     test('await (await page.$(".tweet")).$$eval(".like", node => node.innerText)'),
     test('await (await page.$(".tweet"))[`$$eval`](".like", node => node.innerText)'),

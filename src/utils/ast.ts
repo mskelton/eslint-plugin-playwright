@@ -87,12 +87,30 @@ export function dig(node: ESTree.Node, identifier: string | RegExp): boolean {
         : false
 }
 
+const pageFrameFullPattern = /(^(page|frame)|(Page|Frame)$)/
+const pageFramePrefixPattern = /^(page|frame)/
+
 export function isPageMethod(node: ESTree.CallExpression, name: string | RegExp) {
-  return (
-    node.callee.type === 'MemberExpression' &&
-    dig(node.callee.object, /(^(page|frame)|(Page|Frame)$)/) &&
-    isPropertyAccessor(node.callee, name)
-  )
+  if (node.callee.type !== 'MemberExpression') {
+    return false
+  }
+  if (!isPropertyAccessor(node.callee, name)) {
+    return false
+  }
+
+  const obj = node.callee.object
+
+  // For property access (e.g. this.myPage, context.page), check the property name
+  // directly rather than recursing. Use the full pattern (including suffix) only
+  // when the object is `this`, since arbitrary objects like `table` can have
+  // locator properties that happen to end with "Page" (e.g. table.nextPage).
+  if (obj.type === 'MemberExpression') {
+    const pattern =
+      obj.object.type === 'ThisExpression' ? pageFrameFullPattern : pageFramePrefixPattern
+    return isIdentifier(obj.property, pattern)
+  }
+
+  return dig(obj, pageFrameFullPattern)
 }
 
 export type FunctionExpression = (ESTree.ArrowFunctionExpression | ESTree.FunctionExpression) &

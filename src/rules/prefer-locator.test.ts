@@ -191,5 +191,11 @@ runRuleTester('prefer-locator', rule, {
     {
       code: `page.frame('frame-name')`,
     },
+    {
+      code: `await table.nextPage.click()`,
+    },
+    {
+      code: `await table.nextPage.fill('text')`,
+    },
   ],
 })

@@ -402,6 +402,7 @@ runRuleTester('no-element-handle', rule, {
     test('this["$"]("a");'),
     test('this[`$`]("a");'),
     test('something.$("a");'),
+    test('table.nextPage.$("a");'),
     test('this.page.$$$("div");'),
     test('page.$$$("div");'),
   ],
