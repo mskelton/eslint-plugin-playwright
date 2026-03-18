@@ -1318,6 +1318,27 @@ runRuleTester('missing-playwright-await', rule, {
       ),
       options: [{ includePageLocatorMethods: true }],
     },
+    // Array.fill and similar Array methods should not be flagged
+    {
+      code: test('new Array(5).fill(0)'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('[].fill(0)'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('[1, 2, 3].fill(0)'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('Array.from({ length: 5 }).fill(0)'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('Array.of(1, 2, 3).fill(0)'),
+      options: [{ includePageLocatorMethods: true }],
+    },
     // Option combined with customMatchers
     {
       code: test('await page.click("foo")'),

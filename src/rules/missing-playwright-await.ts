@@ -6,6 +6,16 @@ import type { NodeWithParent } from '../utils/types.js'
 
 const validTypes = new Set(['AwaitExpression', 'ReturnStatement', 'ArrowFunctionExpression'])
 
+function isArrayLike(node: ESTree.Node) {
+  return (
+    node.type === 'ArrayExpression' ||
+    (node.type === 'NewExpression' && isIdentifier(node.callee, 'Array')) ||
+    (node.type === 'CallExpression' &&
+      node.callee.type === 'MemberExpression' &&
+      isIdentifier(node.callee.object, 'Array'))
+  )
+}
+
 const waitForMethods = [
   'waitForConsoleMessage',
   'waitForDownload',
@@ -358,8 +368,9 @@ export default createRule({
         if (includePageLocatorMethods && node.callee.type === 'MemberExpression') {
           const methodName = getStringValue(node.callee.property)
           const isPlaywrightMethod =
-            locatorMethods.has(methodName) ||
-            (pageMethods.has(methodName) && isPageMethod(node, methodName))
+            !isArrayLike(node.callee.object) &&
+            (locatorMethods.has(methodName) ||
+              (pageMethods.has(methodName) && isPageMethod(node, methodName)))
 
           if (isPlaywrightMethod) {
             if (!checkValidity(node, new Set())) {
