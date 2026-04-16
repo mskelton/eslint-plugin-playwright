@@ -323,6 +323,50 @@ runRuleTester('multiple describe blocks', rule, {
   ],
 })
 
+runRuleTester('forEach loops', rule, {
+  invalid: [
+    {
+      code: dedent`
+        [1, 2].forEach(() => {
+          test.describe(() => {
+            test.beforeEach(() => {})
+            test.beforeEach(() => {})
+          })
+        })
+      `,
+      errors: [
+        {
+          column: 5,
+          data: { hook: 'beforeEach' },
+          line: 4,
+          messageId: 'noDuplicateHook',
+        },
+      ],
+    },
+  ],
+  valid: [
+    dedent`
+      [1, 2, 3].forEach(() => {
+        test.describe(() => {
+          test.beforeEach(() => {})
+          test("bar", () => {
+            someFn();
+          })
+        })
+      })
+
+      [4, 5].forEach(() => {
+        test.describe(() => {
+          test.beforeEach(() => {})
+          test("bar", () => {
+            someFn();
+          })
+        })
+      })
+    `,
+  ],
+})
+
 runRuleTester('nested describe blocks', rule, {
   invalid: [
     {

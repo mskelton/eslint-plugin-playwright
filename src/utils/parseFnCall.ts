@@ -544,12 +544,19 @@ function parse(
 
   // If the call is a configuration hook. E.g., `test.skip(true)`, `test.use()`,
   // `test.describe.configure()`, etc.
+  //
+  // For `describe`, only treat as config when the last argument is not a
+  // function. `test.describe(() => {...})` is a valid anonymous describe block
+  // and should not be treated as a config call even though it only has 1 arg.
   let type: FnType = group
-  if (
-    (name === 'test' || name === 'describe') &&
-    (node.arguments.length < 2 || !isFunction(node.arguments.at(-1)))
-  ) {
-    type = 'config'
+  if (name === 'describe') {
+    if (!isFunction(node.arguments.at(-1))) {
+      type = 'config'
+    }
+  } else if (name === 'test') {
+    if (node.arguments.length < 2 || !isFunction(node.arguments.at(-1))) {
+      type = 'config'
+    }
   }
 
   return {
