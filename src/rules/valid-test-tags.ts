@@ -1,5 +1,5 @@
-import type { TSESTree } from '@typescript-eslint/utils'
 import type { Rule } from 'eslint'
+import type { Property } from 'estree'
 import { getStringValue } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
@@ -108,7 +108,7 @@ export default createRule({
             !('argument' in prop) && // Ensure it's not a spread element
             prop.key.type === 'Identifier' &&
             prop.key.name === 'tag',
-        ) as TSESTree.Property | undefined
+        ) as Property | undefined
 
         if (!tagProperty) {
           return
@@ -128,13 +128,18 @@ export default createRule({
         } else if (tagValue.type === 'ArrayExpression') {
           // Handle array of strings
           for (const element of tagValue.elements) {
-            if (!element) return
+            if (!element) {
+              return
+            }
+
             if (element.type !== 'Literal' && element.type !== 'TemplateLiteral') {
               return // Skip invalid elements, TypeScript will handle this
             }
+
             if (element.type === 'Literal' && typeof element.value !== 'string') {
               return
             }
+
             validateTag(getStringValue(element), node)
           }
         } else {
