@@ -8,6 +8,35 @@ runTSRuleTester('valid-test-tags', validTestTags, {
       code: "test('my test', { tag: 'e2e' }, async ({ page }) => {})",
       errors: [{ messageId: 'invalidTagFormat' }],
     },
+    // Template literal tag without @ prefix
+    {
+      code: 'test(`my test`, { tag: `e2e` }, async ({ page }) => {})',
+      errors: [{ messageId: 'invalidTagFormat' }],
+    },
+    // Template literal tag in disallowedTags list
+    {
+      code: 'test(`my test`, { tag: `@skip` }, async ({ page }) => {})',
+      errors: [{ data: { tag: '@skip' }, messageId: 'disallowedTag' }],
+      options: [{ disallowedTags: ['@skip', '@todo'] }],
+    },
+    // Template literal tag not in allowedTags list
+    {
+      code: 'test(`my test`, { tag: `@e2e` }, async ({ page }) => {})',
+      errors: [{ data: { tag: '@e2e' }, messageId: 'unknownTag' }],
+      options: [{ allowedTags: ['@regression', '@smoke'] }],
+    },
+    // Array with template literal tag in disallowedTags list
+    {
+      code: 'test(`my test`, { tag: [`@todo`] }, async ({ page }) => {})',
+      errors: [{ data: { tag: '@todo' }, messageId: 'disallowedTag' }],
+      options: [{ disallowedTags: ['@skip', '@todo'] }],
+    },
+    // Template literal title with disallowed tag
+    {
+      code: 'test(`@skip my test`, async ({ page }) => {})',
+      errors: [{ data: { tag: '@skip' }, messageId: 'disallowedTag' }],
+      options: [{ disallowedTags: ['@skip', '@todo'] }],
+    },
     // Invalid tag value type
     {
       code: "test('my test', { tag: 123 }, async ({ page }) => {})",
@@ -124,6 +153,24 @@ runTSRuleTester('valid-test-tags', validTestTags, {
     // Basic tag validation
     {
       code: "test('my test', { tag: '@e2e' }, async ({ page }) => {})",
+    },
+    // Template literal tags (valid)
+    {
+      code: 'test(`my test`, { tag: `@e2e` }, async ({ page }) => {})',
+    },
+    {
+      code: 'test(`my test`, { tag: [`@e2e`, `@login`] }, async ({ page }) => {})',
+    },
+    {
+      code: 'test(`my test`, { tag: `@regression` }, async ({ page }) => {})',
+      options: [{ allowedTags: ['@regression', '@smoke'] }],
+    },
+    {
+      code: 'test(`my test`, { tag: `@e2e` }, async ({ page }) => {})',
+      options: [{ disallowedTags: ['@skip', '@todo'] }],
+    },
+    {
+      code: 'test(`@e2e my test`, async ({ page }) => {})',
     },
     {
       code: "test('my test', { tag: ['@e2e', '@login'] }, async ({ page }) => {})",

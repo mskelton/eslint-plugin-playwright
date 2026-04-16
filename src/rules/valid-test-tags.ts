@@ -1,5 +1,6 @@
 import type { TSESTree } from '@typescript-eslint/utils'
 import type { Rule } from 'eslint'
+import { getStringValue } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
 
@@ -83,8 +84,8 @@ export default createRule({
         // Check for tags in the title (first argument)
         if (node.arguments.length > 0) {
           const titleArg = node.arguments[0]
-          if (titleArg && titleArg.type === 'Literal' && typeof titleArg.value === 'string') {
-            const titleTags = extractTagsFromTitle(titleArg.value)
+          if (titleArg) {
+            const titleTags = extractTagsFromTitle(getStringValue(titleArg))
             for (const tag of titleTags) {
               validateTag(tag, node)
             }
@@ -114,23 +115,27 @@ export default createRule({
         }
 
         const tagValue = tagProperty.value
-        if (tagValue.type === 'Literal') {
-          // Handle string literal
-          if (typeof tagValue.value !== 'string') {
+        if (tagValue.type === 'Literal' || tagValue.type === 'TemplateLiteral') {
+          // Handle string literal or template literal
+          if (tagValue.type === 'Literal' && typeof tagValue.value !== 'string') {
             context.report({
               messageId: 'invalidTagValue',
               node,
             })
             return
           }
-          validateTag(tagValue.value, node)
+          validateTag(getStringValue(tagValue), node)
         } else if (tagValue.type === 'ArrayExpression') {
           // Handle array of strings
           for (const element of tagValue.elements) {
-            if (!element || element.type !== 'Literal' || typeof element.value !== 'string') {
+            if (!element) return
+            if (element.type !== 'Literal' && element.type !== 'TemplateLiteral') {
               return // Skip invalid elements, TypeScript will handle this
             }
-            validateTag(element.value, node)
+            if (element.type === 'Literal' && typeof element.value !== 'string') {
+              return
+            }
+            validateTag(getStringValue(element), node)
           }
         } else {
           context.report({
