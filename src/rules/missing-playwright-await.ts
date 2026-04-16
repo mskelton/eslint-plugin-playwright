@@ -1,3 +1,4 @@
+import type { Scope } from 'eslint'
 import type * as ESTree from 'estree'
 import { getStringValue, isIdentifier, isPageMethod, isPromiseAccessor } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
@@ -224,47 +225,37 @@ export default createRule({
     /**
      * When a promise is assigned to a variable (e.g. `const x = page.waitForResponse(...)`),
      * we only consider it "consumed" if that variable is read in a valid place (await/return)
-     * or passed to another variable that is. This checks only references to the declared
-     * variable(s), not every identifier in the scope.
+     * or passed to another variable that is.
      */
-    function isVariableConsumed(
-      declarator: ESTree.VariableDeclarator,
-      checkValidity: (node: ESTree.Node, visited: Set<ESTree.Node>) => boolean,
-      validTypes: Set<string>,
-      visited: Set<ESTree.Node>,
-    ): boolean {
-      // e.g. `const x = ...` → one variable; destructuring → possibly several
-      const variables = context.sourceCode.getDeclaredVariables(declarator)
-      for (const variable of variables) {
-        for (const ref of variable.references) {
-          // Skip the declaration itself (the write); we only care where the value is read
-          if (!ref.isRead()) {
-            continue
-          }
+    function isVariableConsumed(variable: Scope.Variable, visited: Set<ESTree.Node>): boolean {
+      for (const ref of variable.references) {
+        // Skip the declaration itself (the write); we only care where the value is read
+        if (!ref.isRead()) {
+          continue
+        }
 
-          const refParent = (ref.identifier as NodeWithParent).parent
-          if (visited.has(refParent)) {
-            continue
-          }
+        const refParent = (ref.identifier as NodeWithParent).parent
+        if (!refParent || visited.has(refParent)) {
+          continue
+        }
 
-          // Read is in a valid place: await x, return x, or (x) => ...
-          if (validTypes.has(refParent.type)) {
+        // Read is in a valid place: await x, return x, or (x) => ...
+        if (validTypes.has(refParent.type)) {
+          return true
+        }
+
+        // Value flows to another variable (e.g. const bar = foo); recurse so we
+        // check whether that variable is consumed
+        if (refParent.type === 'VariableDeclarator') {
+          if (checkValidity(ref.identifier as ESTree.Node, visited)) {
             return true
           }
+          continue
+        }
 
-          // Value flows to another variable (e.g. const bar = foo); recurse so we
-          // check whether that variable is consumed
-          if (refParent.type === 'VariableDeclarator') {
-            if (checkValidity(ref.identifier as ESTree.Node, visited)) {
-              return true
-            }
-            continue
-          }
-
-          // Walk up (e.g. through .then(), ternary) to see if we end up in a valid place
-          if (checkValidity(refParent, visited)) {
-            return true
-          }
+        // Walk up (e.g. through .then(), ternary) to see if we end up in a valid place
+        if (checkValidity(refParent, visited)) {
+          return true
         }
       }
       return false
@@ -345,7 +336,30 @@ export default createRule({
 
       // Assigned to a variable — valid only if that variable is consumed (see above)
       if (parent.type === 'VariableDeclarator') {
-        return isVariableConsumed(parent, checkValidity, validTypes, visited)
+        return context.sourceCode
+          .getDeclaredVariables(parent)
+          .some((v) => isVariableConsumed(v, visited))
+      }
+
+      // Re-assigned to an existing variable (e.g. `res = page.waitForResponse(...)`)
+      if (
+        parent.type === 'AssignmentExpression' &&
+        parent.right === node &&
+        parent.left.type === 'Identifier'
+      ) {
+        const parentName = parent.left.name
+        let scope: Scope.Scope | null = context.sourceCode.getScope(node)
+
+        while (scope) {
+          const variable = scope.variables.find((v) => v.name === parentName)
+          if (variable) {
+            return isVariableConsumed(variable, visited)
+          }
+
+          scope = scope.upper
+        }
+
+        return false
       }
 
       return false

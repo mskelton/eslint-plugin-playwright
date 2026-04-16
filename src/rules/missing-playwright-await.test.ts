@@ -317,6 +317,29 @@ runRuleTester('missing-playwright-await', rule, {
       ),
       errors: [{ line: 2, messageId: 'missingAwait' }],
     },
+    // Variable re-assignment: re-assigned but never awaited
+    {
+      code: dedent(
+        test(`
+          let res
+          res = page.waitForResponse('/abc')
+        `),
+      ),
+      errors: [{ line: 3, messageId: 'missingAwait' }],
+    },
+    // Variable re-assignment: re-assigned without any subsequent await
+    {
+      code: dedent(
+        test(`
+          let res = page.waitForResponse('/foo')
+          res = page.waitForResponse('/abc')
+        `),
+      ),
+      errors: [
+        { line: 2, messageId: 'missingAwait' },
+        { line: 3, messageId: 'missingAwait' },
+      ],
+    },
     // .then() / .catch() without await on the chain is still invalid
     {
       code: test('page.waitForResponse("https://example.com").then(res => res.json())'),
@@ -1097,6 +1120,55 @@ runRuleTester('missing-playwright-await', rule, {
             expect(locator).toBeVisible(),
             ...(someCondition ? [page.waitForResponse('https://example.com')] : []),
           ])
+        `),
+      ),
+    },
+    // Variable re-assignment: await on re-used variable
+    {
+      code: dedent(
+        test(`
+          let res = page.waitForResponse('/foo')
+          await res
+
+          res = page.waitForResponse('/abc')
+          await res
+        `),
+      ),
+    },
+    // Variable re-assignment: return instead of await
+    {
+      code: dedent(
+        test(`
+          let res = page.waitForResponse('/foo')
+          await res
+
+          res = page.waitForResponse('/abc')
+          return res
+        `),
+      ),
+    },
+    // Variable re-assignment: no initial value, assigned then awaited
+    {
+      code: dedent(
+        test(`
+          let res
+          res = page.waitForResponse('/abc')
+          await res
+        `),
+      ),
+    },
+    // Variable re-assignment: three assignments all properly consumed
+    {
+      code: dedent(
+        test(`
+          let res = page.waitForResponse('/foo')
+          await res
+
+          res = page.waitForResponse('/bar')
+          await res
+
+          res = page.waitForResponse('/baz')
+          await res
         `),
       ),
     },
