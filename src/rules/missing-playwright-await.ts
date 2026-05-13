@@ -330,7 +330,10 @@ export default createRule({
       if (parent.type === 'MemberExpression' && parent.object === node) {
         return checkValidity(parent, visited)
       }
-      if (parent.type === 'CallExpression' && parent.callee === node) {
+      if (
+        parent.type === 'CallExpression' &&
+        (parent.callee === node || isIdentifier(parent.callee, 'expect'))
+      ) {
         return checkValidity(parent, visited)
       }
 

@@ -1067,6 +1067,13 @@ runRuleTester('missing-playwright-await', rule, {
     {
       code: dedent(
         test(`
+          await expect(page.waitForEvent('download')).resolves.toBeTruthy()
+        `),
+      ),
+    },
+    {
+      code: dedent(
+        test(`
           const requestPromise = page.waitForRequest("https://example.com/resource")
           await expect(requestPromise).resolves.toBeTruthy()
         `),
