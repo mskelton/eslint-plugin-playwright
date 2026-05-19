@@ -155,6 +155,8 @@ runRuleTester('valid-title', rule, {
   valid: [
     'test.describe("the correct way to properly handle all the things", () => {});',
     'test.describe.configure({ mode: "parallel" })',
+    'test.describe(() => {})',
+    'test.describe.only(() => {})',
     'test("that all is as it should be", () => {});',
     'test.use({ locale: "en-US" })',
     'test.only("that all is as it should be", () => {});',
@@ -804,6 +806,7 @@ runRuleTester('title-must-be-string', rule, {
     'test(1 + " + " + 1, () => {});',
     'test(`${myFunc} is a string`, () => {});',
     'test.describe("is a string", () => {});',
+    'test.describe(() => {});',
     'test.describe.skip("is a string", () => {});',
     'test.describe.skip(`${myFunc} is a string`, () => {});',
     'test.step(123, () => {});',

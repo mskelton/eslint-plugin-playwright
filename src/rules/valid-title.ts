@@ -1,5 +1,11 @@
 import type * as ESTree from 'estree'
-import { dereference, getStringValue, isStringNode, type StringNode } from '../utils/ast.js'
+import {
+  dereference,
+  getStringValue,
+  isFunction,
+  isStringNode,
+  type StringNode,
+} from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
 
@@ -103,6 +109,12 @@ export default createRule({
         }
 
         const [argument] = node.arguments
+
+        // Anonymous describe: test.describe(() => { ... })
+        if (call.type === 'describe' && isFunction(argument)) {
+          return
+        }
+
         const title = dereference(context, argument) ?? argument
         if (!title) {
           return
