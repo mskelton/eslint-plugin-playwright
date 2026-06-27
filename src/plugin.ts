@@ -26,6 +26,7 @@ import noRestrictedRoles from './rules/no-restricted-roles.js'
 import noSkippedTest from './rules/no-skipped-test.js'
 import noSlowedTest from './rules/no-slowed-test.js'
 import noStandaloneExpect from './rules/no-standalone-expect.js'
+import noUnnecessaryAssertions from './rules/no-unnecessary-assertions.js'
 import noUnsafeReferences from './rules/no-unsafe-references.js'
 import noUnusedLocators from './rules/no-unused-locators.js'
 import noUselessAwait from './rules/no-useless-await.js'
@@ -88,6 +89,7 @@ export const plugin = {
     'no-skipped-test': noSkippedTest,
     'no-slowed-test': noSlowedTest,
     'no-standalone-expect': noStandaloneExpect,
+    'no-unnecessary-assertions': noUnnecessaryAssertions,
     'no-unsafe-references': noUnsafeReferences,
     'no-unused-locators': noUnusedLocators,
     'no-useless-await': noUselessAwait,
@@ -142,6 +144,7 @@ const sharedConfig = {
     'playwright/no-page-pause': 'warn',
     'playwright/no-skipped-test': 'warn',
     'playwright/no-standalone-expect': 'error',
+    'playwright/no-unnecessary-assertions': 'error',
     'playwright/no-unsafe-references': 'error',
     'playwright/no-unused-locators': 'error',
     'playwright/no-useless-await': 'warn',
