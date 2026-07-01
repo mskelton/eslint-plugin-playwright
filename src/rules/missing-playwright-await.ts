@@ -300,6 +300,11 @@ export default createRule({
         return checkValidity(parent, visited)
       }
 
+      // Optional chaining wraps calls in ChainExpression, e.g. await page?.unrouteAll()
+      if (parent.type === 'ChainExpression') {
+        return checkValidity(parent, visited)
+      }
+
       // Inside a spread (e.g. ...[promise]); walk up
       if (parent.type === 'SpreadElement') {
         return checkValidity(parent, visited)

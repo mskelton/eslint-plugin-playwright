@@ -453,6 +453,11 @@ runRuleTester('missing-playwright-await', rule, {
       options: [{ includePageLocatorMethods: true }],
     },
     {
+      code: test('page?.unrouteAll()'),
+      errors: [{ column: 28, messageId: 'missingAwait' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
       code: test('page.screenshot()'),
       errors: [{ column: 28, messageId: 'missingAwait' }],
       options: [{ includePageLocatorMethods: true }],
@@ -1222,6 +1227,10 @@ runRuleTester('missing-playwright-await', rule, {
     },
     {
       code: test('await bar.fill("sel", "val")'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('await page?.unrouteAll()'),
       options: [{ includePageLocatorMethods: true }],
     },
     {
