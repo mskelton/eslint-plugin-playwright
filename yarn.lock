@@ -1230,17 +1230,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sigstore/tuf@npm:^4.0.0":
-  version: 4.0.1
-  resolution: "@sigstore/tuf@npm:4.0.1"
-  dependencies:
-    "@sigstore/protobuf-specs": "npm:^0.5.0"
-    tuf-js: "npm:^4.1.0"
-  checksum: 10c0/ed2a33e1e90ca2e036c57f115eca48e3297b0c30329d6b8007974f4d4e8b09d9ea93bb0b92f4d83d9c8f939efd6f3284f8ef3dd8b6edca7c5c61a05f93e85974
-  languageName: node
-  linkType: hard
-
-"@sigstore/tuf@npm:^4.0.2":
+"@sigstore/tuf@npm:^4.0.0, @sigstore/tuf@npm:^4.0.2":
   version: 4.0.2
   resolution: "@sigstore/tuf@npm:4.0.2"
   dependencies:
@@ -3699,26 +3689,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"make-fetch-happen@npm:^15.0.0, make-fetch-happen@npm:^15.0.1, make-fetch-happen@npm:^15.0.3":
-  version: 15.0.3
-  resolution: "make-fetch-happen@npm:15.0.3"
-  dependencies:
-    "@npmcli/agent": "npm:^4.0.0"
-    cacache: "npm:^20.0.1"
-    http-cache-semantics: "npm:^4.1.1"
-    minipass: "npm:^7.0.2"
-    minipass-fetch: "npm:^5.0.0"
-    minipass-flush: "npm:^1.0.5"
-    minipass-pipeline: "npm:^1.2.4"
-    negotiator: "npm:^1.0.0"
-    proc-log: "npm:^6.0.0"
-    promise-retry: "npm:^2.0.1"
-    ssri: "npm:^13.0.0"
-  checksum: 10c0/525f74915660be60b616bcbd267c4a5b59481b073ba125e45c9c3a041bb1a47a2bd0ae79d028eb6f5f95bf9851a4158423f5068539c3093621abb64027e8e461
-  languageName: node
-  linkType: hard
-
-"make-fetch-happen@npm:^15.0.4":
+"make-fetch-happen@npm:^15.0.0, make-fetch-happen@npm:^15.0.1, make-fetch-happen@npm:^15.0.3, make-fetch-happen@npm:^15.0.4":
   version: 15.0.6
   resolution: "make-fetch-happen@npm:15.0.6"
   dependencies:
