@@ -1,7 +1,8 @@
 # Suggest using `page.locator()` (`prefer-locator`)
 
 Suggest using locators and their associated methods instead of page methods for
-performing actions.
+performing actions. `Page` methods that have `Locator` equivalents [are discouraged
+in Playwright](https://playwright.dev/docs/api/class-page#page-click).
 
 ## Rule details
 
