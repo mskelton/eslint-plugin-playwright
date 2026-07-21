@@ -44,7 +44,11 @@ followed by `expect(x).toBeDefined()` is caught too. Polarity is respected:
 `toBeNull()` / `not.toBeDefined()` can actually fail on a locator, so they are
 left alone.
 
-The autofix rewrites to `await expect(locator).toBeVisible()` — the same
-conservative default as `prefer-web-first-assertions`. It only runs inside an
-`async` function, so `--fix` never emits `await` in a synchronous callback, and
-it reuses an existing `await` rather than producing `await await`.
+The rule offers an editor **suggestion** (not an autofix) that rewrites to
+`await expect(locator).toBeVisible()` — the same conservative default as
+`prefer-web-first-assertions`. Because `toBeVisible()` is a stronger assertion
+than the original, it is a suggestion rather than a `--fix` so it is never
+applied silently. The suggestion is only surfaced inside an `async` function (so
+it never emits `await` in a synchronous callback) and when no comment sits
+between `expect(...)` and the matcher; it reuses an existing `await` rather than
+producing `await await`.

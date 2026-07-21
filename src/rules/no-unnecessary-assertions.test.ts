@@ -5,62 +5,135 @@ runRuleTester('no-unnecessary-assertions', rule, {
   invalid: [
     {
       code: 'test("t", async () => { expect(page.getByText("x")).toBeDefined() })',
-      errors: [{ messageId: 'noUnnecessaryAssertions' }],
-      output: 'test("t", async () => { await expect(page.getByText("x")).toBeVisible() })',
+      errors: [
+        {
+          messageId: 'noUnnecessaryAssertions',
+          suggestions: [
+            {
+              messageId: 'replaceWithToBeVisible',
+              output: 'test("t", async () => { await expect(page.getByText("x")).toBeVisible() })',
+            },
+          ],
+        },
+      ],
     },
     {
       code: 'test("t", async () => { expect(page.locator(".x")).not.toBeNull() })',
-      errors: [{ messageId: 'noUnnecessaryAssertions' }],
-      output: 'test("t", async () => { await expect(page.locator(".x")).toBeVisible() })',
+      errors: [
+        {
+          messageId: 'noUnnecessaryAssertions',
+          suggestions: [
+            {
+              messageId: 'replaceWithToBeVisible',
+              output: 'test("t", async () => { await expect(page.locator(".x")).toBeVisible() })',
+            },
+          ],
+        },
+      ],
     },
     {
       code: 'test("t", async () => { expect(page.getByRole("button")).toBeTruthy() })',
-      errors: [{ messageId: 'noUnnecessaryAssertions' }],
-      output: 'test("t", async () => { await expect(page.getByRole("button")).toBeVisible() })',
+      errors: [
+        {
+          messageId: 'noUnnecessaryAssertions',
+          suggestions: [
+            {
+              messageId: 'replaceWithToBeVisible',
+              output:
+                'test("t", async () => { await expect(page.getByRole("button")).toBeVisible() })',
+            },
+          ],
+        },
+      ],
     },
     {
       code: 'test("t", async () => { expect(page.getByTestId("row").first()).not.toBeUndefined() })',
-      errors: [{ messageId: 'noUnnecessaryAssertions' }],
-      output:
-        'test("t", async () => { await expect(page.getByTestId("row").first()).toBeVisible() })',
+      errors: [
+        {
+          messageId: 'noUnnecessaryAssertions',
+          suggestions: [
+            {
+              messageId: 'replaceWithToBeVisible',
+              output:
+                'test("t", async () => { await expect(page.getByTestId("row").first()).toBeVisible() })',
+            },
+          ],
+        },
+      ],
     },
     {
       code: 'test("t", async () => { expect(page.locator(".menu").filter({ hasText: "A" })).not.toBeFalsy() })',
-      errors: [{ messageId: 'noUnnecessaryAssertions' }],
-      output:
-        'test("t", async () => { await expect(page.locator(".menu").filter({ hasText: "A" })).toBeVisible() })',
+      errors: [
+        {
+          messageId: 'noUnnecessaryAssertions',
+          suggestions: [
+            {
+              messageId: 'replaceWithToBeVisible',
+              output:
+                'test("t", async () => { await expect(page.locator(".menu").filter({ hasText: "A" })).toBeVisible() })',
+            },
+          ],
+        },
+      ],
     },
     // Already awaited: reuse the existing `await`, do not emit `await await`.
     {
       code: 'test("t", async () => { await expect(page.getByTestId("x")).toBeTruthy() })',
-      errors: [{ messageId: 'noUnnecessaryAssertions' }],
-      output: 'test("t", async () => { await expect(page.getByTestId("x")).toBeVisible() })',
+      errors: [
+        {
+          messageId: 'noUnnecessaryAssertions',
+          suggestions: [
+            {
+              messageId: 'replaceWithToBeVisible',
+              output:
+                'test("t", async () => { await expect(page.getByTestId("x")).toBeVisible() })',
+            },
+          ],
+        },
+      ],
     },
     // Locator stored in a variable is resolved via `dereference`.
     {
       code: 'test("t", async () => { const btn = page.getByRole("button"); expect(btn).toBeDefined() })',
-      errors: [{ messageId: 'noUnnecessaryAssertions' }],
-      output:
-        'test("t", async () => { const btn = page.getByRole("button"); await expect(btn).toBeVisible() })',
+      errors: [
+        {
+          messageId: 'noUnnecessaryAssertions',
+          suggestions: [
+            {
+              messageId: 'replaceWithToBeVisible',
+              output:
+                'test("t", async () => { const btn = page.getByRole("button"); await expect(btn).toBeVisible() })',
+            },
+          ],
+        },
+      ],
     },
     // expect.soft is covered (and preserved).
     {
       code: 'test("t", async () => { await expect.soft(page.getByText("x")).toBeTruthy() })',
-      errors: [{ messageId: 'noUnnecessaryAssertions' }],
-      output: 'test("t", async () => { await expect.soft(page.getByText("x")).toBeVisible() })',
+      errors: [
+        {
+          messageId: 'noUnnecessaryAssertions',
+          suggestions: [
+            {
+              messageId: 'replaceWithToBeVisible',
+              output:
+                'test("t", async () => { await expect.soft(page.getByText("x")).toBeVisible() })',
+            },
+          ],
+        },
+      ],
     },
-    // Sync callback: reported, but NOT auto-fixed (await would be a SyntaxError).
+    // Sync callback: reported, but NO suggestion offered (await would be a SyntaxError).
     {
       code: 'test("t", () => { expect(page.getByText("x")).toBeDefined() })',
-      errors: [{ messageId: 'noUnnecessaryAssertions' }],
-      output: null,
+      errors: [{ messageId: 'noUnnecessaryAssertions', suggestions: [] }],
     },
-    // A comment between expect() and the matcher: reported, but NOT auto-fixed
+    // A comment between expect() and the matcher: reported, but NO suggestion
     // (the fix would delete the comment).
     {
       code: 'test("t", async () => { expect(page.getByText("x")) /* keep */ .toBeDefined() })',
-      errors: [{ messageId: 'noUnnecessaryAssertions' }],
-      output: null,
+      errors: [{ messageId: 'noUnnecessaryAssertions', suggestions: [] }],
     },
   ],
   valid: [

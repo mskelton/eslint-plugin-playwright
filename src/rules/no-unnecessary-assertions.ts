@@ -119,35 +119,43 @@ export default createRule({
           return
         }
 
+        // Offer the rewrite as a suggestion (not an autofix): `toBeVisible()` is a
+        // different assertion than the original, so `--fix` must not apply it silently.
+        // Only surface it when the rewrite is safe:
+        // - await must be legal here (no sync callback / class field / static block)
+        // - no comment between expect(...) and the matcher (the replacement would delete it)
+        const canReplace =
+          awaitIsAllowed(matcherCall) &&
+          !context.sourceCode.commentsExistBetween(expectCall, call.matcher)
+
         context.report({
           data: {
             matcher: negated ? `not.${call.matcherName}` : call.matcherName,
             value,
           },
-          fix(fixer) {
-            // Auto-fix only when it is safe (otherwise report-only).
-            // - await must be legal here (no sync callback / class field / static block)
-            // - no comment between expect(...) and the matcher (the replacement would delete it)
-            if (
-              !awaitIsAllowed(matcherCall) ||
-              context.sourceCode.commentsExistBetween(expectCall, call.matcher)
-            ) {
-              return null
-            }
-            const fixes = [
-              fixer.replaceTextRange(
-                [expectCall.range![1], matcherCall.range![1]],
-                '.toBeVisible()',
-              ),
-            ]
-            const alreadyAwaited = (matcherCall as Rule.Node).parent?.type === 'AwaitExpression'
-            if (!alreadyAwaited) {
-              fixes.unshift(fixer.insertTextBefore(expectCall, 'await '))
-            }
-            return fixes
-          },
           messageId: 'noUnnecessaryAssertions',
           node: matcherCall,
+          suggest: canReplace
+            ? [
+                {
+                  fix(fixer) {
+                    const fixes = [
+                      fixer.replaceTextRange(
+                        [expectCall.range![1], matcherCall.range![1]],
+                        '.toBeVisible()',
+                      ),
+                    ]
+                    const alreadyAwaited =
+                      (matcherCall as Rule.Node).parent?.type === 'AwaitExpression'
+                    if (!alreadyAwaited) {
+                      fixes.unshift(fixer.insertTextBefore(expectCall, 'await '))
+                    }
+                    return fixes
+                  },
+                  messageId: 'replaceWithToBeVisible',
+                },
+              ]
+            : [],
         })
       },
     }
@@ -158,10 +166,11 @@ export default createRule({
       recommended: true,
       url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-unnecessary-assertions.md',
     },
-    fixable: 'code',
+    hasSuggestions: true,
     messages: {
       noUnnecessaryAssertions:
         'This assertion can never fail: a Playwright Locator is never {{value}}, so `expect(locator).{{matcher}}()` always passes. Assert rendered state with a web-first matcher such as `toBeVisible()`.',
+      replaceWithToBeVisible: 'Replace with `await expect(locator).toBeVisible()`.',
     },
     type: 'problem',
   },
