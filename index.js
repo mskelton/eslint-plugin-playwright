@@ -1,3 +1,3 @@
-import plugin from './dist/index.cjs'
+import playwright from './dist/index.cjs'
 
-export default plugin
+export default playwright
