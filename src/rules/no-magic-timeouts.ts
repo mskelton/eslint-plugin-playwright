@@ -83,29 +83,41 @@ function isCallArgument(object: NodeWithParent): boolean {
 
 export default createRule({
   create(context) {
-    const { allow = [], properties = ['timeout'] } = (context.options?.[0] ?? {}) as {
+    const {
+      allow = [],
+      minOccurrences = 1,
+      properties = ['timeout'],
+    } = (context.options?.[0] ?? {}) as {
       allow?: number[]
+      minOccurrences?: number
       properties?: string[]
     }
 
     const allowed = new Set(allow)
     const timeoutProperties = new Set(properties)
 
-    function report(node: ESTree.Node & Partial<NodeWithParent>) {
+    // Collected rather than reported immediately so that `minOccurrences` can
+    // be applied once the whole file has been walked. Values are grouped by
+    // what they evaluate to, so `15_000` and `15 * 1000` count as the same
+    // timeout.
+    const occurrences = new Map<number, ESTree.Node[]>()
+
+    function collect(node: ESTree.Node & Partial<NodeWithParent>) {
       const value = evaluate(node)
       if (value === undefined || allowed.has(value)) {
         return
       }
 
-      context.report({
-        data: { value: context.sourceCode.getText(node) },
-        messageId: 'noMagicTimeout',
-        node,
-      })
+      const nodes = occurrences.get(value)
+      if (nodes) {
+        nodes.push(node)
+      } else {
+        occurrences.set(value, [node])
+      }
     }
 
     return {
-      CallExpression(node) {
+      'CallExpression'(node) {
         // `test.setTimeout(30000)` and `testInfo.setTimeout(30000)`
         if (
           node.callee.type === 'MemberExpression' &&
@@ -113,10 +125,28 @@ export default createRule({
           node.arguments.length === 1 &&
           node.arguments[0].type !== 'SpreadElement'
         ) {
-          report(node.arguments[0])
+          collect(node.arguments[0])
         }
       },
-      Property(node) {
+      'Program:exit'() {
+        for (const nodes of occurrences.values()) {
+          if (nodes.length < minOccurrences) {
+            continue
+          }
+
+          for (const node of nodes) {
+            context.report({
+              data: {
+                count: String(nodes.length),
+                value: context.sourceCode.getText(node),
+              },
+              messageId: minOccurrences > 1 ? 'repeatedMagicTimeout' : 'noMagicTimeout',
+              node,
+            })
+          }
+        }
+      },
+      'Property'(node) {
         if (node.computed && node.key.type !== 'Literal') {
           return
         }
@@ -138,7 +168,7 @@ export default createRule({
           return
         }
 
-        report(node.value)
+        collect(node.value)
       },
     }
   },
@@ -151,6 +181,8 @@ export default createRule({
     messages: {
       noMagicTimeout:
         'Avoid the magic timeout `{{ value }}`. Extract it to a named constant, or configure it globally in your Playwright config.',
+      repeatedMagicTimeout:
+        'The magic timeout `{{ value }}` is used {{ count }} times in this file. Extract it to a named constant, or configure it globally in your Playwright config.',
     },
     schema: [
       {
@@ -159,6 +191,10 @@ export default createRule({
           allow: {
             items: { type: 'number' },
             type: 'array',
+          },
+          minOccurrences: {
+            minimum: 1,
+            type: 'integer',
           },
           properties: {
             items: { type: 'string' },
