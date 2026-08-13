@@ -128,6 +128,46 @@ test('foo', ({ browserName }) => {
 })
 ```
 
+The inverse is just as common, and is arguably the more useful of the two: a
+team that treats `.fixme()` as documentation for a known, ticketed bug wants
+conditional `.fixme()` allowed while still catching an unconditional skip that
+someone left behind.
+
+```json
+{
+  "playwright/no-skipped-test": [
+    "error",
+    {
+      "allowConditional": { "fixme": true, "skip": false },
+      "disallowFixme": true
+    }
+  ]
+}
+```
+
+Example of **correct** code for that option:
+
+```javascript
+test('foo', ({ isMobile }) => {
+  test.fixme(isMobile, 'ref WET-204 — layout breaks below 768px')
+  expect(1).toBe(1)
+})
+```
+
+Examples of **incorrect** code for the same option:
+
+```javascript
+// Unconditional — nothing says when this comes back
+test.fixme('foo', ({}) => {
+  expect(1).toBe(1)
+})
+
+test('bar', ({ browserName }) => {
+  test.skip(browserName === 'firefox', 'Still working on it')
+  expect(1).toBe(1)
+})
+```
+
 Passing a boolean is equivalent to setting both keys to that value, so
 `{ "allowConditional": true }` is the same as
 `{ "allowConditional": { "fixme": true, "skip": true } }`.
