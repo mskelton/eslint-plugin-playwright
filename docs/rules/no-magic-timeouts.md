@@ -23,6 +23,9 @@ This rule reports numeric timeout values passed inline to a Playwright call. It
 deliberately does not report timeouts declared inside `defineConfig()`, since
 that is where they are supposed to live.
 
+The rule is not restricted to spec files. Page objects and helper modules are
+where a mature suite tends to concentrate its waits, so they are checked too.
+
 ## Rule details
 
 Examples of **incorrect** code for this rule:
@@ -77,20 +80,83 @@ test('example', async ({ page }) => {
 })
 ```
 
+## Adopting this rule on an existing suite
+
+Turned on at full strength, this rule will report every inline timeout in a
+mature suite at once — potentially hundreds. That is not a useful first day, and
+`allow` does not help, because the problem values are all different.
+
+Two staged paths work better, and they compose:
+
+**Start with the repeated values.** The real harm is rarely that one number is
+inline; it is that the same number appears at five sites for three different
+reasons and then drifts apart. `minOccurrences` targets exactly that, and gives
+a much better signal-to-noise ratio on a large suite:
+
+```json
+{
+  "playwright/no-magic-timeouts": ["warn", { "minOccurrences": 2 }]
+}
+```
+
+Note the limit: ESLint sees one file at a time, so `minOccurrences` counts
+repetitions _within a file_. It catches the page object that waits `15_000`
+three times; it will not catch the same `15_000` spread across four different
+page objects. For that, the second path:
+
+**Ratchet by scope.** Enable the rule at `error` for new and changed files only
+— via `lint-staged`, or an `overrides` block scoped to the directories you have
+already cleaned — and widen the glob as you go. This keeps the number of
+existing reports at zero while making it impossible to add new ones.
+
+Once the suite is clean, drop `minOccurrences` and raise the level.
+
 ## Options
 
 ### `allow`
 
 An array of numbers that may be used inline. Defaults to `[]`.
 
-Playwright treats `0` as "disable this timeout", which is self-documenting, so
-allowing it is a common choice:
+Be deliberate about `0`. It is tempting to allow it, since Playwright treats it
+as "disable this timeout" and it is therefore self-documenting. But
+[`no-action-timeout`](./no-action-timeout.md) singles out `{ timeout: 0 }` as
+the worst case precisely because it removes the bound entirely and lets a broken
+test hang until the run is killed. If you enable both rules, allowing `0` here
+means one rule blesses what the other condemns. The default of `[]` is the
+consistent choice.
+
+### `minOccurrences`
+
+The number of times a value must appear in a file before it is reported.
+Defaults to `1`, which reports every inline timeout.
+
+Set it to `2` or more to report only values that repeat — see
+[Adopting this rule on an existing suite](#adopting-this-rule-on-an-existing-suite)
+above.
 
 ```json
 {
-  "playwright/no-magic-timeouts": ["error", { "allow": [0] }]
+  "playwright/no-magic-timeouts": ["warn", { "minOccurrences": 2 }]
 }
 ```
+
+With the above configuration, this is **correct**, because each value appears
+once:
+
+```js
+await page.getByTestId('spinner').waitFor({ timeout: 15_000 })
+await page.getByTestId('total').waitFor({ timeout: 45_000 })
+```
+
+...and this is **incorrect**, with both sites reported:
+
+```js
+await page.getByTestId('spinner').waitFor({ timeout: 15_000 })
+await page.getByTestId('total').waitFor({ timeout: 15_000 })
+```
+
+Values are grouped by what they evaluate to, so `15_000` and `15 * 1000` count
+as the same timeout. Values excluded by `allow` are never counted.
 
 ### `properties`
 

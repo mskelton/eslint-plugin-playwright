@@ -91,6 +91,49 @@ runRuleTester('no-magic-timeouts', rule, {
       errors: [{ messageId: 'noMagicTimeout' }],
       settings: { playwright: { globalAliases: { test: ['it'] } } },
     },
+    // A page object is exactly where waits concentrate, and is not gated out
+    {
+      code: dedent`
+        export class CheckoutPage {
+          constructor(page) {
+            this.page = page
+          }
+
+          async waitForTotal() {
+            await this.page.getByTestId('total').waitFor({ timeout: 15_000 })
+          }
+        }
+      `,
+      errors: [{ column: 61, endColumn: 67, line: 7, messageId: 'noMagicTimeout' }],
+    },
+    // minOccurrences reports every site once the threshold is met
+    {
+      code: dedent`
+        async function waitForBoth(page) {
+          await page.getByTestId('spinner').waitFor({ timeout: 15_000 })
+          await page.getByTestId('total').waitFor({ timeout: 15_000 })
+        }
+      `,
+      errors: [
+        { data: { count: '2', value: '15_000' }, line: 2, messageId: 'repeatedMagicTimeout' },
+        { data: { count: '2', value: '15_000' }, line: 3, messageId: 'repeatedMagicTimeout' },
+      ],
+      options: [{ minOccurrences: 2 }],
+    },
+    // Values are grouped by what they evaluate to, not how they are written
+    {
+      code: dedent`
+        async function waitForBoth(page) {
+          await page.getByTestId('spinner').waitFor({ timeout: 15_000 })
+          await page.getByTestId('total').waitFor({ timeout: 15 * 1000 })
+        }
+      `,
+      errors: [
+        { data: { count: '2', value: '15_000' }, line: 2, messageId: 'repeatedMagicTimeout' },
+        { data: { count: '2', value: '15 * 1000' }, line: 3, messageId: 'repeatedMagicTimeout' },
+      ],
+      options: [{ minOccurrences: 2 }],
+    },
   ],
   valid: [
     // Named constants are the point of the rule
@@ -139,6 +182,31 @@ runRuleTester('no-magic-timeouts', rule, {
     test(`await page.getByRole('button').click({ timeout: opts.timeout })`),
     test(`await page.getByRole('button').click({ ...defaults })`),
     test(`await page.getByRole('button').click({ [key]: 5000 })`),
+    // Below the minOccurrences threshold
+    {
+      code: test(`await page.getByRole('button').click({ timeout: 15_000 })`),
+      options: [{ minOccurrences: 2 }],
+    },
+    // Distinct values never accumulate towards the threshold
+    {
+      code: dedent`
+        async function waitForBoth(page) {
+          await page.getByTestId('spinner').waitFor({ timeout: 15_000 })
+          await page.getByTestId('total').waitFor({ timeout: 45_000 })
+        }
+      `,
+      options: [{ minOccurrences: 2 }],
+    },
+    // Allowed values are excluded before they are counted
+    {
+      code: dedent`
+        async function waitForBoth(page) {
+          await page.getByTestId('spinner').waitFor({ timeout: 15_000 })
+          await page.getByTestId('total').waitFor({ timeout: 15_000 })
+        }
+      `,
+      options: [{ allow: [15000], minOccurrences: 2 }],
+    },
     // Not a Playwright timeout at all
     `function wait({ timeout = 5000 } = {}) {}`,
   ],
