@@ -15,6 +15,7 @@ import noFocusedTest from './rules/no-focused-test.js'
 import noForceOption from './rules/no-force-option.js'
 import noGetByTitle from './rules/no-get-by-title.js'
 import noHooks from './rules/no-hooks.js'
+import noMagicTimeouts from './rules/no-magic-timeouts.js'
 import noNestedStep from './rules/no-nested-step.js'
 import noNetworkidle from './rules/no-networkidle.js'
 import noNthMethods from './rules/no-nth-methods.js'
@@ -78,6 +79,7 @@ export const plugin = {
     'no-force-option': noForceOption,
     'no-get-by-title': noGetByTitle,
     'no-hooks': noHooks,
+    'no-magic-timeouts': noMagicTimeouts,
     'no-nested-step': noNestedStep,
     'no-networkidle': noNetworkidle,
     'no-nth-methods': noNthMethods,
