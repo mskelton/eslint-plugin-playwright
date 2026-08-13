@@ -4,6 +4,7 @@ import expectExpect from './rules/expect-expect.js'
 import maxExpects from './rules/max-expects.js'
 import maxNestedDescribe from './rules/max-nested-describe.js'
 import missingPlaywrightAwait from './rules/missing-playwright-await.js'
+import noActionTimeout from './rules/no-action-timeout.js'
 import noCommentedOutTests from './rules/no-commented-out-tests.js'
 import noConditionalExpect from './rules/no-conditional-expect.js'
 import noConditionalInTest from './rules/no-conditional-in-test.js'
@@ -67,6 +68,7 @@ export const plugin = {
     'max-expects': maxExpects,
     'max-nested-describe': maxNestedDescribe,
     'missing-playwright-await': missingPlaywrightAwait,
+    'no-action-timeout': noActionTimeout,
     'no-commented-out-tests': noCommentedOutTests,
     'no-conditional-expect': noConditionalExpect,
     'no-conditional-in-test': noConditionalInTest,
