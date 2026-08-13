@@ -19,6 +19,10 @@ test.describe('skip test inside describe', () => {
 test.describe('skip test conditionally', async ({ browserName }) => {
   test.skip(browserName === 'firefox', 'Working on it')
 })
+
+test('skip using testInfo', async ({ page }, testInfo) => {
+  testInfo.skip()
+})
 ```
 
 With the `disallowFixme` option enabled, the following are also incorrect:
@@ -29,6 +33,10 @@ test.fixme('temporarily disabled', async ({ page }) => {})
 test.fixme() // marks all tests in the file as fixme
 
 test.describe.fixme('skip this describe', () => {})
+
+test('fixme using testInfo', async ({ page }, testInfo) => {
+  testInfo.fixme()
+})
 ```
 
 Examples of **correct** code for this rule:
@@ -85,7 +93,47 @@ test('foo', ({ browserName }) => {
 })
 ```
 
+`allowConditional` can also be an object to configure the `skip` and `fixme`
+annotations separately, which is useful if you rely on conditional skips but
+never want to allow `.fixme()`:
+
+```json
+{
+  "playwright/no-skipped-test": [
+    "error",
+    {
+      "allowConditional": { "fixme": false, "skip": true },
+      "disallowFixme": true
+    }
+  ]
+}
+```
+
+Examples of **incorrect** code for the
+`{ "allowConditional": { "skip": true }, "disallowFixme": true }` option:
+
+```javascript
+test('foo', ({ isMobile }) => {
+  test.fixme(isMobile, 'Not ready for mobile yet')
+  expect(1).toBe(1)
+})
+```
+
+Example of **correct** code for the same option:
+
+```javascript
+test('foo', ({ browserName }) => {
+  test.skip(browserName === 'firefox', 'Still working on it')
+  expect(1).toBe(1)
+})
+```
+
+Passing a boolean is equivalent to setting both keys to that value, so
+`{ "allowConditional": true }` is the same as
+`{ "allowConditional": { "fixme": true, "skip": true } }`.
+
 ### `disallowFixme`
 
 Setting this option to `true` will also disallow the `.fixme()` annotation
-(`test.fixme()`, `test.describe.fixme()`, etc.). Default is `false`.
+(`test.fixme()`, `test.describe.fixme()`, `testInfo.fixme()`, etc.). Default is
+`false`.
