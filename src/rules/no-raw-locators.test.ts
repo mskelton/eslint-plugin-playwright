@@ -76,6 +76,39 @@ runRuleTester('no-raw-locators', rule, {
       code: test('let button = page.locator(); page.locator(button)'),
       errors: [{ column: 41, endColumn: 55, line: 1, messageId }],
     },
+    // Template literals
+    {
+      code: test('await page.locator(`.btn`)'),
+      errors: [{ column: 34, endColumn: 54, line: 1, messageId }],
+    },
+    {
+      code: test('page.locator(`#row-${id}`)'),
+      errors: [{ column: 28, endColumn: 54, line: 1, messageId }],
+    },
+    {
+      code: test('await page.locator(`[data-testid=${id}]`)'),
+      errors: [{ column: 34, endColumn: 69, line: 1, messageId }],
+    },
+    {
+      code: test('table.locator(`.row-${id}`)'),
+      errors: [{ column: 28, endColumn: 55, line: 1, messageId }],
+    },
+    {
+      code: test('await page.getByRole("region").locator(`#row-${id}`)'),
+      errors: [{ column: 34, endColumn: 80, line: 1, messageId }],
+    },
+    // An interpolated template literal is only partially known, so the
+    // `allowed` option cannot match it
+    {
+      code: test('await page.locator(`iframe${id}`)'),
+      errors: [{ column: 34, endColumn: 61, line: 1, messageId }],
+      options: [{ allowed: ['iframe'] }],
+    },
+    {
+      code: test('await page.locator(`[aria-busy=${value}]`)'),
+      errors: [{ column: 34, endColumn: 70, line: 1, messageId }],
+      options: [{ allowed: ['[aria-busy=false]'] }],
+    },
     // Allowed
     {
       code: test('await page.locator("[aria-busy=false]")'),
@@ -129,6 +162,16 @@ runRuleTester('no-raw-locators', rule, {
 
     // bare calls
     test('() => page.locator'),
+
+    // Template literals without interpolation still honor the `allowed` option
+    {
+      code: test('await page.locator(`iframe`)'),
+      options: [{ allowed: ['iframe'] }],
+    },
+    {
+      code: test('await page.locator(`[aria-busy=false]`)'),
+      options: [{ allowed: ['[aria-busy=false]'] }],
+    },
 
     // Allowed
     {
