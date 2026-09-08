@@ -52,6 +52,7 @@ import preferToContain from './rules/prefer-to-contain.js'
 import preferToHaveCount from './rules/prefer-to-have-count.js'
 import preferToHaveLength from './rules/prefer-to-have-length.js'
 import preferWebFirstAssertions from './rules/prefer-web-first-assertions.js'
+import requireAnnotationReason from './rules/require-annotation-reason.js'
 import requireHook from './rules/require-hook.js'
 import requireSoftAssertions from './rules/require-soft-assertions.js'
 import requireTags from './rules/require-tags.js'
@@ -120,6 +121,7 @@ export const plugin = {
     'prefer-to-have-count': preferToHaveCount,
     'prefer-to-have-length': preferToHaveLength,
     'prefer-web-first-assertions': preferWebFirstAssertions,
+    'require-annotation-reason': requireAnnotationReason,
     'require-hook': requireHook,
     'require-soft-assertions': requireSoftAssertions,
     'require-tags': requireTags,
