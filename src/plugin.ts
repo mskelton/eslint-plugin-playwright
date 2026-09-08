@@ -12,6 +12,7 @@ import noDuplicateHooks from './rules/no-duplicate-hooks.js'
 import noDuplicateSlow from './rules/no-duplicate-slow.js'
 import noElementHandle from './rules/no-element-handle.js'
 import noEval from './rules/no-eval.js'
+import noExport from './rules/no-export.js'
 import noFocusedTest from './rules/no-focused-test.js'
 import noForceOption from './rules/no-force-option.js'
 import noGetByTitle from './rules/no-get-by-title.js'
@@ -76,6 +77,7 @@ export const plugin = {
     'no-duplicate-slow': noDuplicateSlow,
     'no-element-handle': noElementHandle,
     'no-eval': noEval,
+    'no-export': noExport,
     'no-focused-test': noFocusedTest,
     'no-force-option': noForceOption,
     'no-get-by-title': noGetByTitle,
