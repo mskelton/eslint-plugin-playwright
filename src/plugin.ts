@@ -39,6 +39,7 @@ import noWaitForNavigation from './rules/no-wait-for-navigation.js'
 import noWaitForSelector from './rules/no-wait-for-selector.js'
 import noWaitForTimeout from './rules/no-wait-for-timeout.js'
 import preferComparisonMatcher from './rules/prefer-comparison-matcher.js'
+import preferEndingWithAnExpect from './rules/prefer-ending-with-an-expect.js'
 import preferEqualityMatcher from './rules/prefer-equality-matcher.js'
 import preferHooksInOrder from './rules/prefer-hooks-in-order.js'
 import preferHooksOnTop from './rules/prefer-hooks-on-top.js'
@@ -106,6 +107,7 @@ export const plugin = {
     'no-wait-for-selector': noWaitForSelector,
     'no-wait-for-timeout': noWaitForTimeout,
     'prefer-comparison-matcher': preferComparisonMatcher,
+    'prefer-ending-with-an-expect': preferEndingWithAnExpect,
     'prefer-equality-matcher': preferEqualityMatcher,
     'prefer-hooks-in-order': preferHooksInOrder,
     'prefer-hooks-on-top': preferHooksOnTop,
