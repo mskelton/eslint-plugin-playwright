@@ -560,6 +560,121 @@ runRuleTester('no-skipped-test', rule, {
       ],
       options: [{ disallowFixme: true }],
     },
+    // Conditional fixme can be disallowed while conditional skip is allowed
+    {
+      code: 'test("foo", ({ isMobile }) => { test.fixme(isMobile, "Not ready") })',
+      errors: [
+        {
+          column: 33,
+          data: { annotation: 'fixme' },
+          endColumn: 66,
+          line: 1,
+          messageId: 'noSkippedTest',
+          suggestions: [
+            {
+              data: { annotation: 'fixme' },
+              messageId: 'removeAnnotation',
+              output: 'test("foo", ({ isMobile }) => {  })',
+            },
+          ],
+        },
+      ],
+      options: [{ allowConditional: { skip: true }, disallowFixme: true }],
+    },
+    // testInfo annotations
+    {
+      code: dedent`
+        test("foo", async ({ page }, testInfo) => {
+          testInfo.skip();
+        });
+      `,
+      errors: [
+        {
+          column: 3,
+          data: { annotation: 'skip' },
+          endColumn: 18,
+          line: 2,
+          messageId: 'noSkippedTest',
+          suggestions: [
+            {
+              data: { annotation: 'skip' },
+              messageId: 'removeAnnotation',
+              output: 'test("foo", async ({ page }, testInfo) => {\n  \n});',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: dedent`
+        test("foo", async ({ page }, testInfo) => {
+          testInfo.skip(isMobile, "Not ready");
+        });
+      `,
+      errors: [
+        {
+          column: 3,
+          data: { annotation: 'skip' },
+          endColumn: 39,
+          line: 2,
+          messageId: 'noSkippedTest',
+          suggestions: [
+            {
+              data: { annotation: 'skip' },
+              messageId: 'removeAnnotation',
+              output: 'test("foo", async ({ page }, testInfo) => {\n  \n});',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: dedent`
+        test("foo", async ({ page }, testInfo) => {
+          testInfo.fixme(isMobile, "Not ready");
+        });
+      `,
+      errors: [
+        {
+          column: 3,
+          data: { annotation: 'fixme' },
+          endColumn: 40,
+          line: 2,
+          messageId: 'noSkippedTest',
+          suggestions: [
+            {
+              data: { annotation: 'fixme' },
+              messageId: 'removeAnnotation',
+              output: 'test("foo", async ({ page }, testInfo) => {\n  \n});',
+            },
+          ],
+        },
+      ],
+      options: [{ allowConditional: { skip: true }, disallowFixme: true }],
+    },
+    {
+      code: dedent`
+        test.beforeEach(async ({ page }, testInfo) => {
+          testInfo["skip"]();
+        });
+      `,
+      errors: [
+        {
+          column: 3,
+          data: { annotation: 'skip' },
+          endColumn: 21,
+          line: 2,
+          messageId: 'noSkippedTest',
+          suggestions: [
+            {
+              data: { annotation: 'skip' },
+              messageId: 'removeAnnotation',
+              output: 'test.beforeEach(async ({ page }, testInfo) => {\n  \n});',
+            },
+          ],
+        },
+      ],
+    },
   ],
   valid: [
     'test("a test", () => {});',
@@ -604,6 +719,23 @@ runRuleTester('no-skipped-test', rule, {
           }
         })
       `,
+      options: [{ allowConditional: true }],
+    },
+    {
+      code: 'test("foo", ({ browserName }) => { test.skip(browserName === "firefox", "Still working on it") })',
+      options: [{ allowConditional: { skip: true } }],
+    },
+    {
+      code: 'test("foo", ({ isMobile }) => { test.fixme(isMobile, "Not ready") })',
+      options: [{ allowConditional: { fixme: true, skip: true }, disallowFixme: true }],
+    },
+    // testInfo annotations
+    'test("foo", async ({ page }, testInfo) => { testInfo.slow(); });',
+    'test("foo", async ({ page }, testInfo) => { testInfo.fixme(); });',
+    'test("foo", async (fixtures) => { fixtures.skip(); });',
+    'notATest(async ({ page }, testInfo) => { testInfo.skip(); });',
+    {
+      code: 'test("foo", async ({ page }, testInfo) => { testInfo.skip(isMobile, "Not ready"); });',
       options: [{ allowConditional: true }],
     },
     // Global aliases
