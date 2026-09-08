@@ -17,6 +17,7 @@ import noFocusedTest from './rules/no-focused-test.js'
 import noForceOption from './rules/no-force-option.js'
 import noGetByTitle from './rules/no-get-by-title.js'
 import noHooks from './rules/no-hooks.js'
+import noIdenticalTitle from './rules/no-identical-title.js'
 import noNestedStep from './rules/no-nested-step.js'
 import noNetworkidle from './rules/no-networkidle.js'
 import noNthMethods from './rules/no-nth-methods.js'
@@ -82,6 +83,7 @@ export const plugin = {
     'no-force-option': noForceOption,
     'no-get-by-title': noGetByTitle,
     'no-hooks': noHooks,
+    'no-identical-title': noIdenticalTitle,
     'no-nested-step': noNestedStep,
     'no-networkidle': noNetworkidle,
     'no-nth-methods': noNthMethods,
@@ -143,6 +145,7 @@ const sharedConfig = {
     'playwright/no-eval': 'warn',
     'playwright/no-focused-test': 'error',
     'playwright/no-force-option': 'warn',
+    'playwright/no-identical-title': 'warn',
     'playwright/no-nested-step': 'warn',
     'playwright/no-networkidle': 'error',
     'playwright/no-page-pause': 'warn',
