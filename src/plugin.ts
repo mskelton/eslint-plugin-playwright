@@ -29,6 +29,7 @@ import noRestrictedRoles from './rules/no-restricted-roles.js'
 import noSkippedTest from './rules/no-skipped-test.js'
 import noSlowedTest from './rules/no-slowed-test.js'
 import noStandaloneExpect from './rules/no-standalone-expect.js'
+import noTemplateLiteralTitle from './rules/no-template-literal-title.js'
 import noTestReturnStatement from './rules/no-test-return-statement.js'
 import noUnnecessaryAssertions from './rules/no-unnecessary-assertions.js'
 import noUnsafeReferences from './rules/no-unsafe-references.js'
@@ -98,6 +99,7 @@ export const plugin = {
     'no-skipped-test': noSkippedTest,
     'no-slowed-test': noSlowedTest,
     'no-standalone-expect': noStandaloneExpect,
+    'no-template-literal-title': noTemplateLiteralTitle,
     'no-test-return-statement': noTestReturnStatement,
     'no-unnecessary-assertions': noUnnecessaryAssertions,
     'no-unsafe-references': noUnsafeReferences,
