@@ -39,7 +39,10 @@ export default createRule({
         additionalProperties: false,
         properties: {
           allow: {
-            contains: ['beforeAll', 'beforeEach', 'afterAll', 'afterEach'],
+            items: {
+              enum: ['beforeAll', 'beforeEach', 'afterAll', 'afterEach'],
+              type: 'string',
+            },
             type: 'array',
           },
         },
