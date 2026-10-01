@@ -33,6 +33,15 @@ page.getByTestId('password-input')
 page.getByTitle('Additional context')
 ```
 
+Only a selector that is exactly one attribute selector is reported. A selector
+that also carries a descendant, a combinator or a second attribute is left
+alone, because no single native locator matches the same set of elements:
+
+```javascript
+page.locator('[data-testid="row"] [role="button"]')
+page.locator('[role="dialog"][data-state="open"]')
+```
+
 ## Options
 
 ```json
