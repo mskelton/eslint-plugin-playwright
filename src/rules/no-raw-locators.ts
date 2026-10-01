@@ -27,10 +27,17 @@ export default createRule({
           return
         }
 
-        if (
-          (node.arguments.length === 0 || isStringNode(node.arguments[0])) &&
-          !isAllowed(getStringValue(node.arguments[0]))
-        ) {
+        const arg = node.arguments[0]
+
+        // A template literal with interpolation is still a raw locator. Only
+        // part of its value is known statically, so it can never be matched
+        // against the `allowed` option and is always reported.
+        if (arg?.type === 'TemplateLiteral' && arg.quasis.length > 1) {
+          context.report({ messageId: 'noRawLocator', node })
+          return
+        }
+
+        if ((node.arguments.length === 0 || isStringNode(arg)) && !isAllowed(getStringValue(arg))) {
           context.report({ messageId: 'noRawLocator', node })
           return
         }
