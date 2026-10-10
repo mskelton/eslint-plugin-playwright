@@ -1,9 +1,33 @@
+import type { Rule } from 'eslint'
+import type * as ESTree from 'estree'
 import { dereference, equalityMatchers, isPropertyAccessor } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { replaceAccessorFixer } from '../utils/fixer.js'
 import { parseFnCall } from '../utils/parseFnCall.js'
 
 const matchers = new Set([...equalityMatchers, 'toHaveLength'])
+
+/**
+ * Whether `identifier` (the `expect()` argument) is the only place its variable
+ * is read. The fixer rewrites the declaration or assignment that holds the
+ * awaited count, so any other read would be left with a `Locator` where it
+ * expects a number.
+ */
+function isOnlyReadByExpect(context: Rule.RuleContext, identifier: ESTree.Identifier) {
+  for (
+    let scope: ReturnType<typeof context.sourceCode.getScope> | null =
+      context.sourceCode.getScope(identifier);
+    scope;
+    scope = scope.upper
+  ) {
+    const variable = scope.set.get(identifier.name)
+    if (variable) {
+      return variable.references.every((ref) => ref.identifier === identifier || !ref.isRead())
+    }
+  }
+
+  return true
+}
 
 export default createRule({
   create(context) {
@@ -29,8 +53,16 @@ export default createRule({
         }
 
         const callee = argument.argument.callee
+        const arg = call.args[0]
+        // Only fix when the dereferenced variable isn't read anywhere else (#505)
+        const canFix = arg?.type !== 'Identifier' || isOnlyReadByExpect(context, arg)
+
         context.report({
           fix(fixer) {
+            if (!canFix) {
+              return null
+            }
+
             return [
               // remove the "await" expression
               fixer.removeRange([argument.range![0], argument.range![0] + 'await'.length + 1]),
