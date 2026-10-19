@@ -45,6 +45,10 @@ An array of raw locators that are allowed. This helps for locators such as
 
 By default, no raw locators are allowed (the equivalent of `{ "ignore": [] }`).
 
+A template literal that contains an interpolation is always reported, since only
+part of its value is known statically and it cannot be compared against this
+option.
+
 Example of **incorrect** code for the `{ "allowed": ["[aria-busy=false]"] }`
 option:
 
