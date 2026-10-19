@@ -43,8 +43,49 @@ const compilePatterns = ({ testIdAttribute }: { testIdAttribute: string }): Patt
   ]
   return patterns.map(({ attribute, ...pattern }) => ({
     ...pattern,
-    pattern: new RegExp(`^\\[${attribute}=['"]?(.+?)['"]?\\]$`),
+    pattern: buildPattern(attribute),
   }))
+}
+
+/**
+ * Matches a selector that is exactly one attribute selector for the given
+ * attribute and nothing else. The value is either quoted, in which case the
+ * only escapes it may contain are for a quote or a backslash, or unquoted, in
+ * which case it may not contain whitespace, quotes, brackets or backslashes.
+ *
+ * Anchoring both ends means a selector that carries a descendant, a sibling
+ * combinator or a second attribute does not match, since no single native
+ * locator is equivalent to it.
+ */
+function buildPattern(attribute: string) {
+  const doubleQuoted = `"((?:[^"\\\\]|\\\\["'\\\\])*)"`
+  const singleQuoted = `'((?:[^'\\\\]|\\\\["'\\\\])*)'`
+  const unquoted = `([^'"\\[\\]\\\\\\s]+)`
+  return new RegExp(
+    `^\\[${escapeRegExp(attribute)}=(?:${doubleQuoted}|${singleQuoted}|${unquoted})\\]$`,
+  )
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+/** Resolves the escapes a quoted CSS attribute value is allowed to contain. */
+function unescapeValue(value: string) {
+  return value.replace(/\\(["'\\])/g, '$1')
+}
+
+/**
+ * Renders a value as a JavaScript string literal. Double quotes are used by
+ * default to match the rest of the emitted fixes, and single quotes are used
+ * when that keeps the literal free of escapes.
+ */
+function toStringLiteral(value: string) {
+  const doubleQuoted = JSON.stringify(value)
+  if (!value.includes('"') || value.includes("'")) {
+    return doubleQuoted
+  }
+  return `'${doubleQuoted.slice(1, -1).replaceAll('\\"', '"')}'`
 }
 
 export default createRule({
@@ -69,6 +110,8 @@ export default createRule({
         for (const pattern of patterns) {
           const match = query.match(pattern.pattern)
           if (match) {
+            const value = unescapeValue(match[1] ?? match[2] ?? match[3])
+
             context.report({
               fix(fixer) {
                 const start =
@@ -78,7 +121,7 @@ export default createRule({
                 const end = node.range![1]
                 const rangeToReplace: AST.Range = [start, end]
 
-                const newText = `${pattern.replacement}("${match[1]}")`
+                const newText = `${pattern.replacement}(${toStringLiteral(value)})`
                 return fixer.replaceTextRange(rangeToReplace, newText)
               },
               messageId: pattern.messageId,
