@@ -255,6 +255,110 @@ runRuleTester('expect', rule, {
       ],
     },
     {
+      code: 'expect.soft.poll(() => x).toBe(y);',
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            args: [null],
+            group: 'expect',
+            head: {
+              local: 'expect',
+              node: 'expect',
+              original: null,
+            },
+            matcher: 'toBe',
+            matcherArgs: ['y'],
+            matcherName: 'toBe',
+            members: ['soft', 'poll', 'toBe'],
+            modifiers: ['soft', 'poll'],
+            name: 'expect',
+            type: 'expect',
+          }),
+          line: 1,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: 'expect.soft.poll(() => x).not.toBe(y);',
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            args: [null],
+            group: 'expect',
+            head: {
+              local: 'expect',
+              node: 'expect',
+              original: null,
+            },
+            matcher: 'toBe',
+            matcherArgs: ['y'],
+            matcherName: 'toBe',
+            members: ['soft', 'poll', 'not', 'toBe'],
+            modifiers: ['soft', 'poll', 'not'],
+            name: 'expect',
+            type: 'expect',
+          }),
+          line: 1,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: 'expect["soft"]["poll"](() => x).toBe(y);',
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            args: [null],
+            group: 'expect',
+            head: {
+              local: 'expect',
+              node: 'expect',
+              original: null,
+            },
+            matcher: 'toBe',
+            matcherArgs: ['y'],
+            matcherName: 'toBe',
+            members: ['soft', 'poll', 'toBe'],
+            modifiers: ['soft', 'poll'],
+            name: 'expect',
+            type: 'expect',
+          }),
+          line: 1,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: 'test.expect.soft.poll(() => x).toBe(y);',
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            args: [null],
+            group: 'expect',
+            head: {
+              local: 'test',
+              node: 'test',
+              original: null,
+            },
+            matcher: 'toBe',
+            matcherArgs: ['y'],
+            matcherName: 'toBe',
+            members: ['soft', 'poll', 'toBe'],
+            modifiers: ['soft', 'poll'],
+            name: 'expect',
+            type: 'expect',
+          }),
+          line: 1,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
       code: dedent`
         import { expect } from '@playwright/test';
 
@@ -379,6 +483,30 @@ runRuleTester('expect', rule, {
         expect(x).not.resolves.toBe(x);
       `,
       errors: [{ column: 1, line: 3, messageId: 'modifier-unknown' }],
+    },
+    {
+      code: 'expect.poll.soft(() => x).toBe(y);',
+      errors: [{ column: 1, line: 1, messageId: 'modifier-unknown' }],
+    },
+    {
+      code: 'expect.soft(x).poll(() => y).toBe(z);',
+      errors: [{ column: 1, line: 1, messageId: 'modifier-unknown' }],
+    },
+    {
+      code: 'expect.poll(() => x).soft.toBe(y);',
+      errors: [{ column: 1, line: 1, messageId: 'modifier-unknown' }],
+    },
+    {
+      code: 'expect(x).soft.poll(() => y).toBe(z);',
+      errors: [{ column: 1, line: 1, messageId: 'modifier-unknown' }],
+    },
+    {
+      code: 'expect.soft.poll.poll(() => x).toBe(y);',
+      errors: [{ column: 1, line: 1, messageId: 'modifier-unknown' }],
+    },
+    {
+      code: 'expect.soft.soft.poll(() => x).toBe(y);',
+      errors: [{ column: 1, line: 1, messageId: 'modifier-unknown' }],
     },
     {
       code: 'test.expect(x).toBe(y);',

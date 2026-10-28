@@ -19,6 +19,10 @@ runRuleTester('no-standalone-expect', rule, {
       errors: [{ column: 33, endColumn: 61, messageId }],
     },
     {
+      code: 'test.describe("a test", () => { expect.soft.poll(() => 1).toBe(1); });',
+      errors: [{ column: 33, endColumn: 66, messageId }],
+    },
+    {
       code: "(() => {})('testing', () => expect(true).toBe(false))",
       errors: [{ column: 29, endColumn: 53, messageId }],
     },
@@ -124,6 +128,8 @@ runRuleTester('no-standalone-expect', rule, {
     'test("an it", () => expect(1).toBe(1))',
     'test("an it", () => expect.soft(1).toBe(1))',
     'test("an it", () => expect.poll(() => locator)[`not`][`toBeHidden`]())',
+    'test("an it", () => expect.soft.poll(() => 1).toBe(1))',
+    'test("an it", () => expect["soft"].poll(() => 1).not.toBe(2))',
     'const func = function(){ expect(1).toBe(1); };',
     'const func = () => expect(1).toBe(1);',
     '{}',

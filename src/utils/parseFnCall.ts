@@ -249,9 +249,19 @@ const findModifiersAndMatcher = (
     const name = getStringValue(member)
 
     if (name === 'soft' || name === 'poll') {
-      // soft and poll must be the first modifier
+      // `soft` and `poll` must come first. Playwright 1.61+ also allows
+      // `poll` immediately after an uncalled `soft` (`expect.soft.poll`).
+      // `expect.poll.soft` and `expect.soft(...).poll` are not supported.
       if (modifiers.length > 0) {
-        return 'modifier-unknown'
+        const softThenPoll =
+          name === 'poll' &&
+          stage === 'modifiers' &&
+          modifiers.length === 1 &&
+          getStringValue(modifiers[0]) === 'soft'
+
+        if (!softThenPoll) {
+          return 'modifier-unknown'
+        }
       }
     } else if (name === 'resolves' || name === 'rejects') {
       const lastModifier = getStringValue(modifiers.at(-1))

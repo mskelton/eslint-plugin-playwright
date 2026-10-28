@@ -239,6 +239,18 @@ runRuleTester('no-useless-not', rule, {
       output: 'expect.soft(locator).toBeHidden()',
     },
     {
+      code: 'expect.soft.poll(() => locator).not.toBeVisible()',
+      errors: [
+        {
+          column: 33,
+          endColumn: 48,
+          line: 1,
+          messageId: 'noUselessNot',
+        },
+      ],
+      output: 'expect.soft.poll(() => locator).toBeHidden()',
+    },
+    {
       code: 'expect.poll(() => locator)[`not`][`toBeHidden`]()',
       errors: [
         {

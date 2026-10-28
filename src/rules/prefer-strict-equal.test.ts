@@ -163,6 +163,23 @@ runRuleTester('prefer-strict-equal', rule, {
       ],
     },
     {
+      code: 'expect.soft.poll(() => a).toEqual(b)',
+      errors: [
+        {
+          column: 27,
+          endColumn: 34,
+          line: 1,
+          messageId: 'useToStrictEqual',
+          suggestions: [
+            {
+              messageId: 'suggestReplaceWithStrictEqual',
+              output: 'expect.soft.poll(() => a).toStrictEqual(b)',
+            },
+          ],
+        },
+      ],
+    },
+    {
       code: 'expect.poll(() => a).toEqual(b)',
       errors: [
         {
