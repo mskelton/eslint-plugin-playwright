@@ -133,6 +133,27 @@ runRuleTester('prefer-to-have-count', rule, {
         filesCount = 0;
       `,
     },
+    // #505: the count variable is read elsewhere, so rewriting its declaration
+    // to a Locator would break those reads. Report, but don't autofix.
+    {
+      code: `
+        const linkCount = await schemaLinks.count();
+        if (linkCount === 0) console.log('none');
+        expect(linkCount).toBe(2);
+      `,
+      errors: [{ column: 27, endColumn: 31, line: 4, messageId: 'useToHaveCount' }],
+      output: null,
+    },
+    {
+      code: `
+        let filesCount = 3;
+        filesCount = await files.count();
+        for (let i = 0; i < filesCount; i++) {}
+        expect(filesCount).toBe(1);
+      `,
+      errors: [{ column: 28, endColumn: 32, line: 5, messageId: 'useToHaveCount' }],
+      output: null,
+    },
     {
       code: "expect(await page.getByText('test').all()).toHaveLength(2)",
       errors: [{ column: 44, endColumn: 56, line: 1, messageId: 'useToHaveCount' }],
