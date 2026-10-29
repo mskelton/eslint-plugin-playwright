@@ -339,6 +339,16 @@ runRuleTester('if conditions', rule, {
     },
     {
       code: `
+        test('foo', async () => {
+          if (doSomething) {
+            await expect.soft.poll(() => value).toBe(1);
+          }
+        })
+      `,
+      errors: [{ messageId }],
+    },
+    {
+      code: `
         test('foo', () => {
           if(!doSomething) {
             // do nothing

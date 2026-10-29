@@ -217,6 +217,26 @@ runRuleTester('max-expects', rule, {
       `,
       errors: [{ messageId: 'exceededMaxAssertion' }],
     },
+    {
+      code: dedent`
+        test('should not pass', () => {
+          expect.soft.poll(() => 1).toBe(1);
+          expect.soft.poll(() => 2).toBe(2);
+        });
+      `,
+      errors: [
+        {
+          column: 3,
+          line: 3,
+          messageId: 'exceededMaxAssertion',
+        },
+      ],
+      options: [
+        {
+          max: 1,
+        },
+      ],
+    },
   ],
   valid: [
     `test('should pass')`,

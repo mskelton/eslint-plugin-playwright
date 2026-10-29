@@ -188,6 +188,39 @@ runRuleTester('valid-expect', rule, {
       code: 'expect(foo).blah.toBe(1)',
       errors: [{ column: 1, endColumn: 25, line: 1, messageId: 'modifierUnknown' }],
     },
+    // expect.soft.poll is valid only in that order, before the expect call
+    {
+      code: 'expect.poll.soft(() => foo).toBe(1)',
+      errors: [{ column: 1, endColumn: 36, line: 1, messageId: 'modifierUnknown' }],
+    },
+    {
+      code: 'expect.soft(foo).poll.toBe(1)',
+      errors: [{ column: 1, endColumn: 30, line: 1, messageId: 'modifierUnknown' }],
+    },
+    {
+      code: 'expect.poll(() => foo).soft.toBe(1)',
+      errors: [{ column: 1, endColumn: 36, line: 1, messageId: 'modifierUnknown' }],
+    },
+    {
+      code: 'expect.soft.poll.poll(() => foo).toBe(1)',
+      errors: [{ column: 1, endColumn: 41, line: 1, messageId: 'modifierUnknown' }],
+    },
+    {
+      code: 'expect(foo).soft.poll(() => foo).toBe(1)',
+      errors: [{ column: 1, endColumn: 41, line: 1, messageId: 'modifierUnknown' }],
+    },
+    {
+      code: 'expect.soft.poll(() => foo)',
+      errors: [{ column: 1, endColumn: 28, line: 1, messageId: 'matcherNotFound' }],
+    },
+    {
+      code: 'expect.soft.poll(() => foo).not',
+      errors: [{ column: 29, endColumn: 32, line: 1, messageId: 'matcherNotFound' }],
+    },
+    {
+      code: 'expect.soft.poll(() => foo).toBe',
+      errors: [{ column: 29, endColumn: 33, line: 1, messageId: 'matcherNotCalled' }],
+    },
   ],
   valid: [
     { code: 'expectPayButtonToBeEnabled()' },
@@ -203,6 +236,11 @@ runRuleTester('valid-expect', rule, {
     { code: 'softExpect("something").toBe("else")' },
     { code: 'expect.soft("something").toBe("else")' },
     { code: 'expect.poll(() => "something").toBe("else")' },
+    { code: 'expect.soft.poll(() => "something").toBe("else")' },
+    { code: 'expect.soft.poll(() => "something").not.toBe("else")' },
+    { code: 'expect["soft"].poll(() => 1)["toBe"](2)' },
+    { code: 'expect.soft["poll"](() => 1).not.toBe(2)' },
+    { code: 'expect[`soft`][`poll`](() => 1)[`not`][`toBe`](2)' },
     { code: 'expect(true).toBeDefined()' },
     { code: 'expect(undefined).not.toBeDefined()' },
     { code: 'expect([1, 2, 3]).toEqual([1, 2, 3])' },
@@ -210,6 +248,8 @@ runRuleTester('valid-expect', rule, {
     { code: 'expect.soft(1, "1 !== 2").toBe(2)' },
     { code: 'expect["soft"](1, "1 !== 2")["toBe"](2)' },
     { code: 'expect[`poll`](() => 1, { message: "1 !== 2" })[`toBe`](2)' },
+    { code: 'expect.soft.poll(() => 1, { message: "1 !== 2" }).toBe(2)' },
+    { code: 'expect["soft"]["poll"](() => 1, { message: "1 !== 2" })["toBe"](2)' },
     // minArgs
     {
       code: 'expect(1, "1 !== 2").toBe(2)',
@@ -248,6 +288,20 @@ runRuleTester('valid-expect', rule, {
         import { expect as assuming } from '@playwright/test';
         assuming(1).toBe(1);
       `,
+    },
+    {
+      code: dedent`
+        import { expect as assuming } from '@playwright/test';
+        assuming.soft.poll(() => 1).toBe(1);
+      `,
+    },
+    {
+      code: 'assert.soft.poll(() => 1).toBe(1)',
+      settings: {
+        playwright: {
+          globalAliases: { expect: ['assert'] },
+        },
+      },
     },
   ],
 })

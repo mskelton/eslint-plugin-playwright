@@ -61,6 +61,14 @@ runRuleTester('expect-expect', rule, {
       `,
       errors: [{ column: 1, endColumn: 7, line: 2, messageId: 'noAssertions' }],
     },
+    {
+      code: dedent`
+        test('invalid order', async ({ page }) => {
+          await expect.poll.soft(() => page.title()).toBe('Home')
+        })
+      `,
+      errors: [{ column: 1, endColumn: 5, line: 1, messageId: 'noAssertions' }],
+    },
   ],
   valid: [
     'foo();',
@@ -187,6 +195,30 @@ runRuleTester('expect-expect', rule, {
       code: dedent`
         import { test as custom } from '@playwright/test';
         custom("should pass", () => expect(true).toBeDefined());
+      `,
+    },
+    {
+      code: dedent`
+        test('soft poll', async ({ page }) => {
+          await expect.soft.poll(() => page.title()).toBe('Home')
+        })
+      `,
+    },
+    {
+      code: dedent`
+        test('soft poll', async ({ page }) => {
+          await expect["soft"].poll(() => page.title()).not.toBe('Missing')
+        })
+      `,
+    },
+    "test('soft poll', async ({ page }) => { await expect[`soft`][`poll`](() => page.title())[`toBe`]('Home') })",
+    {
+      code: dedent`
+        test('steps', async ({ page }) => {
+          await test.step('title', async () => {
+            await expect.soft.poll(() => page.title()).toBe('Home')
+          })
+        })
       `,
     },
   ],

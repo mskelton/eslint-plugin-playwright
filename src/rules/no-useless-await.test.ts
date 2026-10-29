@@ -231,6 +231,9 @@ runRuleTester('no-useless-await', rule, {
     'await expect(page.locator(".my-element")).toHaveText("test")',
 
     'await expect.poll(() => getSlowStorageValue(page, "key")).toBe("value")',
+    'await expect.soft.poll(() => getSlowStorageValue(page, "key")).toBe("value")',
+    'await expect["soft"]["poll"](() => value).toBe("value")',
+    'await expect[`soft`].poll(() => value).not.toBe("value")',
     'await expect(doSomething()).resolves.toThrow("No element found")',
     'await expect(doSomething()).rejects.toThrow("No element found")',
   ],

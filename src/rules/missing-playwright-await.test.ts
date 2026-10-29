@@ -160,6 +160,46 @@ runRuleTester('missing-playwright-await', rule, {
       ],
       output: test('await expect[`poll`](() => foo)[`toBeTruthy`]()'),
     },
+    // expect.soft.poll
+    {
+      code: test('expect.soft.poll(() => foo).toBe(true)'),
+      errors: [
+        {
+          column: 28,
+          endColumn: 39,
+          endLine: 1,
+          line: 1,
+          messageId: 'missingAwait',
+        },
+      ],
+      output: test('await expect.soft.poll(() => foo).toBe(true)'),
+    },
+    {
+      code: test('expect["soft"]["poll"](() => foo).toBe(true)'),
+      errors: [
+        {
+          column: 28,
+          endColumn: 42,
+          endLine: 1,
+          line: 1,
+          messageId: 'missingAwait',
+        },
+      ],
+      output: test('await expect["soft"]["poll"](() => foo).toBe(true)'),
+    },
+    {
+      code: test('expect.soft.poll(() => foo).not.toBe(true)'),
+      errors: [
+        {
+          column: 28,
+          endColumn: 39,
+          endLine: 1,
+          line: 1,
+          messageId: 'missingAwait',
+        },
+      ],
+      output: test('await expect.soft.poll(() => foo).not.toBe(true)'),
+    },
     // expect.configure
     {
       code: dedent`
@@ -810,6 +850,11 @@ runRuleTester('missing-playwright-await', rule, {
     { code: test('await expect.poll(() => foo).toBe("text")') },
     { code: test('await expect["poll"](() => foo).toContain("text")') },
     { code: test('await expect[`poll`](() => foo).toBeTruthy()') },
+    // expect.soft.poll
+    { code: test('await expect.soft.poll(() => foo).toBe("text")') },
+    { code: test('await expect.soft.poll(() => foo).not.toBe("text")') },
+    { code: test('await expect["soft"]["poll"](() => foo).toBe("text")') },
+    { code: test('await expect[`soft`][`poll`](() => foo)[`toBe`]("text")') },
     // test.step
     { code: test("await test.step('foo', async () => {})") },
     // Promise.all

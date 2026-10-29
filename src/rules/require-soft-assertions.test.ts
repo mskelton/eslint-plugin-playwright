@@ -81,6 +81,9 @@ runRuleTester('require-soft-assertions', rule, {
     'expect.poll(() => foo).toBe("bar")',
     'expect["poll"](() => foo).toBe("bar")',
     'expect[`poll`](() => foo).toBe("bar")',
+    'expect.soft.poll(() => foo).toBe("bar")',
+    'expect["soft"].poll(() => foo).not.toBe("bar")',
+    'expect[`soft`][`poll`](() => foo).toBe("bar")',
     // Global aliases
     {
       code: 'assert.soft(page).toHaveTitle("baz")',

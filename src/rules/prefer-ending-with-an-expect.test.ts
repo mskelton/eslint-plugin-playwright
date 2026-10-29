@@ -96,6 +96,16 @@ runRuleTester('prefer-ending-with-an-expect', rule, {
         await expect.poll(() => page.title()).toBe('foo')
       })
     `,
+    dedent`
+      test('foo', async ({ page }) => {
+        await expect.soft.poll(() => page.title()).toBe('foo')
+      })
+    `,
+    dedent`
+      test('foo', async ({ page }) => {
+        await expect["soft"]["poll"](() => page.title()).not.toBe('bar')
+      })
+    `,
     // Return statements are unwrapped by the last statement lookup
     dedent`
       test('foo', () => {

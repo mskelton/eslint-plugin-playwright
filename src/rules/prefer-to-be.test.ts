@@ -69,6 +69,11 @@ runRuleTester('prefer-to-be', rule, {
       errors: [{ column: 26, endColumn: 33, line: 1, messageId: 'useToBe' }],
       output: 'expect.poll(() => value).toBe("my string");',
     },
+    {
+      code: 'expect.soft.poll(() => value).toEqual("my string");',
+      errors: [{ column: 31, endColumn: 38, line: 1, messageId: 'useToBe' }],
+      output: 'expect.soft.poll(() => value).toBe("my string");',
+    },
     // Global aliases
     {
       code: 'assert(value).toEqual("my string");',

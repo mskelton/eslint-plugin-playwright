@@ -106,7 +106,7 @@ export default createRule({
         if (
           call?.type === 'expect' &&
           !call.modifiers.some((modifier) => isIdentifier(modifier, /^(resolves|rejects)$/)) &&
-          !call.members.some((member) => isIdentifier(member, 'poll')) &&
+          !call.modifiers.some((modifier) => getStringValue(modifier) === 'poll') &&
           expectMatchers.has(call.matcherName)
         ) {
           return fix(node.parent)
