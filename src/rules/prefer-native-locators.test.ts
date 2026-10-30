@@ -164,6 +164,27 @@ runRuleTester('prefer-native-locators', rule, {
       errors: [{ column: 1, line: 1, messageId: 'unexpectedTestIdQuery' }],
       output: 'page.locator(".container").getByTestId("input")',
     },
+    // The emitted literal is quoted so that the value survives intact
+    {
+      code: `page.locator('[aria-label="Say \\\\"hi\\\\""]')`,
+      errors: [{ column: 1, line: 1, messageId: 'unexpectedLabelQuery' }],
+      output: `page.getByLabel('Say "hi"')`,
+    },
+    {
+      code: `page.locator("[aria-label='Say \\"hi\\"']")`,
+      errors: [{ column: 1, line: 1, messageId: 'unexpectedLabelQuery' }],
+      output: `page.getByLabel('Say "hi"')`,
+    },
+    {
+      code: `page.locator('[title="it\\'s here"]')`,
+      errors: [{ column: 1, line: 1, messageId: 'unexpectedTitleQuery' }],
+      output: `page.getByTitle("it's here")`,
+    },
+    {
+      code: `page.locator("[title='it\\\\'s \\"here\\"']")`,
+      errors: [{ column: 1, line: 1, messageId: 'unexpectedTitleQuery' }],
+      output: `page.getByTitle("it's \\"here\\"")`,
+    },
   ],
   valid: [
     { code: 'page.getByLabel("View more")' },
@@ -203,6 +224,30 @@ runRuleTester('prefer-native-locators', rule, {
     },
     {
       code: `this.page.locator('[complex-query] > [title="Additional context"]')`,
+    },
+    // A selector that carries more than the one attribute has no equivalent
+    // native locator, so it is left alone
+    {
+      code: `page.locator('[data-testid="a"] [data-testid="b"]')`,
+    },
+    {
+      code: `page.locator('[data-testid="a"] > [data-testid="b"]')`,
+    },
+    {
+      code: `page.locator('[role="dialog"][data-state="open"]')`,
+    },
+    {
+      code: `page.locator('[placeholder="Search"][disabled]')`,
+    },
+    {
+      code: `page.locator('[role="button"], [role="link"]')`,
+    },
+    {
+      code: `page.locator('[aria-label="Close"] span')`,
+    },
+    // Unbalanced quoting is not a selector this rule can rewrite
+    {
+      code: `page.locator('[aria-label="Say "hi""]')`,
     },
     // Works for empty string and no arguments
     { code: `page.locator('')` },
