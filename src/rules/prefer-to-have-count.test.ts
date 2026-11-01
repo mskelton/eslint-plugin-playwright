@@ -149,6 +149,35 @@ runRuleTester('prefer-to-have-count', rule, {
         await assuming(files).toHaveCount(1);
       `,
     },
+    // #505: variable referenced elsewhere — report, but offer no autofix
+    // (omitted `output` asserts the fixer leaves the code untouched)
+    {
+      code: `
+        test('example', async ({ page }) => {
+          const schemaLinks = page.getByTestId('schema-link');
+          const linkCount = await schemaLinks.count();
+          if (linkCount === 0) return;
+          expect(linkCount).toBe(2);
+        });
+      `,
+      errors: [{ column: 29, endColumn: 33, line: 6, messageId: 'useToHaveCount' }],
+    },
+    {
+      code: `
+        const linkCount = await schemaLinks.count();
+        for (let i = 0; i < linkCount; i++) {}
+        expect(linkCount).toBe(2);
+      `,
+      errors: [{ column: 27, endColumn: 31, line: 4, messageId: 'useToHaveCount' }],
+    },
+    {
+      code: `
+        const items = await page.getByText('test').all();
+        console.log(items.length);
+        expect(items).toHaveLength(2);
+      `,
+      errors: [{ column: 23, endColumn: 35, line: 4, messageId: 'useToHaveCount' }],
+    },
   ],
   valid: [
     { code: 'await expect(files).toHaveCount(1)' },
