@@ -97,6 +97,15 @@ runRuleTester('no-raw-locators', rule, {
       errors: [{ column: 34, endColumn: 69, line: 1, messageId }],
       options: [{ allowed: [`[aria-busy=true]`] }],
     },
+    // Template literals with interpolation are still raw locators (#479)
+    {
+      code: test('const id = "123"; await page.locator(`#row-${id}`)'),
+      errors: [{ column: 52, endColumn: 78, line: 1, messageId }],
+    },
+    {
+      code: test('await page.locator(`#row-${id}`)'),
+      errors: [{ column: 34, endColumn: 60, line: 1, messageId }],
+    },
   ],
   valid: [
     test('await page.click()'),
