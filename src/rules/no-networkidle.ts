@@ -3,6 +3,13 @@ import { getStringValue, isStringNode } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 
 const messageId = 'noNetworkidle'
+// Methods where the options object is the first argument instead of the
+// second (e.g. `page.reload([options])` vs `page.goto(url[, options])`).
+const optionsArgIndex: Record<string, number> = {
+  goBack: 0,
+  goForward: 0,
+  reload: 0,
+}
 const methods = new Set([
   'goBack',
   'goForward',
@@ -37,13 +44,13 @@ export default createRule({
           return
         }
 
-        // All other methods have an options object
-        if (node.arguments.length >= 2) {
-          const [_, arg] = node.arguments
-          if (arg.type !== 'ObjectExpression') {
-            return
-          }
+        // All other methods have an options object. For `goto`, `setContent`,
+        // and `waitForURL` the options are the second argument, while `goBack`,
+        // `goForward`, and `reload` take the options as their first argument.
+        const argIndex = optionsArgIndex[methodName] ?? 1
+        const arg = node.arguments[argIndex]
 
+        if (arg && arg.type === 'ObjectExpression') {
           const property = arg.properties
             .filter((p): p is ESTree.Property => p.type === 'Property')
             .find((p) => isStringNode(p.value, 'networkidle'))
