@@ -27,9 +27,15 @@ export default createRule({
           return
         }
 
+        const [arg] = node.arguments
         if (
-          (node.arguments.length === 0 || isStringNode(node.arguments[0])) &&
-          !isAllowed(getStringValue(node.arguments[0]))
+          // Template literals with interpolations (e.g. `#row-${id}`) are still
+          // raw locator strings, even though isStringNode() only matches
+          // simple single-quasi template literals.
+          (arg === undefined ||
+            isStringNode(arg) ||
+            arg.type === 'TemplateLiteral') &&
+          !isAllowed(getStringValue(arg))
         ) {
           context.report({ messageId: 'noRawLocator', node })
           return
