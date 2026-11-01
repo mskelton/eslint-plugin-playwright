@@ -26,20 +26,24 @@ runRuleTester('no-networkidle', rule, {
       errors: [{ column: 29, endColumn: 42, line: 1, messageId }],
     },
     {
-      code: 'page.reload(url, { waitUntil: "networkidle" })',
-      errors: [{ column: 31, endColumn: 44, line: 1, messageId }],
+      code: 'page.reload({ waitUntil: "networkidle" })',
+      errors: [{ column: 26, endColumn: 39, line: 1, messageId }],
+    },
+    {
+      code: 'page.reload({ waitUntil: `networkidle` })',
+      errors: [{ column: 26, endColumn: 39, line: 1, messageId }],
     },
     {
       code: 'page.setContent(url, { waitUntil: "networkidle" })',
       errors: [{ column: 35, endColumn: 48, line: 1, messageId }],
     },
     {
-      code: 'page.goBack(url, { waitUntil: "networkidle" })',
-      errors: [{ column: 31, endColumn: 44, line: 1, messageId }],
+      code: 'page.goBack({ waitUntil: "networkidle" })',
+      errors: [{ column: 26, endColumn: 39, line: 1, messageId }],
     },
     {
-      code: 'page.goForward(url, { waitUntil: "networkidle" })',
-      errors: [{ column: 34, endColumn: 47, line: 1, messageId }],
+      code: 'page.goForward({ waitUntil: "networkidle" })',
+      errors: [{ column: 29, endColumn: 42, line: 1, messageId }],
     },
     {
       code: 'page.waitForLoadState(`networkidle`)',
