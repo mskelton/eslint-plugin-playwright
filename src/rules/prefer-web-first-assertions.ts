@@ -116,9 +116,14 @@ export default createRule({
         const newMatcher =
           (+!!notModifier ^ +isFalsy && methodConfig.inverse) || methodConfig.matcher
 
+        // Matchers like toHaveText need an expected value, and there is nothing
+        // to carry over from toBeTruthy() or toBeFalsy().
+        const missingExpectedValue =
+          methodConfig.type === 'string' && !call.arguments.length && !fnCall.matcherArgs.length
+
         // Some methods are too complex to autofix, so we just report a warning
         // with a recommendation.
-        if (methodConfig.fixable === false) {
+        if (methodConfig.fixable === false || missingExpectedValue) {
           context.report({
             data: { matcher: methodConfig.matcher, method },
             messageId: 'useWebFirstAssertion',
