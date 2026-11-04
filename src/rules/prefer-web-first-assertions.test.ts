@@ -1268,6 +1268,58 @@ runRuleTester('prefer-web-first-assertions', rule, {
         await expect(content).toHaveText("bar")
       `),
     },
+    // toHaveText and toHaveValue need an expected value, which the truthiness
+    // matchers don't provide, so these report without an autofix
+    {
+      code: test('expect(await foo.textContent()).toBeTruthy()'),
+      errors: [
+        {
+          data: { matcher: 'toHaveText', method: 'textContent' },
+          messageId: 'useWebFirstAssertion',
+        },
+      ],
+    },
+    {
+      code: test('expect(await foo.innerText()).toBeFalsy()'),
+      errors: [
+        {
+          data: { matcher: 'toHaveText', method: 'innerText' },
+          messageId: 'useWebFirstAssertion',
+        },
+      ],
+    },
+    {
+      code: test('expect(await foo.inputValue()).not.toBeTruthy()'),
+      errors: [
+        {
+          data: { matcher: 'toHaveValue', method: 'inputValue' },
+          messageId: 'useWebFirstAssertion',
+        },
+      ],
+    },
+    {
+      code: test(`
+        const labelName = await foo.textContent();
+        expect(labelName).toBeTruthy();
+      `),
+      errors: [
+        {
+          data: { matcher: 'toHaveText', method: 'textContent' },
+          messageId: 'useWebFirstAssertion',
+        },
+      ],
+    },
+    // getAttribute keeps its argument, so the autofix still has a valid call
+    {
+      code: test('expect(await foo.getAttribute("bar")).toBeTruthy()'),
+      errors: [
+        {
+          data: { matcher: 'toHaveAttribute', method: 'getAttribute' },
+          messageId: 'useWebFirstAssertion',
+        },
+      ],
+      output: test('await expect(foo).toHaveAttribute("bar", )'),
+    },
   ],
   valid: [
     { code: test('await expect(page.locator(".tweet")).toBeVisible()') },
