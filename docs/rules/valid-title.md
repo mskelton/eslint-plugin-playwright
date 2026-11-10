@@ -147,14 +147,28 @@ test.describe('foo', () => {
 ## Options
 
 ```ts
+type PatternAndMessage = [pattern: string, message?: string]
+
 interface Options {
   ignoreSpaces?: boolean
   ignoreTypeOfStepName?: boolean
   ignoreTypeOfTestName?: boolean
   ignoreTypeOfDescribeName?: boolean
   disallowedWords?: string[]
-  mustNotMatch?: Partial<Record<'describe' | 'test', string>> | string
-  mustMatch?: Partial<Record<'describe' | 'test', string>> | string
+  mustNotMatch?:
+    | string
+    | PatternAndMessage
+    | PatternAndMessage[]
+    | Partial<
+        Record<'describe' | 'step' | 'test', string | PatternAndMessage | PatternAndMessage[]>
+      >
+  mustMatch?:
+    | string
+    | PatternAndMessage
+    | PatternAndMessage[]
+    | Partial<
+        Record<'describe' | 'step' | 'test', string | PatternAndMessage | PatternAndMessage[]>
+      >
 }
 ```
 
@@ -208,10 +222,25 @@ test.describe('the proper way to handle things', () => {})
 
 Defaults: `{}`
 
-Allows enforcing that titles must match or must not match a given Regular
-Expression, with an optional message. An object can be provided to apply
-different Regular Expressions (with optional messages) to specific Playwright
-test function groups (`describe`, `test`).
+Titles can be required to match, or required not to match, one or more regular
+expressions. Each pattern accepts an optional message.
+
+A pattern can be written in any of these forms:
+
+- a string, which is one pattern and the default message
+- an array of one or two strings, which is one pattern and an optional message
+- an array of those arrays, which is a list of patterns
+
+A string, a single pattern, or a list given directly applies to `describe`,
+`test`, and `step`. An object applies different patterns to each of those
+groups. Each group accepts the same forms, so one group can use a single
+pattern while another uses a list.
+
+`mustNotMatch` reports every pattern the title matches. `mustMatch` requires
+the title to match every pattern, and reports each pattern it misses. When a
+pattern has its own message, that message is reported. Otherwise the default
+message is used. When a title matches a `mustNotMatch` pattern, `mustMatch` is
+not checked for that title.
 
 Examples of **incorrect** code when using `mustMatch`:
 
@@ -257,6 +286,32 @@ module.exports = {
             `Describe titles should either start with a capital letter or one of the following prefixes: ${prefixesList}`,
           ],
           test: /[^A-Z]/u.source,
+        },
+      },
+    ],
+  },
+}
+```
+
+Several patterns can be checked at once. Each pair is a pattern and an optional
+message. Pairs with and without messages can be mixed, and a list can sit next
+to a single pattern:
+
+```javascript
+module.exports = {
+  rules: {
+    'playwright/valid-title': [
+      'error',
+      {
+        mustNotMatch: {
+          describe: [
+            ['@\\w+$', 'Title should not be suffixed with a tag, only prefixed'],
+            ['^.{80,}$', 'Title should be less than 80 chars'],
+          ],
+        },
+        mustMatch: {
+          test: [['^Please ', 'Title should start with Please'], ['!$']],
+          step: ['^Given ', 'Step titles should start with Given'],
         },
       },
     ],

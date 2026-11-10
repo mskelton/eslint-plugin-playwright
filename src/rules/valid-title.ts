@@ -34,34 +34,63 @@ const compileMatcherPattern = (
   return [new RegExp(matcher, 'u'), message]
 }
 
+// A list is an array of pairs. A one or two string array stays a single pattern
+// plus an optional message, which is the existing tuple form.
+const isMatcherList = (matcher: MatcherAndMessage | MatcherList): matcher is MatcherList =>
+  matcher.some((item) => Array.isArray(item))
+
+const compileMatcherOption = (matcher: MatcherOption): CompiledMatcherAndMessage[] => {
+  if (!Array.isArray(matcher)) {
+    return [compileMatcherPattern(matcher)]
+  }
+
+  if (matcher.length === 0) {
+    return []
+  }
+
+  if (isMatcherList(matcher)) {
+    return matcher.map((item) => compileMatcherPattern(item))
+  }
+
+  return [compileMatcherPattern(matcher)]
+}
+
 const compileMatcherPatterns = (
-  matchers: Partial<Record<MatcherGroups, string | MatcherAndMessage>> | MatcherAndMessage | string,
-): Record<MatcherGroups, CompiledMatcherAndMessage | null> &
-  Record<string, CompiledMatcherAndMessage | null> => {
+  matchers: Matchers,
+): Record<MatcherGroups, CompiledMatcherAndMessage[]> => {
   if (typeof matchers === 'string' || Array.isArray(matchers)) {
-    const compiledMatcher = compileMatcherPattern(matchers)
+    const compiledMatchers = compileMatcherOption(matchers)
 
     return {
-      describe: compiledMatcher,
-      step: compiledMatcher,
-      test: compiledMatcher,
+      describe: compiledMatchers,
+      step: compiledMatchers,
+      test: compiledMatchers,
     }
   }
 
   return {
-    describe: matchers.describe ? compileMatcherPattern(matchers.describe) : null,
-    step: matchers.step ? compileMatcherPattern(matchers.step) : null,
-    test: matchers.test ? compileMatcherPattern(matchers.test) : null,
+    describe: matchers.describe ? compileMatcherOption(matchers.describe) : [],
+    step: matchers.step ? compileMatcherOption(matchers.step) : [],
+    test: matchers.test ? compileMatcherOption(matchers.test) : [],
   }
 }
 
 type CompiledMatcherAndMessage = [matcher: RegExp, message?: string]
 type MatcherAndMessage = [matcher: string, message?: string]
+type MatcherList = MatcherAndMessage[]
+type MatcherOption = MatcherAndMessage | MatcherList | string
+type Matchers = MatcherOption | Partial<Record<MatcherGroups, MatcherOption>>
 
 const MatcherAndMessageSchema = {
   additionalItems: false,
   items: { type: 'string' },
   maxItems: 2,
+  minItems: 1,
+  type: 'array',
+} as const
+
+const MatcherListSchema = {
+  items: MatcherAndMessageSchema,
   minItems: 1,
   type: 'array',
 } as const
@@ -74,14 +103,8 @@ interface Options {
   ignoreTypeOfDescribeName?: boolean
   ignoreTypeOfStepName?: boolean
   ignoreTypeOfTestName?: boolean
-  mustMatch?:
-    | Partial<Record<MatcherGroups, string | MatcherAndMessage>>
-    | MatcherAndMessage
-    | string
-  mustNotMatch?:
-    | Partial<Record<MatcherGroups, string | MatcherAndMessage>>
-    | MatcherAndMessage
-    | string
+  mustMatch?: Matchers
+  mustNotMatch?: Matchers
 }
 
 export default createRule({
@@ -100,6 +123,36 @@ export default createRule({
 
     const mustNotMatchPatterns = compileMatcherPatterns(mustNotMatch ?? {})
     const mustMatchPatterns = compileMatcherPatterns(mustMatch ?? {})
+
+    const reportMatcherViolations = (
+      patterns: readonly CompiledMatcherAndMessage[],
+      title: StringNode,
+      functionName: MatcherGroups,
+      violates: (pattern: RegExp) => boolean,
+      defaultMessageId: 'mustMatch' | 'mustNotMatch',
+      customMessageId: 'mustMatchCustom' | 'mustNotMatchCustom',
+    ) => {
+      let reported = false
+
+      for (const [pattern, message] of patterns) {
+        if (!violates(pattern)) {
+          continue
+        }
+
+        context.report({
+          data: {
+            functionName,
+            message: message ?? '',
+            pattern: String(pattern),
+          },
+          messageId: message ? customMessageId : defaultMessageId,
+          node: title,
+        })
+        reported = true
+      }
+
+      return reported
+    }
 
     return {
       CallExpression(node) {
@@ -207,37 +260,28 @@ export default createRule({
           })
         }
 
-        const [mustNotMatchPattern, mustNotMatchMessage] = mustNotMatchPatterns[functionName] ?? []
-
-        if (mustNotMatchPattern && mustNotMatchPattern.test(titleString)) {
-          context.report({
-            data: {
-              functionName,
-              message: mustNotMatchMessage ?? '',
-              pattern: String(mustNotMatchPattern),
-            },
-            messageId: mustNotMatchMessage ? 'mustNotMatchCustom' : 'mustNotMatch',
-            node: title,
-          })
-
+        if (
+          reportMatcherViolations(
+            mustNotMatchPatterns[functionName],
+            title,
+            functionName,
+            (pattern) => pattern.test(titleString),
+            'mustNotMatch',
+            'mustNotMatchCustom',
+          )
+        ) {
+          // A mustNotMatch failure skips mustMatch, same as a single pattern.
           return
         }
 
-        const [mustMatchPattern, mustMatchMessage] = mustMatchPatterns[functionName] ?? []
-
-        if (mustMatchPattern && !mustMatchPattern.test(titleString)) {
-          context.report({
-            data: {
-              functionName,
-              message: mustMatchMessage ?? '',
-              pattern: String(mustMatchPattern),
-            },
-            messageId: mustMatchMessage ? 'mustMatchCustom' : 'mustMatch',
-            node: title,
-          })
-
-          return
-        }
+        reportMatcherViolations(
+          mustMatchPatterns[functionName],
+          title,
+          functionName,
+          (pattern) => !pattern.test(titleString),
+          'mustMatch',
+          'mustMatchCustom',
+        )
       },
     }
   },
@@ -267,9 +311,10 @@ export default createRule({
             oneOf: [
               { type: 'string' },
               MatcherAndMessageSchema,
+              MatcherListSchema,
               {
                 additionalProperties: {
-                  oneOf: [{ type: 'string' }, MatcherAndMessageSchema],
+                  oneOf: [{ type: 'string' }, MatcherAndMessageSchema, MatcherListSchema],
                 },
                 propertyNames: { enum: ['describe', 'test', 'step'] },
                 type: 'object',
