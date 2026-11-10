@@ -1,4 +1,6 @@
 import dedent from 'dedent'
+import { Linter } from 'eslint'
+import { expect, test } from 'vitest'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './valid-title.js'
 
@@ -1424,3 +1426,653 @@ runRuleTester('no-duplicate-prefix nested', rule, {
     },
   ],
 })
+
+const longTaggedTitle = `${'a'.repeat(80)} @slow`
+const longTitle = 'a'.repeat(80)
+
+runRuleTester('multiple mustMatch and mustNotMatch patterns', rule, {
+  invalid: [
+    {
+      code: "test('foo bar', () => {});",
+      errors: [
+        {
+          column: 6,
+          data: { functionName: 'test', pattern: /foo/u.toString() },
+          line: 1,
+          messageId: 'mustNotMatch',
+        },
+        {
+          column: 6,
+          data: {
+            functionName: 'test',
+            message: 'mentions bar',
+            pattern: /bar/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustNotMatchCustom',
+        },
+      ],
+      options: [
+        {
+          mustNotMatch: [['foo'], ['bar', 'mentions bar']],
+        },
+      ],
+    },
+    {
+      code: dedent`
+        test.describe('bad @slow', () => {
+          test('bad @slow', () => {
+            test.step('bad @slow', () => {})
+          })
+        })
+      `,
+      errors: [
+        {
+          column: 15,
+          data: {
+            functionName: 'describe',
+            message: 'No suffixed tag',
+            pattern: /@\w+$/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustNotMatchCustom',
+        },
+        {
+          column: 8,
+          data: {
+            functionName: 'test',
+            message: 'No suffixed tag',
+            pattern: /@\w+$/u.toString(),
+          },
+          line: 2,
+          messageId: 'mustNotMatchCustom',
+        },
+        {
+          column: 15,
+          data: {
+            functionName: 'step',
+            message: 'No suffixed tag',
+            pattern: /@\w+$/u.toString(),
+          },
+          line: 3,
+          messageId: 'mustNotMatchCustom',
+        },
+      ],
+      options: [{ mustNotMatch: [['@\\w+$', 'No suffixed tag']] }],
+    },
+    {
+      code: `test.describe('${longTaggedTitle}', () => {});`,
+      errors: [
+        {
+          column: 15,
+          data: {
+            functionName: 'describe',
+            message: 'Title should not be suffixed with a tag, only prefixed',
+            pattern: /@\w+$/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustNotMatchCustom',
+        },
+        {
+          column: 15,
+          data: {
+            functionName: 'describe',
+            message: 'Title should be less than 80 chars',
+            pattern: /^.{80,}$/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustNotMatchCustom',
+        },
+      ],
+      options: [
+        {
+          mustNotMatch: {
+            describe: [
+              ['@\\w+$', 'Title should not be suffixed with a tag, only prefixed'],
+              ['^.{80,}$', 'Title should be less than 80 chars'],
+            ],
+          },
+        },
+      ],
+    },
+    {
+      code: "test.describe('short @slow', () => {});",
+      errors: [
+        {
+          column: 15,
+          data: {
+            functionName: 'describe',
+            message: 'Title should not be suffixed with a tag, only prefixed',
+            pattern: /@\w+$/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustNotMatchCustom',
+        },
+      ],
+      options: [
+        {
+          mustNotMatch: {
+            describe: [
+              ['@\\w+$', 'Title should not be suffixed with a tag, only prefixed'],
+              ['^.{80,}$', 'Title should be less than 80 chars'],
+            ],
+          },
+        },
+      ],
+    },
+    {
+      code: `test.describe('${longTitle}', () => {});`,
+      errors: [
+        {
+          column: 15,
+          data: {
+            functionName: 'describe',
+            message: 'Title should be less than 80 chars',
+            pattern: /^.{80,}$/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustNotMatchCustom',
+        },
+      ],
+      options: [
+        {
+          mustNotMatch: {
+            describe: [
+              ['@\\w+$', 'Title should not be suffixed with a tag, only prefixed'],
+              ['^.{80,}$', 'Title should be less than 80 chars'],
+            ],
+          },
+        },
+      ],
+    },
+    {
+      code: "test('short @slow', () => {});",
+      errors: [
+        {
+          column: 6,
+          data: {
+            functionName: 'test',
+            message: 'No suffixed tag',
+            pattern: /@\w+$/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustNotMatchCustom',
+        },
+      ],
+      options: [
+        {
+          mustNotMatch: {
+            test: [
+              ['@\\w+$', 'No suffixed tag'],
+              ['^.{20,}$', 'Title should be less than 20 chars'],
+            ],
+          },
+        },
+      ],
+    },
+    {
+      code: "test.step('too long @slow', () => {});",
+      errors: [
+        {
+          column: 11,
+          data: { functionName: 'step', pattern: /@\w+$/u.toString() },
+          line: 1,
+          messageId: 'mustNotMatch',
+        },
+        {
+          column: 11,
+          data: {
+            functionName: 'step',
+            message: 'Title should be less than 10 chars',
+            pattern: /^.{10,}$/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustNotMatchCustom',
+        },
+      ],
+      options: [
+        {
+          mustNotMatch: {
+            step: [['@\\w+$'], ['^.{10,}$', 'Title should be less than 10 chars']],
+          },
+        },
+      ],
+    },
+    {
+      code: "test('work', () => {});",
+      errors: [
+        {
+          column: 6,
+          data: {
+            functionName: 'test',
+            message: 'Title should start with Please',
+            pattern: /^Please/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustMatchCustom',
+        },
+        {
+          column: 6,
+          data: {
+            functionName: 'test',
+            message: 'Title should end with !',
+            pattern: /!$/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustMatchCustom',
+        },
+      ],
+      options: [
+        {
+          mustMatch: {
+            test: [
+              ['^Please', 'Title should start with Please'],
+              ['!$', 'Title should end with !'],
+            ],
+          },
+        },
+      ],
+    },
+    {
+      code: "test.describe('Please work', () => {});",
+      errors: [
+        {
+          column: 15,
+          data: {
+            functionName: 'describe',
+            message: 'Title should end with !',
+            pattern: /!$/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustMatchCustom',
+        },
+      ],
+      options: [
+        {
+          mustMatch: {
+            describe: [
+              ['^Please', 'Title should start with Please'],
+              ['!$', 'Title should end with !'],
+            ],
+          },
+        },
+      ],
+    },
+    {
+      code: "test.step('work', () => {});",
+      errors: [
+        {
+          column: 11,
+          data: { functionName: 'step', pattern: /^Please/u.toString() },
+          line: 1,
+          messageId: 'mustMatch',
+        },
+        {
+          column: 11,
+          data: { functionName: 'step', pattern: /!$/u.toString() },
+          line: 1,
+          messageId: 'mustMatch',
+        },
+      ],
+      options: [{ mustMatch: { step: [['^Please'], ['!$']] } }],
+    },
+    {
+      code: dedent`
+        test.describe('bad!', () => {
+          test('bad.', () => {
+            test.step('Skip me @slow', () => {})
+          })
+        })
+      `,
+      errors: [
+        {
+          column: 15,
+          data: { functionName: 'describe', pattern: /!$/u.toString() },
+          line: 1,
+          messageId: 'mustNotMatch',
+        },
+        {
+          column: 8,
+          data: {
+            functionName: 'test',
+            message: 'Titles should not end with a full stop',
+            pattern: /\.$/u.toString(),
+          },
+          line: 2,
+          messageId: 'mustNotMatchCustom',
+        },
+        {
+          column: 15,
+          data: { functionName: 'step', pattern: /@\w+$/u.toString() },
+          line: 3,
+          messageId: 'mustNotMatch',
+        },
+        {
+          column: 15,
+          data: {
+            functionName: 'step',
+            message: 'Do not start a step with Skip',
+            pattern: /^Skip/u.toString(),
+          },
+          line: 3,
+          messageId: 'mustNotMatchCustom',
+        },
+      ],
+      options: [
+        {
+          mustNotMatch: {
+            describe: '!$',
+            step: [['@\\w+$'], ['^Skip', 'Do not start a step with Skip']],
+            test: ['\\.$', 'Titles should not end with a full stop'],
+          },
+        },
+      ],
+    },
+    {
+      code: "test('nope @slow', () => {});",
+      errors: [
+        {
+          column: 6,
+          data: {
+            functionName: 'test',
+            message: 'No suffixed tag',
+            pattern: /@\w+$/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustNotMatchCustom',
+        },
+        {
+          column: 6,
+          data: {
+            functionName: 'test',
+            message: 'Title should be less than 5 chars',
+            pattern: /^.{5,}$/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustNotMatchCustom',
+        },
+      ],
+      options: [
+        {
+          mustMatch: { test: ['^Please', 'Title should start with Please'] },
+          mustNotMatch: {
+            test: [
+              ['@\\w+$', 'No suffixed tag'],
+              ['^.{5,}$', 'Title should be less than 5 chars'],
+            ],
+          },
+        },
+      ],
+    },
+    {
+      code: "test('hello', () => {});",
+      errors: [
+        {
+          column: 6,
+          data: {
+            functionName: 'test',
+            message: 'Title should start with Please',
+            pattern: /^Please/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustMatchCustom',
+        },
+      ],
+      options: [
+        {
+          mustMatch: { test: ['^Please', 'Title should start with Please'] },
+          mustNotMatch: { test: [['@\\w+$', 'No suffixed tag']] },
+        },
+      ],
+    },
+    {
+      code: "test('name @slow', () => {});",
+      errors: [
+        {
+          column: 6,
+          data: {
+            functionName: 'test',
+            message: 'No suffixed tag',
+            pattern: /@\w+$/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustNotMatchCustom',
+        },
+      ],
+      options: [{ mustNotMatch: { test: [['@\\w+$', 'No suffixed tag']] } }],
+    },
+    {
+      code: "it('too long @slow', () => {});",
+      errors: [
+        {
+          column: 4,
+          data: {
+            functionName: 'test',
+            message: 'No suffixed tag',
+            pattern: /@\w+$/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustNotMatchCustom',
+        },
+        {
+          column: 4,
+          data: {
+            functionName: 'test',
+            message: 'Title should be less than 10 chars',
+            pattern: /^.{10,}$/u.toString(),
+          },
+          line: 1,
+          messageId: 'mustNotMatchCustom',
+        },
+      ],
+      options: [
+        {
+          mustNotMatch: {
+            test: [
+              ['@\\w+$', 'No suffixed tag'],
+              ['^.{10,}$', 'Title should be less than 10 chars'],
+            ],
+          },
+        },
+      ],
+      settings: {
+        playwright: {
+          globalAliases: { test: ['it'] },
+        },
+      },
+    },
+  ],
+  valid: [
+    {
+      code: "test('bar baz', () => {});",
+      options: [{ mustNotMatch: ['foo', 'bar'] }],
+    },
+    {
+      code: "test('Please work!', () => {});",
+      options: [
+        {
+          mustMatch: {
+            test: [
+              ['^Please', 'Title should start with Please'],
+              ['!$', 'Title should end with !'],
+            ],
+          },
+        },
+      ],
+    },
+    {
+      code: "test.describe('short title', () => {});",
+      options: [
+        {
+          mustNotMatch: {
+            describe: [
+              ['@\\w+$', 'Title should not be suffixed with a tag, only prefixed'],
+              ['^.{80,}$', 'Title should be less than 80 chars'],
+            ],
+          },
+        },
+      ],
+    },
+    {
+      code: dedent`
+        test.describe('short title', () => {
+          test('short @slow', () => {
+            test.step('${longTitle}', () => {})
+          })
+        })
+      `,
+      options: [
+        {
+          mustNotMatch: {
+            describe: [
+              ['@\\w+$', 'Title should not be suffixed with a tag, only prefixed'],
+              ['^.{80,}$', 'Title should be less than 80 chars'],
+            ],
+          },
+        },
+      ],
+    },
+    {
+      code: dedent`
+        test.describe('Suite', () => {
+          test('Please work!', () => {
+            test.step('Given a user', () => {})
+          })
+        })
+      `,
+      options: [
+        {
+          mustMatch: {
+            describe: [['^[A-Z]']],
+            step: [['^Given ']],
+            test: [['^Please'], ['!$']],
+          },
+        },
+      ],
+    },
+    {
+      code: dedent`
+        test.describe('Please work!', () => {
+          test('Please work!', () => {
+            test.step('Please work!', () => {})
+          })
+        })
+      `,
+      options: [
+        {
+          mustMatch: [['^Please'], ['!$']],
+          mustNotMatch: [['@\\w+$']],
+        },
+      ],
+    },
+    {
+      code: dedent`
+        test.describe('Suite', () => {
+          test('Please work', () => {
+            test.step('Given a user', () => {})
+          })
+        })
+      `,
+      options: [
+        {
+          mustMatch: {
+            describe: '^[A-Z]',
+            step: [['^Given ']],
+            test: ['^Please', 'Title should start with Please'],
+          },
+        },
+      ],
+    },
+    {
+      code: "test('Please work', () => {});",
+      options: [
+        {
+          mustMatch: { test: [['^Please'], ['work$']] },
+          mustNotMatch: { test: [['@\\w+$'], ['^.{40,}$']] },
+        },
+      ],
+    },
+    {
+      code: "test('name', () => {});",
+      options: [{ mustNotMatch: { test: [['@\\w+$', 'No suffixed tag']] } }],
+    },
+    {
+      code: "test.step('Given a user', () => {});",
+      options: [{ mustMatch: { step: ['^Given ', 'Step titles should start with Given'] } }],
+    },
+  ],
+})
+
+const lintTitle = (options: unknown) => {
+  const linter = new Linter()
+
+  return linter.verify("test('hello', () => {})", {
+    plugins: {
+      playwright: {
+        rules: {
+          'valid-title': rule,
+        },
+      },
+    },
+    rules: {
+      'playwright/valid-title': ['error', options],
+    },
+  })
+}
+
+const acceptedMatcherOptions: Array<[string, unknown]> = [
+  ['string pattern', { mustNotMatch: '@\\w+$' }],
+  ['pattern without a message', { mustNotMatch: ['@\\w+$'] }],
+  ['pattern with a message', { mustNotMatch: ['@\\w+$', 'No suffixed tag'] }],
+  [
+    'object of strings and tuples',
+    { mustMatch: { describe: '^That', step: 'Given', test: ['^Please'] } },
+  ],
+  [
+    'lists mixed with a single pattern',
+    {
+      mustNotMatch: {
+        describe: [
+          ['@\\w+$', 'Title should not be suffixed with a tag, only prefixed'],
+          ['^.{80,}$', 'Title should be less than 80 chars'],
+        ],
+        step: '^Given',
+        test: [['@\\w+$'], ['^.{80,}$', 'Title should be less than 80 chars']],
+      },
+    },
+  ],
+  [
+    'top level list',
+    {
+      mustMatch: [['^Please', 'Title should start with Please'], ['!$']],
+    },
+  ],
+  ['empty object', { mustMatch: {} }],
+]
+
+for (const [label, options] of acceptedMatcherOptions) {
+  test(`accepts ${label}`, () => {
+    expect(() => lintTitle(options)).not.toThrow()
+  })
+}
+
+const rejectedMatcherOptions: Array<[string, unknown]> = [
+  ['three strings', { mustNotMatch: ['a', 'b', 'c'] }],
+  ['string mixed with a pair', { mustNotMatch: ['a', ['b', 'c']] }],
+  ['unknown group', { mustNotMatch: { it: 'a' } }],
+  ['empty list', { mustNotMatch: [] }],
+  ['empty list on a key', { mustMatch: { test: [] } }],
+  ['three strings on a key', { mustNotMatch: { test: ['a', 'b', 'c'] } }],
+  ['pair with three items', { mustNotMatch: { describe: [['a', 'b', 'c']] } }],
+  ['non string pattern', { mustNotMatch: { step: [[1, 'msg']] } }],
+  ['pattern object', { mustMatch: { test: { source: 'a' } } }],
+  ['null', { mustNotMatch: null }],
+  ['pair mixed with a bare string', { mustMatch: [['ok', 'message'], 'bare'] }],
+  ['unknown option', { extra: true, mustNotMatch: 'a' }],
+]
+
+for (const [label, options] of rejectedMatcherOptions) {
+  test(`rejects ${label}`, () => {
+    expect(() => lintTitle(options)).toThrow(/valid-title/)
+  })
+}
