@@ -1,4 +1,4 @@
-import type { Scope } from 'eslint'
+import type { Rule, Scope } from 'eslint'
 import type * as ESTree from 'estree'
 import { getStringValue, isIdentifier, isPageMethod, isPromiseAccessor } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
@@ -7,13 +7,72 @@ import type { NodeWithParent } from '../utils/types.js'
 
 const validTypes = new Set(['AwaitExpression', 'ReturnStatement', 'ArrowFunctionExpression'])
 
-function isArrayLike(node: ESTree.Node) {
+const builtinCollections = /^(Array|Map|Set|WeakMap|WeakSet)$/
+
+/**
+ * Checks if an expression creates a built-in collection (`[]`, `new Map()`,
+ * `Array.from()`, ...). Their `fill` and `clear` methods are not Playwright
+ * methods, so they never need to be awaited.
+ */
+function isCollectionExpression(node: ESTree.Node | null | undefined) {
+  if (!node) {
+    return false
+  }
+
   return (
     node.type === 'ArrayExpression' ||
-    (node.type === 'NewExpression' && isIdentifier(node.callee, 'Array')) ||
+    ((node.type === 'NewExpression' || node.type === 'CallExpression') &&
+      isIdentifier(node.callee, builtinCollections)) ||
     (node.type === 'CallExpression' &&
       node.callee.type === 'MemberExpression' &&
       isIdentifier(node.callee.object, 'Array'))
+  )
+}
+
+/**
+ * Checks if a method receiver is a built-in collection, either inline
+ * (`new Map().clear()`) or through a variable whose every assignment is a
+ * collection (`const cache = new Map(); cache.clear()`).
+ */
+function isBuiltinCollection(context: Rule.RuleContext, node: ESTree.Node) {
+  if (isCollectionExpression(node)) {
+    return true
+  }
+  if (node.type !== 'Identifier') {
+    return false
+  }
+
+  const ref = context.sourceCode.getScope(node).references.find((r) => r.identifier === node)
+  const variable = ref?.resolved
+
+  if (!variable || variable.defs.length !== 1 || variable.defs[0].type !== 'Variable') {
+    return false
+  }
+
+  const writes = variable.references.filter((r) => r.isWrite())
+
+  return (
+    writes.length > 0 &&
+    writes.every((r) => isDirectWrite(r) && isCollectionExpression(r.writeExpr))
+  )
+}
+
+/**
+ * Checks if a write stores `writeExpr` itself in the variable. For
+ * destructuring (`const [a] = [x]`) and loops (`for (const a of [x])`) the
+ * write expression is the whole right side, not the variable's value.
+ */
+function isDirectWrite(ref: Scope.Reference) {
+  const parent = (ref.identifier as NodeWithParent).parent
+
+  return (
+    (parent.type === 'VariableDeclarator' &&
+      parent.id === ref.identifier &&
+      parent.init === ref.writeExpr) ||
+    (parent.type === 'AssignmentExpression' &&
+      parent.operator === '=' &&
+      parent.left === ref.identifier &&
+      parent.right === ref.writeExpr)
   )
 }
 
@@ -390,7 +449,7 @@ export default createRule({
         if (includePageLocatorMethods && node.callee.type === 'MemberExpression') {
           const methodName = getStringValue(node.callee.property)
           const isPlaywrightMethod =
-            !isArrayLike(node.callee.object) &&
+            !isBuiltinCollection(context, node.callee.object) &&
             (locatorMethods.has(methodName) ||
               (pageMethods.has(methodName) && isPageMethod(node, methodName)))
 

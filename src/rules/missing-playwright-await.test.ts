@@ -748,6 +748,32 @@ runRuleTester('missing-playwright-await', rule, {
       errors: [{ column: 28, messageId: 'missingAwait' }],
       options: [{ includePageLocatorMethods: true }],
     },
+    // Variables that are not (only) built-in collections are still checked
+    {
+      code: test('const input = page.locator("input"); input.clear()'),
+      errors: [{ column: 65, messageId: 'missingAwait' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('let input = new Map(); input = page.locator("input"); input.clear()'),
+      errors: [{ column: 82, messageId: 'missingAwait' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('function f(cache) { cache.clear() }'),
+      errors: [{ column: 48, messageId: 'missingAwait' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('for (const input of [a, b]) input.fill("x")'),
+      errors: [{ column: 56, messageId: 'missingAwait' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('const [input] = [page.locator("input")]; input.fill("x")'),
+      errors: [{ column: 69, messageId: 'missingAwait' }],
+      options: [{ includePageLocatorMethods: true }],
+    },
     {
       code: test('list.count()'),
       errors: [{ column: 28, messageId: 'missingAwait' }],
@@ -1470,6 +1496,40 @@ runRuleTester('missing-playwright-await', rule, {
     },
     {
       code: test('Array.of(1, 2, 3).fill(0)'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('Array(100).fill("a")'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    // Map/Set clear() and collections stored in variables should not be flagged
+    {
+      code: test('new Map().clear()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('const cache = new Map(); cache.clear()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('const seen = new Set(); seen.clear()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('const items = []; items.fill(0)'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: test('let cache = new Map(); cache = new Map(); cache.clear()'),
+      options: [{ includePageLocatorMethods: true }],
+    },
+    {
+      code: dedent`
+        const cache = new Map()
+        test.afterEach(() => {
+          cache.clear()
+        })
+      `,
       options: [{ includePageLocatorMethods: true }],
     },
     // Option combined with customMatchers
