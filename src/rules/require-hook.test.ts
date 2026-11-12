@@ -125,6 +125,86 @@ runRuleTester('require-hook', rule, {
       errors: [{ column: 1, line: 1, messageId }],
       options: [{ allowedFunctionCalls: ['someOtherName'] }],
     },
+    {
+      code: dedent`
+        cases.forEach(() => {
+          setup();
+        });
+      `,
+      errors: [{ column: 1, line: 1, messageId }],
+    },
+    {
+      code: 'cases.forEach(setup);',
+      errors: [{ column: 1, line: 1, messageId }],
+    },
+    {
+      code: dedent`
+        test.describe('some tests', () => {
+          cases.forEach(() => {
+            setup();
+          });
+        });
+      `,
+      errors: [{ column: 3, line: 2, messageId }],
+    },
+    {
+      code: dedent`
+        [{ name: 'Alice' }].forEach(({ name }) => {
+          setup(name);
+        });
+      `,
+      errors: [{ column: 1, line: 1, messageId }],
+    },
+    {
+      code: dedent`
+        cases.forEach(() => {
+          setup();
+        });
+      `,
+      errors: [{ column: 1, line: 1, messageId }],
+      options: [{ allowedFunctionCalls: ['map'] }],
+    },
+    {
+      code: dedent`
+        other.forEach(() => {
+          setup();
+        });
+      `,
+      errors: [{ column: 1, line: 1, messageId }],
+      options: [{ allowedFunctionCalls: ['cases.forEach'] }],
+    },
+    {
+      code: dedent`
+        register(() => {
+          const createTests = () => {
+            test('is true', () => {
+              expect(true).toBe(true);
+            });
+          };
+        });
+      `,
+      errors: [{ column: 1, line: 1, messageId }],
+    },
+    {
+      code: dedent`
+        cases.forEach(() => {
+          test.step('setup', async () => {});
+        });
+      `,
+      errors: [{ column: 1, line: 1, messageId }],
+    },
+    {
+      code: dedent`
+        cases.forEach((name) => {
+          test.describe(name, () => {
+            setup();
+
+            test('works', async () => {});
+          });
+        });
+      `,
+      errors: [{ column: 5, line: 3, messageId }],
+    },
     // Global aliases
     {
       code: dedent`
@@ -311,6 +391,70 @@ runRuleTester('require-hook', rule, {
       `,
       options: [{ allowedFunctionCalls: ['enableAutoDestroy'] }],
     },
+    dedent`
+      [
+        { name: 'Alice', expected: 'Hello, Alice!' },
+        { name: 'Bob', expected: 'Hello, Bob!' },
+        { name: 'Charlie', expected: 'Hello, Charlie!' },
+      ].forEach(({ name, expected }) => {
+        test(\`testing with \${name}\`, async ({ page }) => {
+          await page.goto(\`https://example.com/greet?name=\${name}\`);
+          await expect(page.getByRole('heading')).toHaveText(expected);
+        });
+      });
+    `,
+    dedent`
+      cases.forEach((name) => {
+        test.describe(name, () => {
+          test('works', async () => {});
+        });
+      });
+    `,
+    dedent`
+      cases.forEach((name) => {
+        test(name, async () => {});
+        test(name, async () => {});
+      });
+    `,
+    'cases.forEach((name) => test(name, async () => {}));',
+    dedent`
+      cases.forEach(function (name) {
+        test(name, async () => {});
+      });
+    `,
+    dedent`
+      test.describe('suite', () => {
+        cases.forEach((name) => {
+          test(name, async () => {});
+        });
+      });
+    `,
+    dedent`
+      cases.forEach((name) => {
+        test.skip(name, async () => {});
+        test.fixme(name, async () => {});
+      });
+    `,
+    {
+      code: dedent`
+        cases.forEach(() => {
+          setup();
+        });
+
+        items.forEach(() => {
+          setup();
+        });
+      `,
+      options: [{ allowedFunctionCalls: ['forEach'] }],
+    },
+    {
+      code: dedent`
+        cases.forEach(() => {
+          setup();
+        });
+      `,
+      options: [{ allowedFunctionCalls: ['cases.forEach'] }],
+    },
     // Global aliases
     {
       code: dedent`
@@ -338,6 +482,18 @@ runRuleTester('require-hook', rule, {
     },
     {
       code: dedent`
+        cases.forEach((name) => {
+          it(name, async () => {});
+        });
+      `,
+      settings: {
+        playwright: {
+          globalAliases: { test: ['it'] },
+        },
+      },
+    },
+    {
+      code: dedent`
         const custom = test.extend({});
         custom.beforeEach(() => {
           initializeCityDatabase();
@@ -347,6 +503,14 @@ runRuleTester('require-hook', rule, {
         });
         custom('city database has Vienna', () => {
           expect(isCity('Vienna')).toBeTruthy();
+        });
+      `,
+    },
+    {
+      code: dedent`
+        import { test as custom } from '@playwright/test';
+        cases.forEach((name) => {
+          custom(name, async () => {});
         });
       `,
     },

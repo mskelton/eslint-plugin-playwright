@@ -1,11 +1,47 @@
 import type { Rule } from 'eslint'
 import type * as ESTree from 'estree'
-import { getStringValue, isFunction, isIdentifier } from '../utils/ast.js'
+import { getNodeName, getStringValue, isFunction, isIdentifier } from '../utils/ast.js'
 import { createRule } from '../utils/createRule.js'
 import { isTypeOfFnCall, parseFnCall } from '../utils/parseFnCall.js'
 
 const isNullOrUndefined = (node: ESTree.Expression): boolean => {
   return (node.type === 'Literal' && node.value === null) || isIdentifier(node, 'undefined')
+}
+
+const isAllowedFunctionCall = (
+  node: ESTree.CallExpression,
+  allowedFunctionCalls: readonly string[],
+): boolean => {
+  const name = getNodeName(node)
+  if (name && allowedFunctionCalls.includes(name)) {
+    return true
+  }
+
+  if (node.callee.type !== 'MemberExpression') {
+    return false
+  }
+
+  const method = getStringValue(node.callee.property)
+  return method !== '' && allowedFunctionCalls.includes(method)
+}
+
+const definesTests = (context: Rule.RuleContext, node: ESTree.Node): boolean => {
+  switch (node.type) {
+    case 'ExpressionStatement':
+      return definesTests(context, node.expression)
+    case 'BlockStatement':
+      return node.body.some((statement) => definesTests(context, statement))
+    case 'CallExpression':
+      return isTypeOfFnCall(context, node, ['describe', 'test'])
+    default:
+      return false
+  }
+}
+
+const callbackDefinesTests = (context: Rule.RuleContext, node: ESTree.CallExpression): boolean => {
+  return node.arguments.some(
+    (argument) => isFunction(argument) && definesTests(context, argument.body),
+  )
 }
 
 const shouldBeInHook = (
@@ -18,7 +54,9 @@ const shouldBeInHook = (
       return shouldBeInHook(context, node.expression, allowedFunctionCalls)
     case 'CallExpression':
       return !(
-        parseFnCall(context, node) || allowedFunctionCalls.includes(getStringValue(node.callee))
+        parseFnCall(context, node) ||
+        isAllowedFunctionCall(node, allowedFunctionCalls) ||
+        callbackDefinesTests(context, node)
       )
     case 'VariableDeclaration': {
       if (node.kind === 'const') {
