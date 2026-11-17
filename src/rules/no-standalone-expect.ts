@@ -51,8 +51,8 @@ export default createRule({
           callStack.push('arrow')
         }
       },
-      'ArrowFunctionExpression:exit'() {
-        if (callStack.at(-1) === 'arrow') {
+      'ArrowFunctionExpression:exit'(node) {
+        if (node.parent?.type !== 'CallExpression' && callStack.at(-1) === 'arrow') {
           callStack.pop()
         }
       },
