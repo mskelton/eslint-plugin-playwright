@@ -138,6 +138,16 @@ runRuleTester('no-standalone-expect', rule, {
     'class Helper { foo = () => { expect(1).toBe(1); } }',
     {
       code: dedent`
+        const helpers = (page) => ({
+          getIds: () => page.ids().map((id) => id),
+          async check() {
+            await expect(page).toBeDefined();
+          },
+        });
+      `,
+    },
+    {
+      code: dedent`
         test.describe('Test describe', () => {
           test.beforeAll(async ({ page }) => {
             await page.goto('https://google.com');
