@@ -85,12 +85,30 @@ export default createRule({
   create(context) {
     const {
       allow = [],
+      checkDefaults = false,
       minOccurrences = 1,
+      parameterNames = 'timeout(Ms)?$|budgetMs$|^(ms|wait|poll)(Ms)?$',
       properties = ['timeout'],
     } = (context.options?.[0] ?? {}) as {
       allow?: number[]
+      checkDefaults?: boolean
       minOccurrences?: number
+      parameterNames?: string
       properties?: string[]
+    }
+
+    // Only compiled when used, so a bad pattern can't break linting for
+    // configs that never enable `checkDefaults`.
+    let budgetName: RegExp | undefined
+    if (checkDefaults) {
+      try {
+        budgetName = new RegExp(parameterNames, 'i')
+      } catch (error) {
+        throw new Error(
+          `no-magic-timeouts: invalid \`parameterNames\` pattern: ${(error as Error).message}`,
+          { cause: error },
+        )
+      }
     }
 
     const allowed = new Set(allow)
@@ -104,7 +122,7 @@ export default createRule({
 
     function collect(node: ESTree.Node & Partial<NodeWithParent>) {
       const value = evaluate(node)
-      if (value === undefined || allowed.has(value)) {
+      if (value === undefined || allowed.has(value) || isInsideConfig(node as NodeWithParent)) {
         return
       }
 
@@ -117,6 +135,24 @@ export default createRule({
     }
 
     return {
+      // `(timeout = 15_000) => {}`, `({ budgetMs = 60_000 } = {}) => {}`, and
+      // the renamed `({ timeout: t = 5000 }) => {}`
+      'AssignmentPattern'(node) {
+        if (!budgetName || node.left.type !== 'Identifier') {
+          return
+        }
+
+        const parent = (node as NodeWithParent).parent
+        const renamedKey =
+          parent.type === 'Property' &&
+          parent.value === node &&
+          (!parent.computed || parent.key.type === 'Literal') &&
+          timeoutProperties.has(getStringValue(parent.key))
+
+        if (renamedKey || budgetName.test(node.left.name)) {
+          collect(node.right)
+        }
+      },
       'CallExpression'(node) {
         // `test.setTimeout(30000)` and `testInfo.setTimeout(30000)`
         if (
@@ -161,10 +197,12 @@ export default createRule({
         if (object?.type !== 'ObjectExpression') {
           return
         }
-        if (!isCallArgument(object)) {
-          return
-        }
-        if (isInsideConfig(object)) {
+        // `options = { timeout: 15_000 }` is a default that is forwarded as-is
+        const isDefault =
+          checkDefaults &&
+          object.parent.type === 'AssignmentPattern' &&
+          object.parent.right === object
+        if (!isCallArgument(object) && !isDefault) {
           return
         }
 
@@ -192,9 +230,16 @@ export default createRule({
             items: { type: 'number' },
             type: 'array',
           },
+          checkDefaults: {
+            type: 'boolean',
+          },
           minOccurrences: {
             minimum: 1,
             type: 'integer',
+          },
+          parameterNames: {
+            minLength: 1,
+            type: 'string',
           },
           properties: {
             items: { type: 'string' },

@@ -1,9 +1,94 @@
 import dedent from 'dedent'
+import { Linter } from 'eslint'
+import { expect, it } from 'vitest'
 import { runRuleTester } from '../utils/rule-tester.js'
 import rule from './no-magic-timeouts.js'
 
 runRuleTester('no-magic-timeouts', rule, {
   invalid: [
+    // Defaults on budget-named bindings
+    {
+      code: `async function waitUntilVisible(locator, timeout = 15_000) {}`,
+      errors: [{ data: { value: '15_000' }, messageId: 'noMagicTimeout' }],
+      options: [{ checkDefaults: true }],
+    },
+    {
+      code: `async function open({ budgetMs = 2 * 60_000 } = {}) {}`,
+      errors: [{ data: { value: '2 * 60_000' }, messageId: 'noMagicTimeout' }],
+      options: [{ checkDefaults: true }],
+    },
+    {
+      code: `const settle = (ms = 400) => page.waitForTimeout(ms)`,
+      errors: [{ data: { value: '400' }, messageId: 'noMagicTimeout' }],
+      options: [{ checkDefaults: true }],
+    },
+    {
+      code: `const { navigationTimeout = 30000 } = options`,
+      errors: [{ data: { value: '30000' }, messageId: 'noMagicTimeout' }],
+      options: [{ checkDefaults: true }],
+    },
+    // Matching is case-insensitive
+    {
+      code: `function f(TIMEOUT = 5000, WaitMs = 100) {}`,
+      errors: [{ messageId: 'noMagicTimeout' }, { messageId: 'noMagicTimeout' }],
+      options: [{ checkDefaults: true }],
+    },
+    // Renamed destructuring is matched by its key, via `properties`
+    {
+      code: `function wait(locator, { timeout: limit = 15_000 } = {}) {}`,
+      errors: [{ data: { value: '15_000' }, messageId: 'noMagicTimeout' }],
+      options: [{ checkDefaults: true }],
+    },
+    // Object-literal defaults that are forwarded as options
+    {
+      code: `function wait(locator, options = { timeout: 15_000 }) {}`,
+      errors: [{ data: { value: '15_000' }, messageId: 'noMagicTimeout' }],
+      options: [{ checkDefaults: true }],
+    },
+    {
+      code: `function open({ timeout } = { timeout: 15_000 }) {}`,
+      errors: [{ data: { value: '15_000' }, messageId: 'noMagicTimeout' }],
+      options: [{ checkDefaults: true }],
+    },
+    // Other binding contexts
+    {
+      code: dedent`
+        ;({ timeout = 5000 } = opts)
+        const [waitMs = 250] = list
+        class Page { constructor(timeout = 5000) {} }
+      `,
+      errors: [
+        { messageId: 'noMagicTimeout' },
+        { messageId: 'noMagicTimeout' },
+        { messageId: 'noMagicTimeout' },
+      ],
+      options: [{ checkDefaults: true }],
+    },
+    // The scope widens beyond Playwright calls once enabled
+    {
+      code: `function wait({ timeout = 5000 } = {}) {}`,
+      errors: [{ messageId: 'noMagicTimeout' }],
+      options: [{ checkDefaults: true }],
+    },
+    // Custom name pattern
+    {
+      code: `function poll(fn, deadline = 5000) {}`,
+      errors: [{ messageId: 'noMagicTimeout' }],
+      options: [{ checkDefaults: true, parameterNames: '^deadline$' }],
+    },
+    // Defaults count towards minOccurrences alongside options
+    {
+      code: dedent`
+        async function waitFor(page, timeout = 15_000) {
+          await page.getByTestId('total').waitFor({ timeout: 15_000 })
+        }
+      `,
+      errors: [
+        { messageId: 'repeatedMagicTimeout' },
+        { messageId: 'repeatedMagicTimeout' },
+      ],
+      options: [{ checkDefaults: true, minOccurrences: 2 }],
+    },
     // Action options
     {
       code: test(`await page.getByRole('button').click({ timeout: 5000 })`),
@@ -209,7 +294,61 @@ runRuleTester('no-magic-timeouts', rule, {
     },
     // Not a Playwright timeout at all
     `function wait({ timeout = 5000 } = {}) {}`,
+    // checkDefaults: names that are not budgets
+    {
+      code: `function at(nowMs = 0, closedAtMs = 1700000000000, waitForIdle = 1) {}`,
+      options: [{ checkDefaults: true }],
+    },
+    // checkDefaults: counts and non-duration names are not budgets
+    {
+      code: dedent`
+        function f(retryBudget = 3, budget = 500, maxTimeouts = 2, timeoutRetries = 3) {}
+        function click(el, delay = 100) {}
+      `,
+      options: [{ checkDefaults: true }],
+    },
+    // checkDefaults: defaults inside defineConfig() are exempt
+    {
+      code: `export default defineConfig({ projects: targets.map(({ name, timeout = 30_000 }) => ({ name, timeout })) })`,
+      options: [{ checkDefaults: true }],
+    },
+    // checkDefaults: object-literal defaults are ignored when disabled
+    `function wait(locator, options = { timeout: 15_000 }) {}`,
+    // parameterNames is not compiled unless checkDefaults is on
+    {
+      code: `const a = 1`,
+      options: [{ parameterNames: '(' }],
+    },
+    // checkDefaults: non-literal and allowed defaults
+    {
+      code: `function open(timeout = DEFAULT_TIMEOUT, delay = 2 * BASE) {}`,
+      options: [{ checkDefaults: true }],
+    },
+    {
+      code: `function open(timeout = 0) {}`,
+      options: [{ allow: [0], checkDefaults: true }],
+    },
   ],
+})
+
+it('reports an invalid parameterNames pattern clearly', () => {
+  const linter = new Linter({ configType: 'flat' })
+  expect(() =>
+    linter.verify('function f(timeout = 1) {}', {
+      plugins: { p: { rules: { r: rule } } },
+      rules: { 'p/r': ['error', { checkDefaults: true, parameterNames: '(' }] },
+    }),
+  ).toThrow(/no-magic-timeouts: invalid `parameterNames` pattern/)
+})
+
+it('rejects an empty parameterNames pattern', () => {
+  const linter = new Linter({ configType: 'flat' })
+  expect(() =>
+    linter.verify('const a = 1', {
+      plugins: { p: { rules: { r: rule } } },
+      rules: { 'p/r': ['error', { checkDefaults: true, parameterNames: '' }] },
+    }),
+  ).toThrow(/should NOT be shorter than 1 character/)
 })
 
 function test(input: string) {
