@@ -19,7 +19,9 @@ timeouts belong in `playwright.config.ts` — as `timeout`, `expect.timeout`,
 `use.actionTimeout`, or `use.navigationTimeout` — where they apply suite-wide
 and can be overridden per project.
 
-This rule reports numeric timeout values passed inline to a Playwright call. It
+This rule reports numeric timeout values passed inline to a Playwright call
+(and, with [`checkDefaults`](#checkdefaults), numeric defaults on budget-named
+bindings). It
 deliberately does not report timeouts declared inside `defineConfig()`, since
 that is where they are supposed to live.
 
@@ -125,6 +127,58 @@ test hang until the run is killed. If you enable both rules, allowing `0` here
 means one rule blesses what the other condemns. The default of `[]` is the
 consistent choice.
 
+### `checkDefaults`
+
+Also report numeric defaults on bindings whose name looks like a timeout budget
+(see [`parameterNames`](#parameternames)). Defaults to `false`.
+
+In a suite built on page objects and helpers, most budgets never reach
+Playwright as an options literal. They are written as a wrapper's default and
+forwarded by name, which hides the same unnamed number one call away:
+
+```json
+{
+  "playwright/no-magic-timeouts": ["error", { "checkDefaults": true }]
+}
+```
+
+Examples of **incorrect** code with this option:
+
+```js
+async function waitUntilVisible(locator, timeout = 15_000) {
+  await expect(locator).toBeVisible({ timeout })
+}
+
+async function openReport({ budgetMs = 2 * 60_000 } = {}) {}
+
+const settle = (ms = 400) => page.waitForTimeout(ms)
+
+// Option-object defaults are checked against `properties`
+async function click(locator, options = { timeout: 5_000 }) {}
+async function hover(locator, { timeout: limit = 5_000 } = {}) {}
+```
+
+Examples of **correct** code with this option:
+
+```js
+const VISIBILITY_TIMEOUT = 15_000
+
+async function waitUntilVisible(locator, timeout = VISIBILITY_TIMEOUT) {
+  await expect(locator).toBeVisible({ timeout })
+}
+
+// Not budget-named, so not reported
+function since(nowMs = 0) {}
+function retry(fn, retryBudget = 3) {}
+```
+
+Defaults are counted together with inline options for `minOccurrences`, and
+`allow` and the `defineConfig()` exemption apply to them too.
+
+Unlike the inline check, this option matches on names alone, so it also reports
+helpers that have nothing to do with Playwright. If that is noisy, enable it
+only for your test and page-object files with a `files` glob.
+
 ### `minOccurrences`
 
 The number of times a value must appear in a file before it is reported.
@@ -157,6 +211,34 @@ await page.getByTestId('total').waitFor({ timeout: 15_000 })
 
 Values are grouped by what they evaluate to, so `15_000` and `15 * 1000` count
 as the same timeout. Values excluded by `allow` are never counted.
+
+### `parameterNames`
+
+A case-insensitive regular expression for the binding names that
+[`checkDefaults`](#checkdefaults) treats as timeout budgets. Defaults to
+`"timeout(Ms)?$|budgetMs$|^(ms|wait|poll)(Ms)?$"`, which matches names such
+as `timeout`, `navigationTimeout`, `budgetMs`, `ms`, and `waitMs`.
+
+The default is anchored on purpose. It does not match every name ending in
+`Ms`, since `nowMs` and `closedAtMs` usually hold timestamps, nor names that
+merely contain a budget word, since `retryBudget` and `maxTimeouts` usually hold
+counts. It also leaves out `delay`, which in Playwright paces input (as in
+`click({ delay: 100 })`) rather than bounding a wait.
+
+Setting this option replaces the default rather than extending it, so copy the
+default if you want to keep it:
+
+```json
+{
+  "playwright/no-magic-timeouts": [
+    "error",
+    {
+      "checkDefaults": true,
+      "parameterNames": "timeout(Ms)?$|budgetMs$|^(ms|wait|poll)(Ms)?$|^deadline(Ms)?$"
+    }
+  ]
+}
+```
 
 ### `properties`
 
