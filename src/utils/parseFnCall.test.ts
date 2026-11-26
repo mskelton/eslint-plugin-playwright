@@ -1396,10 +1396,121 @@ runRuleTester('test.extend', rule, {
         },
       ],
     },
+    {
+      code: 'test.extend({})("a test", () => {});',
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'test',
+            head: {
+              local: 'test',
+              node: 'test',
+              original: null,
+            },
+            members: [],
+            name: 'test',
+            type: 'test',
+          }),
+          line: 1,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: 'test.extend({}).extend({})("a test", () => {});',
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'test',
+            head: {
+              local: 'test',
+              node: 'test',
+              original: null,
+            },
+            members: [],
+            name: 'test',
+            type: 'test',
+          }),
+          line: 1,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.extend({})("a test", () => {});
+      `,
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'test',
+            head: {
+              local: 'custom',
+              node: 'custom',
+              original: 'test',
+            },
+            members: [],
+            name: 'test',
+            type: 'test',
+          }),
+          line: 2,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: 'test.extend({}).describe("a suite", () => {});',
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'describe',
+            head: {
+              local: 'test',
+              node: 'test',
+              original: null,
+            },
+            members: ['describe'],
+            name: 'describe',
+            type: 'describe',
+          }),
+          line: 1,
+          messageId: 'details',
+        },
+      ],
+    },
+    {
+      code: 'test.extend({}).beforeEach(async () => {});',
+      errors: [
+        {
+          column: 1,
+          data: expectedParsedFnCallResultData({
+            group: 'hook',
+            head: {
+              local: 'test',
+              node: 'test',
+              original: null,
+            },
+            members: ['beforeEach'],
+            name: 'beforeEach',
+            type: 'hook',
+          }),
+          line: 1,
+          messageId: 'details',
+        },
+      ],
+    },
   ],
   valid: [
     'const custom = test.extend({})',
+    'test.extend({})',
     'something.extend({})',
+    'something.extend({})("not a test", () => {})',
+    'test.extend({}).unknown("not a test", () => {})',
     'unknown("not a test", () => {})',
   ],
 })

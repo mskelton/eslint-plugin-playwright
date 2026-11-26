@@ -97,8 +97,12 @@ export const isSupportedAccessor = (node: ESTree.Node, value?: string): node is 
 class Chain {
   #nodes: AccessorNode[] | null = null
   #leaves: WeakSet<AccessorNode> = new WeakSet()
+  #top: ESTree.CallExpression
+  #isTestExtend: (call: ESTree.CallExpression) => boolean
 
-  constructor(node: ESTree.Node) {
+  constructor(node: ESTree.CallExpression, isTestExtend: (call: ESTree.CallExpression) => boolean) {
+    this.#top = node
+    this.#isTestExtend = isTestExtend
     this.#nodes = this.#buildChain(node)
   }
 
@@ -133,6 +137,12 @@ class Chain {
         )
 
       case 'CallExpression':
+        // In `test.extend({})('title', fn)` the `extend` is not part of the
+        // test chain, so an inline `test.extend({})` is replaced by its object.
+        if (node !== this.#top && node.callee.type === 'MemberExpression' && this.#isTestExtend(node)) {
+          return this.#buildChain(node.callee.object)
+        }
+
         return this.#buildChain(node.callee, true)
 
       default:
@@ -431,6 +441,11 @@ function isTestExtendCall(context: Rule.RuleContext, node: ESTree.Node): boolean
   // The object to the left of `.extend()` — e.g. `test` in `test.extend({})`.
   const object = node.callee.object
 
+  // Chained extends, e.g. `test.extend({}).extend({})`.
+  if (object.type === 'CallExpression') {
+    return isTestExtendCall(context, object)
+  }
+
   if (object.type === 'Identifier') {
     // Base case: check if the identifier resolves to `test` directly
     // (e.g. `test.extend({})` or an aliased global like `it.extend({})`).
@@ -454,7 +469,7 @@ function parse(
   context: Rule.RuleContext,
   node: ESTree.CallExpression,
 ): ParsedFnCall | string | null {
-  const chain = new Chain(node)
+  const chain = new Chain(node, (call) => isTestExtendCall(context, call))
   if (!chain.nodes?.length) {
     return null
   }
