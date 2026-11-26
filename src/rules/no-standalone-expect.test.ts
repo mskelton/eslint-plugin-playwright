@@ -96,6 +96,10 @@ runRuleTester('no-standalone-expect', rule, {
       errors: [{ column: 35, endColumn: 52, line: 2, messageId }],
     },
     {
+      code: "test.extend({}).describe('a test', () => { expect(1).toBe(1); });",
+      errors: [{ column: 44, endColumn: 61, messageId }],
+    },
+    {
       code: dedent`
         import { expect as assuming } from '@playwright/test';
         test.describe('a test', () => { assuming(1).toBe(1); });
@@ -166,6 +170,23 @@ runRuleTester('no-standalone-expect', rule, {
       code: dedent`
         const custom = test.extend({});
         custom('an it', () => expect(1).toBe(1));
+      `,
+    },
+    "test.extend({ user: 'admin' })('an it', () => expect(1).toBe(1))",
+    "test.extend({}).extend({})('an it', () => expect(1).toBe(1))",
+    "test.extend({}).describe('a test', () => { test('an it', () => expect(1).toBe(1)); })",
+    "test.extend({}).describe('a test', () => { test.extend({})('an it', () => expect(1).toBe(1)); })",
+    {
+      code: dedent`
+        const custom = test.extend({});
+        custom.extend({})('an it', () => expect(1).toBe(1));
+      `,
+    },
+    {
+      code: dedent`
+        test.extend({}).beforeEach(async () => {
+          expect(1).toBe(1);
+        });
       `,
     },
     // Fixtures
